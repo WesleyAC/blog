@@ -1,0 +1,4 @@
+---
+slug: emacs
+name: Emacs
+---
