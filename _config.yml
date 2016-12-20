@@ -6,6 +6,8 @@ paginate_path: "/posts/page/:num/"
 #url: # add site url http://example.com/
 blog_theme: light # Or use dark
 
+markdown: redcarpet
+
 # Optional settings
 
 discus_identifier: # Add your Disqus identifier
