@@ -1,9 +1,9 @@
 # Mandatory settings
 
-name: Chalk
-paginate: 25
+name: Wesley Aptekar-Cassels
+paginate: 10
 paginate_path: "/posts/page/:num/"
-url: # add site url http://example.com/
+#url: # add site url http://example.com/
 blog_theme: light # Or use dark
 
 # Optional settings
@@ -16,10 +16,10 @@ social:
   dribbble: # Add your Dribbble handle
   facebook: # Add your Facebook handle
   flickr: # Add your Flickr handle
-  github: # Add your GitHub handle
+  github: WesleyAC # Add your GitHub handle
   linkedin: # Add your LinkedIn handle
   twitter: # Add your Twitter handle
-  email: # Add your Email address
+  email: W.Aptekar@gmail.com # Add your Email address
   bitcoin: # Add your Bitcoin link or address
 
 # Important settings (change at own risk)
