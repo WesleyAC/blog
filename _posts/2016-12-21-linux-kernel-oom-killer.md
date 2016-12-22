@@ -26,7 +26,7 @@ Here's what I get from this:
   1. A `task_struct` called `p`, presumably standing for "process". `task_struct` is defined in [`includes/linux/sched.h:1501`](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/linux/sched.h?id=ba6d973f78eb62ffebb32f6ef3334fc9a3b33d22#n1501). This contains a ton of stuff! But the important part is that it represents a process.
   2. A `mem_cgroup` variable. [CGroups](https://en.wikipedia.org/wiki/Cgroups) in Linux are a way to sandbox different resources - in the case of a memory cgroup, you could limit a specific process or set of processes to, say, only taking up 512MB of RAM. Presumably the memory cgroup that the process is is is taken into account somewhere.
   3. nodemask: I'm not quite sure what this is.
-  4. totalpages: This is used in normalizing the score. Not sure exactly what it is.
+  4. totalpages: This is the total amount of RAM that the system has.
 
 Next we, create a couple of variables:
 
