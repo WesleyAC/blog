@@ -95,7 +95,7 @@ How can we fix this? Think about it a bit on your own before you go on.
 
 The simplest way to fix the problems in bang-bang control is to change the amount of force that you're applying depending on how far you are away from the goal. Mathematically, that looks like this:
 
-\\[ u = (x - goal) \times gain\_{p} \\]
+\\[ u = (goal - x) \times gain\_{p} \\]
 
 Here's what that might look like in code:
 
@@ -159,7 +159,7 @@ We'll solve these one at a time:
 
 The first problem is that we don't start slowing down until we're already past our goal, so we're going much too fast when we get there. We can solve this by applying a force to slow us down depending on how fast we're going. Recall that the derivative is how fast something's changing, so if we want our force to change depending on how fast we're going, it'll be proportional to the derivative of the error. In math terms, here's what that looks like:
 
-\\[ e = x - goal \\]
+\\[ e = goal - x \\]
 
 \\[ u = (gain\_{p} \times e) - (gain\_{d} \times \frac{d\_{e}}{d\_{t}}) \\]
 
