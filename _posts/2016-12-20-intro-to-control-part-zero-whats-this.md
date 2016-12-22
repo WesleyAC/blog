@@ -15,6 +15,7 @@ Here's the index of things that I want to write eventually. I may not do them al
 
 * Part Zero: Index (This post!)
 * [Part 1: PID]({% post_url 2016-12-20-intro-to-control-part-one-pid %})
+* [Part 2: PID Tuning]({% post_url 2016-12-22-intro-to-control-part-two-pid-tuning %})
 * Physics based simulation
 * Motor Models
 * State space representation
