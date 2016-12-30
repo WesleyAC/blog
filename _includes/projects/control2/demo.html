@@ -59,27 +59,18 @@ function sign(number) {
 }
 
 var ns{{ include.id }} = {
-timestep: 0.1,
-
-elevator: {
-  'x': 8,
-  'xdot': 0,
-  'xddot': 0,
-  'ff': 0.1,
-  'fg': 0.5,
-  'mass': 100
-},
+timestep: 0.01,
 
 goal: 5,
 
 updateState: function() {
-  this.elevator.xdot += ((this.elevator.xddot - (this.elevator.ff * this.elevator.xdot)) * this.timestep) - (this.elevator.fg * this.timestep);
+  this.elevator.xdot += this.elevator.xddot * this.timestep;
   this.elevator.x += this.elevator.xdot * this.timestep;
 },
 
 setForce: function(force){
   // a = F / m
-  this.elevator.xddot = force / this.elevator.mass;
+  this.elevator.xddot = (force / this.elevator.mass) - (this.elevator.ff / this.elevator.mass * this.elevator.xdot) - this.elevator.fg;
 },
 
 data: [],
@@ -110,7 +101,7 @@ controlFunc: function(x, goal) {
 
 runControlFunc: function() {
   force = this.controlFunc(this.elevator.x, this.goal);
-  this.setForce((force < -1.0 ? -1.0 : (force > 1.0 ? 1.0 : force)) * 500)
+  this.setForce((force < -1.0 ? -1.0 : (force > 1.0 ? 1.0 : force)) * 5000)
 },
 
 reset: function() {
@@ -118,19 +109,19 @@ reset: function() {
     'x': 8,
     'xdot': 0,
     'xddot': 0,
-    'ff': 0.1,
-    'fg': 0.5,
+    'ff': 10,
+    'fg': 9.8,
     'mass': 100
   };
 },
 
 updateSliders: function() {
-  document.getElementById("input-p-value-{{ include.id}}").innerHTML = "P: " + parseInt(document.getElementById("input-p-{{ include.id}}").value) * 0.05;
-  document.getElementById("input-i-value-{{ include.id}}").innerHTML = "I: " + parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.00005;
-  document.getElementById("input-d-value-{{ include.id}}").innerHTML = "D: " + parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.1;
-  this.kp = parseInt(document.getElementById("input-p-{{ include.id}}").value) * 0.05;
-  this.ki = parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.00005;
-  this.kd = parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.1;
+  document.getElementById("input-p-value-{{ include.id}}").innerHTML = "P: " + parseInt(document.getElementById("input-p-{{ include.id}}").value) * 0.005;
+  document.getElementById("input-i-value-{{ include.id}}").innerHTML = "I: " + parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.000005;
+  document.getElementById("input-d-value-{{ include.id}}").innerHTML = "D: " + parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.05;
+  this.kp = parseInt(document.getElementById("input-p-{{ include.id}}").value) * 0.005;
+  this.ki = parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.000005;
+  this.kd = parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.05;
   this.goal = parseInt(document.getElementById("input-goal-{{ include.id}}").value);
   this.reset();
   this.elevator.x = parseInt(document.getElementById("input-start-{{ include.id}}").value);

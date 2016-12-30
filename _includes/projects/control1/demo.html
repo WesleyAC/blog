@@ -51,18 +51,9 @@ function sign(number) {
 }
 
 var ns{{ include.id }} = {
-timestep: 0.1,
+timestep: 0.05,
 
 running: false,
-
-elevator: {
-  'x': 8,
-  'xdot': 0,
-  'xddot': 0,
-  'ff': 0.1,
-  'fg': 0.5,
-  'mass': 100
-},
 
 goal: 5,
 
@@ -78,13 +69,13 @@ updatePositions: function() {
 },
 
 updateState: function() {
-  this.elevator.xdot += ((this.elevator.xddot - (this.elevator.ff * this.elevator.xdot)) * this.timestep) - (this.elevator.fg * this.timestep);
+  this.elevator.xdot += this.elevator.xddot * this.timestep;
   this.elevator.x += this.elevator.xdot * this.timestep;
 },
 
 setForce: function(force){
   // a = F / m
-  this.elevator.xddot = force / this.elevator.mass;
+  this.elevator.xddot = (force / this.elevator.mass) - (this.elevator.ff / this.elevator.mass * this.elevator.xdot) - this.elevator.fg;
 },
 
 updateAll: function() {
@@ -154,7 +145,7 @@ controlFunc: function(x, goal) {
 
 runControlFunc: function() {
   force = this.controlFunc(this.elevator.x, this.goal);
-  this.setForce((force < -1.0 ? -1.0 : (force > 1.0 ? 1.0 : force)) * 500)
+  this.setForce((force < -1.0 ? -1.0 : (force > 1.0 ? 1.0 : force)) * 5000)
 },
 
 updateFunction: function() {
@@ -169,8 +160,8 @@ reset: function() {
     'x': 8,
     'xdot': 0,
     'xddot': 0,
-    'ff': 0.1,
-    'fg': 0.5,
+    'ff': 10,
+    'fg': 9.8,
     'mass': 100
   };
 
