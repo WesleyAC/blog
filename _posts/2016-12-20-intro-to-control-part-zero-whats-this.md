@@ -17,8 +17,8 @@ Here's the index of things that I want to write eventually. I may not do them al
 * [Part 1: PID]({% post_url 2016-12-20-intro-to-control-part-one-pid %})
 * [Part 2: PID Tuning]({% post_url 2016-12-22-intro-to-control-part-two-pid-tuning %})
 * [Part 3: Simulation]({% post_url 2016-12-29-intro-to-control-part-three-simulation %})
+* [Part 4: State Space]({% post_url 2016-12-30-intro-to-control-part-four-state-space %})
 * Motor Models
-* State space representation
 * Feed Forward
 * Motion Profiling
 * Full State Feedback with Pole Placement
