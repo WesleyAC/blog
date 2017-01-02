@@ -66,7 +66,7 @@ And here's what the position would look like for that profile:
 
 (For completeness, [here's](https://gist.github.com/WesleyAC/861da6df9b172603536f8b01a9469e79) the script that I used to generate these graphs)
 
-Ok, so now that we've decided to use a trapezoidal profile, what's next? Well, we need to decide how fast to accelerate and decelerate, as well as our maximum velocity. How do we decode on that? There are two ways: we can either use our model of the system to figure out the theoretical acceleration and maximum velocity, or we can measure it on the real system. I prefer to use the real system, since maximum acceleration and velocity are something that can be very off in some models (however, if you're developing a controller before you have access to the hardware, you may need to use the model instead). Anyway, here's how I find the values:
+Ok, so now that we've decided to use a trapezoidal profile, what's next? Well, we need to decide how fast to accelerate and decelerate, as well as our maximum velocity. How do we decide on that? There are two ways: we can either use our model of the system to figure out the theoretical acceleration and maximum velocity, or we can measure it on the real system. I prefer to use the real system, since maximum acceleration and velocity are something that can be very off in some models (however, if you're developing a controller before you have access to the hardware, you may need to use the model instead). Anyway, here's how I find the values:
 
 1. Give your system a maximum input and record the output. I usually save a CSV file.
 2. Figure out where you've reached the maximum velocity. I do this by taking the derivative and finding where it levels off, but you can also just eyeball it.
