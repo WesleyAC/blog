@@ -134,6 +134,7 @@ We're going to simulate running a Proportional-Derivative controller on our elev
 
 {% highlight matlab %}
 % Setup for simulation
+pkg load control
 times = 0:0.1:20;
 
 % Our state space matrices in matlab/octave format
@@ -156,7 +157,7 @@ K = [30 70]
 elevatorClosedLoop = ss(A-B*K,B,C,D);
 
 % This simulates the system and plots it on the screen
-lsim(elevatorClosedLoop, 0*ones(size(t)), times, startingPosition);
+lsim(elevatorClosedLoop, 0*ones(size(times)), times, startingPosition);
 {% endhighlight %}
 
 Now you can press F5 to run it, and a plot of position versus time should appear!
