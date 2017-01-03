@@ -7,6 +7,8 @@ paginate_path: "/posts/page/:num/"
 blog_theme: light # Or use dark
 
 markdown: redcarpet
+redcarpet:
+  extensions: [footnotes]
 
 # Optional settings
 
