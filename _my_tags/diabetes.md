@@ -1,0 +1,4 @@
+---
+slug: diabetes
+name: diabetes
+---
