@@ -19,9 +19,9 @@ Here's the index of things that I want to write eventually. I may not do them al
 * [Part 3: Simulation]({% post_url 2016-12-29-intro-to-control-part-three-simulation %})
 * [Part 4: State Space]({% post_url 2016-12-30-intro-to-control-part-four-state-space %})
 * [Part 5: Feed Forward and Motion Profiling]({% post_url 2017-01-02-intro-to-control-part-five-feedforward-motion-profiling %})
+* [Part 6: Pole Placement]({% post_url 2017-05-07-intro-to-control-part-six-pole-placement %})
 * Motor Models
 * Example Systems/System Modeling
-* Full State Feedback with Pole Placement
 * State Space Observer
 * Kalman Filters
 * LQR
