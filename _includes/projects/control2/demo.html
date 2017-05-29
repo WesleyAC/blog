@@ -113,15 +113,16 @@ reset: function() {
     'fg': 9.8,
     'mass': 100
   };
+  this.integral = 0;
 },
 
 updateSliders: function() {
   document.getElementById("input-p-value-{{ include.id}}").innerHTML = "P: " + parseInt(document.getElementById("input-p-{{ include.id}}").value) * 0.005;
-  document.getElementById("input-i-value-{{ include.id}}").innerHTML = "I: " + parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.000005;
-  document.getElementById("input-d-value-{{ include.id}}").innerHTML = "D: " + parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.05;
+  document.getElementById("input-i-value-{{ include.id}}").innerHTML = "I: " + parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.005;
+  document.getElementById("input-d-value-{{ include.id}}").innerHTML = "D: " + parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.2;
   this.kp = parseInt(document.getElementById("input-p-{{ include.id}}").value) * 0.005;
-  this.ki = parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.000005;
-  this.kd = parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.05;
+  this.ki = parseInt(document.getElementById("input-i-{{ include.id}}").value) * 0.005;
+  this.kd = parseInt(document.getElementById("input-d-{{ include.id}}").value) * 0.2;
   this.goal = parseInt(document.getElementById("input-goal-{{ include.id}}").value);
   this.reset();
   this.elevator.x = parseInt(document.getElementById("input-start-{{ include.id}}").value);
