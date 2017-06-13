@@ -16,14 +16,8 @@ ga_analytics: UA-89690189-1
 rss_enabled: true # Change to false if not
 about_enabled: true # Change to true if you wish to show an icon in the navigation that redirects to the about page
 social:
-  dribbble: # Add your Dribbble handle
-  facebook: # Add your Facebook handle
-  flickr: # Add your Flickr handle
-  github: WesleyAC # Add your GitHub handle
-  linkedin: # Add your LinkedIn handle
-  twitter: # Add your Twitter handle
-  email: W.Aptekar@gmail.com # Add your Email address
-  bitcoin: # Add your Bitcoin link or address
+  github: WesleyAC
+  email: W.Aptekar@gmail.com
 
 # Important settings (change at own risk)
 
