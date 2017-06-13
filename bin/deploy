@@ -29,7 +29,6 @@ git push -f -q origin gh-pages
 
 # Move back to previous branch.
 git checkout -
-bower install
 
 echo "Deployed Successfully!"
 
