@@ -10,12 +10,7 @@ sitemap: false
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>{{ site.name }} | Page not found</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  {% if site.blog_theme == "light" %}
-    {% stylesheet notfound-light %}
-  {% else %}
-    {% stylesheet notfound-dark %}
-  {% endif %}
+  {% stylesheet notfound-light %}
 </head>
 <body>
   <main role="main" class="notfound-wrapper">

@@ -4,7 +4,6 @@ name: Wesley Aptekar-Cassels
 paginate: 10
 paginate_path: "/posts/page/:num/"
 #url: # add site url http://example.com/
-blog_theme: light # Or use dark
 
 markdown: redcarpet
 redcarpet:
