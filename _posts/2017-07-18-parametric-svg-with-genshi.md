@@ -38,3 +38,4 @@ And by changing just a few lines of code, I can get this:
 The code for this is [on github](https://github.com/WesleyAC/toybox/blob/master/pcad/encoder.svg?short_path=ffab2e8), if you want to make some encoders yourself :)
 
 Overall, I've been quite happy with the technique of using Genshi to generate parametric SVG files - it's very low overhead, and I have access to all of python, should I want it.
+
