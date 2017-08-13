@@ -3,7 +3,7 @@ layout: post
 title: The joy of brainfuck
 description: Lessons learned from programming FizzBuzz in brainfuck
 date: 2016-12-29 20:00:00
-tags: [brainfuck]
+tags: [brainfuck, bestof]
 ---
 My favorite esoteric programming language is [brainfuck](http://esolangs.org/wiki/brainfuck) - A [turing-complete](https://en.wikipedia.org/wiki/Turing_complete) language implemented in just 8 simple commands. So when I needed to make a [FizzBuzz](https://blog.codinghorror.com/why-cant-programmers-program/)-like program for my application to the [Recurse Center](https://www.recurse.com/), I knew what I had to do.
 

@@ -2,7 +2,7 @@
 
 name: Wesley Aptekar-Cassels
 paginate: 10
-paginate_path: "/posts/page/:num/"
+paginate_path: "/all/page/:num/"
 #url: # add site url http://example.com/
 
 markdown: redcarpet
@@ -14,7 +14,7 @@ redcarpet:
 discus_identifier: # Add your Disqus identifier
 ga_analytics: UA-89690189-1
 rss_enabled: true # Change to false if not
-about_enabled: true # Change to true if you wish to show an icon in the navigation that redirects to the about page
+about_enabled: false # Change to true if you wish to show an icon in the navigation that redirects to the about page
 social:
   github: WesleyAC
   email: W.Aptekar@gmail.com

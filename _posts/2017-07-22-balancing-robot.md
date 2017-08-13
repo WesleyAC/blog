@@ -2,7 +2,7 @@
 layout: post
 title: "Balancing Robot"
 description: "Lessons learned from making a robot"
-tags: [robotics]
+tags: [robotics, bestof]
 ---
 
 This week, I decided to build a robot:

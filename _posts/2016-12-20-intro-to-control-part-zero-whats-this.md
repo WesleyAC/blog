@@ -3,7 +3,7 @@ layout: post
 title: "Intro to Control Theory Part 0: What's This?"
 description: An intro and index to my series of posts on Control Theory.
 date: 2016-12-20 21:50:00
-tags: [control, robotics]
+tags: [control, robotics, bestof]
 ---
 I've decided to start a series of posts on [Control Theory](https://en.wikipedia.org/wiki/Control_theory)! Here's why:
 

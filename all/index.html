@@ -1,17 +1,11 @@
 ---
 layout: default
-title: "Main Page"
-description: "Main page"
+title: "All posts"
+description: "All posts"
 ---
 
-<div class="about">
-  <p>
-  Hi, I'm Wesley. In the past, I wrote code for robots on <a href="http://www.citruscircuits.org/">Citrus Circuits</a>. Now I write code for fun at the <a href="https://www.recurse.com/scout/click?t=288aaf8d6ddfba372520ec10690a1e1b">Recurse Center</a>. I also sometimes write things on this blog - you can find my best posts below, or look at <a href="/all">all my posts</a>.
-  </p>
-</div>
-
 <ul class="article-list">
-  {% for post in site.tags["bestof"] %}
+  {% for post in paginator.posts %}
     <li class="article-list-item">
       <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
         <h5>
@@ -33,4 +27,14 @@ description: "Main page"
       </div>
     </li>
   {% endfor %}
+  {% if paginator.total_pages > 1 %}
+    <li class="article-pagination">
+      {% if paginator.previous_page %}
+        <a href="{{ paginator.previous_page_path }}" class="article-pagination-right">Newer posts <span class="icon icon-ios-arrow-thin-right"></span></a>
+      {% endif %}
+      {% if paginator.next_page %}
+        <a href="{{ paginator.next_page_path }}"><span class="icon icon-ios-arrow-thin-left"></span> Older posts</a>
+      {% endif %}
+    </li>
+  {% endif %}
 </ul>
