@@ -7,7 +7,7 @@ tags: [security, crypto, math, bestof]
 
 I find cryptography fascinating, and have recently become interested in elliptic curve cryptography (ECC) in particular. However, it's not easy to find an introduction to elliptic curve cryptography that doesn't assume an advanced math background. This post is an attempt to explain how ECC works using only high school level math. Because of this, I purposely simplify some aspects of this, particularly around terms that have specific mathematical meaning. However, you should still get a good intuitive understanding of elliptic curves from this post.
 
-The fundamental building block of most modern cryptography is a one-way function. A one-way function is a function that is easy to compute, but it's inverse is hard[^1] to compute. (i.e. given \\(f(x) = y\\), it's easy to calculate \\(y\\) given \\(x\\), but hard to calculate \\(x\\) given \\(y\\).)
+The fundamental building block of most modern cryptography is a one-way function. A one-way function is a function that is easy to compute, but its inverse is hard[^1] to compute. (i.e. given \\(f(x) = y\\), it's easy to calculate \\(y\\) given \\(x\\), but hard to calculate \\(x\\) given \\(y\\).)
 
 There are two main ways that this is done:
 
