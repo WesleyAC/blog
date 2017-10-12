@@ -30,7 +30,7 @@ Here's a interactive graph of what this looks like:
 
 For examples of cusps and self-intersections, try \\(a = 0; b = 0\\) or \\(a = -3; b = 2\\), respectively.
 
-That demo works on real numbers, but in actuality, you can define an elliptic curve over any [_field_](https://en.wikipedia.org/wiki/Field_(mathematics)). A field is a set of objects that have addition, subtraction, multiplication, and division defined on them. For example, integers (\\(\mathbb{Z}\\)) are a field, as are the real numbers (\\(\mathbb{R}\\)). In cryptography, we usually use the field "integers mod p" (\\(\mathbb{Z}\bmod p\\)), where \\(p\\) is a large prime number. I will continue to use the real numbers for the rest of this post, but know that all of the math is transferable to \\(\mathbb{Z}\bmod p\\), which is what is used in real crypto systems.
+That demo works on real numbers, but in actuality, you can define an elliptic curve over any [_field_](https://en.wikipedia.org/wiki/Field_(mathematics)). A field is a set of objects that have addition, subtraction, multiplication, and division defined on them. For example, the real numbers (\\(\mathbb{R}\\)) are a field. In cryptography, we usually use the field "integers mod p" (\\(\mathbb{Z}\bmod p\\)), where \\(p\\) is a large prime number. I will continue to use the real numbers for the rest of this post, but know that all of the math is transferable to \\(\mathbb{Z}\bmod p\\), which is what is used in real crypto systems.
 
 Now that you know _what_ an elliptic curve is, let's talk about the points on it. We can define a [_group_](https://en.wikipedia.org/wiki/Group_(mathematics)) of the points on the elliptic curve. A group is a set of objects that have addition defined on them[^2].
 
