@@ -23,7 +23,7 @@ I think that less than 10% of the companies that I've interviewed with have said
 
 This seems ridiculous to me - both hiring "the best" and hiring based on "fit" are strategies that filter more based on the biases of the interviewers than on the ability of the candidate.
 
-If you see evaluating the candidate's ability to to the job as the ideal for an interview, this also reveals many of the things that are wrong with tech interviews at the moment - I've never had an interview that tried to evaluate my ability to work in a team or prioritize tasks - both of which are probably [more important](http://arches.io/2016/01/hire-literally-anyone/) to doing well in a software engineering job than being able to find anagrams in O(n) time.
+If you see evaluating the candidate's ability to do the job as the ideal for an interview, this also reveals many of the things that are wrong with tech interviews at the moment - I've never had an interview that tried to evaluate my ability to work in a team or prioritize tasks - both of which are probably [more important](http://arches.io/2016/01/hire-literally-anyone/) to doing well in a software engineering job than being able to find anagrams in O(n) time.
 
 # How do you evaluate how well you're meeting your goal?
 
