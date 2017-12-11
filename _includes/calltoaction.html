@@ -1,0 +1,6 @@
+<br>
+{% if site.lookingforwork == true %}
+  <p>I'm currently looking for work - If you're looking to hire an engineer to help build the future, <a href="mailto:W.Aptekar@gmail.com">get in touch with me.</a></p>
+{% else %}
+<p>If you're in {{ site.coffeelocation }} and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:{{site.social.email}}">get in touch with me</a>.</p>
+{% endif %}

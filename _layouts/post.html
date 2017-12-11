@@ -40,6 +40,8 @@
             </a>
           </div>
 
+          {% include calltoaction.html %}
+
           {% if site.discus_identifier %}
             <div id="disqus_thread" class="article-comments"></div>
             <script>
@@ -53,11 +55,6 @@
             <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
           {% endif %}
         </article>
-	{% if site.lookingforwork == true %}
-          {% include work.html %}
-	  <br>
-	  {% endif %}
-        {% include footer.html %}
       </div>
     </div>
   </main>

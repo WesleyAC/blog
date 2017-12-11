@@ -18,7 +18,8 @@ about_enabled: false # Change to true if you wish to show an icon in the navigat
 social:
   github: WesleyAC
   email: W.Aptekar@gmail.com
-lookingforwork: true
+lookingforwork: false
+coffeelocation: NYC
 
 # Important settings (change at own risk)
 
