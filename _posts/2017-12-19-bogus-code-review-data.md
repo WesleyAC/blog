@@ -33,7 +33,7 @@ The next thing that popped out at me was the number of samples in the study. The
 
 So in conclusion, we have a graph that's being passed around that:
 
-1. Has it's scale off by a factor of 4 from the actual data
+1. Has its scale off by a factor of 4 from the actual data
 2. Is not statistically significant to prove the claims that are being made about it
 3. Even if it were significant, actually shows the exact opposite of what is being claimed
 
