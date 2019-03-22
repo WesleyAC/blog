@@ -144,9 +144,9 @@ We'll need to know two definitions in order to understand PID:
 
 Importantly, as the images below show, you can calculate an approximation of the integral and derivative easily.
 
-{% include image.html path="control1/derivative.gif" path-detail="control1/derivative.gif" alt="Derivative" %}
+<img src="../assets/control1/derivative.gif" alt="Derivative">
 
-{% include image.html path="control1/integral.gif" path-detail="control1/integral.gif" alt="Integral" %}
+<img src="../assets/control1/integral.gif" alt="Integral">
 
 Alright, that's enough calculus review, let's move on to the fun stuff - PID!
 

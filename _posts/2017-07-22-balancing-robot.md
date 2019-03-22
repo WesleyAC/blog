@@ -7,7 +7,7 @@ tags: [robotics, bestof]
 
 This week, I decided to build a robot:
 
-{% include image.html path="robot1/bot.gif" path-detail="robot1/bot.gif" alt="My robot" %}
+<img src="../assets/robot1/bot.gif" alt="My robot">
 
 It went pretty well, but there were definitely some things that I'd do differently if I were to do it again. This post will cover the full mechanical/electrical/programming details of the robot, as well as talking about improvements for the future.
 

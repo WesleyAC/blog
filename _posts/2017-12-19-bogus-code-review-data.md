@@ -9,9 +9,9 @@ I saw an [article](https://medium.com/@9len/on-code-review-16ea85f7c585) today a
 
 These are the graphs in question:
 
-{% include image.html path="codereviewdata/graph1.gif" path-detail="codereviewdata/graph1.gif" %}
+<img src="../assets/codereviewdata/graph1.gif">
 
-{% include image.html path="codereviewdata/graph2.gif" path-detail="codereviewdata/graph2.gif" %}
+<img src="../assets/codereviewdata/graph2.gif">
 
 I found these implausible, for several reasons:
 
@@ -25,7 +25,7 @@ I found the claims being made off of this graph so unbelievable that I tracked d
 
 There's a few things that immediately popped out at me - the first one is that the graph "Defect Density vs. LOC" graph is actually completely false - the reason that the 800 defects per kLOC figure popped out at me as being suspicious was because the scale is incorrect. Here's the real graph[^3]:
 
-{% include image.html path="codereviewdata/realgraph.png" path-detail="codereviewdata/realgraph.png" %}
+<img src="../assets/codereviewdata/realgraph.png">
 
 This shows about the amount of care that's put into these articles that cite this study, but let's carry on.
 

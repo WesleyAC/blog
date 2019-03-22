@@ -9,7 +9,7 @@ _Note: This accidentally got published before it was completed - this is a sligh
 
 I've seen a lot of images trying to explain neural networks that look something like this:
 
-{% include image.html path="nnvis1/deepnet.png" path-detail="nnvis1/deepnet.png" alt="Generic deep neural network. Image credit: Stack Exchange" %}
+<img src="../assets/nnvis1/deepnet.png" alt="Generic deep neural network. Image credit: Stack Exchange">
 
 But it's never been entirely clear to me what this is supposed to represent. I know that the circles are neurons, and the lines in between them connections between neurons, but how exactly would one go about implementing this in code, and what is the process to "train" a neural network?
 
@@ -21,7 +21,7 @@ Now, let's get back to that diagram above. In this diagram, each circle is a "ne
 
 Let's take a look at a much simpler network. Here's a network that can calculate the logical AND function:
 
-{% include image.html path="nnvis1/and_small.png" path-detail="nnvis1/and.png" alt="AND Network" %}
+<img src="../assets/nnvis1/and_small.png" alt="AND Network">
 
 In this case, we'll say that our activation function is a step function - if the input to the neuron is greater than 0.5, it will output 1, otherwise it will output 0. Step functions aren't very useful for doing more complicated things with neural networks, but they're easy to reason about, so I'll use them for most of the examples in this post.
 
@@ -29,7 +29,7 @@ If both of our inputs are 1, both of the input neurons are activated. Since both
 
 It's pretty trivial to take this kind of network and apply it to OR instead of AND. We just need to change a few weights:
 
-{% include image.html path="nnvis1/or_small.png" path-detail="nnvis1/or.png" alt="OR Network" %}
+<img src="../assets/nnvis1/or_small.png" alt="OR Network">
 
 Now if either input neruon is activated, the output will be activated.
 
@@ -48,7 +48,7 @@ Think for a bit about how you would implement XOR with a system like this. As a 
 
 To make a neural network that can learn XOR, we'll need to add a new layer. This layer is called a "hidden" layer, since it's only used in the intermediate calculation, instead of being the input or the output.
 
-{% include image.html path="nnvis1/xor_small.jpg" path-detail="nnvis1/xor.jpg" alt="XOR Network" %}
+<img src="../assets/nnvis1/xor_small.jpg" alt="XOR Network">
 
 The way that this works is pretty simple - if just one of the inputs is 1, it will go through the hidden neuron and add 1 to the output. However, if both inputs are true, the hidden neuron in the center gets activated, which subtracts two from the output, leaving it at zero.
 
@@ -72,7 +72,7 @@ In our examples so far, we've always wanted to have an input of zero result in a
 
 A topic that I didn't get into in this post is how to find the weights for the connections. While manually finding weights works for simple logical functions, it quickly becomes impossible with hundreds or thousands of neurons. Luckily, there are many ways to automatically train neural networks, which I'll discuss in future posts.
 
-{% include image.html path="nnvis1/animation.gif" path-detail="nnvis1/animation.gif" alt="XOR Perceptron Animation" %}
+<img src="../assets/nnvis1/animation.gif" alt="XOR Perceptron Animation">
 
 ##### Implementation
 

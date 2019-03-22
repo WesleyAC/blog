@@ -29,11 +29,11 @@ That just makes a circle with a user-definable radius.
 
 Here's an example of a real application of this technique being used to generate a model of a [quadrature encoder](https://en.wikipedia.org/wiki/Rotary_encoder):
 
-{% include image.html path="psvg/encoder.svg" path-detail="psvg/encoder.svg" alt="A parametric Quadrature Encoder" %}
+<img src="../assets/psvg/encoder.svg" alt="A parametric Quadrature Encoder">
 
 And by changing just a few lines of code, I can get this:
 
-{% include image.html path="psvg/encoder32.svg" path-detail="psvg/encoder32.svg" alt="A parametric Quadrature Encoder with more resolution" %}
+<img src="../assets/psvg/encoder32.svg" alt="A parametric Quadrature Encoder with more resolution">
 
 The code for this is [on github](https://github.com/WesleyAC/toybox/blob/master/pcad/encoder.svg?short_path=ffab2e8), if you want to make some encoders yourself :)
 

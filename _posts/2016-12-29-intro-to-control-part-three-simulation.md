@@ -29,7 +29,7 @@ This is the simulation from part one - this is rather easy to model, since it is
 
 First, let's make a [free body diagram](https://en.wikipedia.org/wiki/Free_body_diagram) to help understand the situation! Here's a FBD for full force upwards, applying no force, and full force downwards:
 
-{% include image.html path="control3/fbd.jpg" path-detail="control3/fbd.jpg" alt="Free body diagram" %}
+<img src="../assets/control3/fbd.jpg" alt="Free body diagram">
 
 Here, \\(F\_{g}\\) is the force of gravity, \\(F\_{c}\\) is the control force that we are applying, and \\(F\_{f}\\) is the force due to friction. I will use \\( m \\) as the mass of the elevator. Using these numbers, we can describe the system with the following equation:
 

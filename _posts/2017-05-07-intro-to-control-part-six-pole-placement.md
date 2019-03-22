@@ -8,7 +8,7 @@ In [Part 4]({% post_url 2016-12-30-intro-to-control-part-four-state-space %}), I
 
 For this post, I'm going to use an example system that I haven't talked about before - A mass on a spring:
 
-{% include image.html path="control6/massspring.jpg" path-detail="control6/massspring.jpg" alt="A simple mass on a spring. Image Credit: University of Southern Queensland" %}
+<img src="../assets/control6/massspring.jpg" alt="A simple mass on a spring. Image Credit: University of Southern Queensland">
 
 If we call \\(p\\) the position of the cart (we use \\(p\\) instead of \\(x\\), since \\(x\\) is the entire state once we're using a state space representation), then we find that the following equation describes how the cart will move:
 
@@ -44,13 +44,13 @@ The way that I like to think about this is that each number in the matrix is ask
 
 For the sake of this post, I'll pick some arbitrary values for \\(m\\), \\(k\\), and \\(c\\): \\(m = 1 \text{kg}\\), \\(k = 0.4 \text{N/m}\\), \\(c = 0.3 \text{N/m/s}\\). Running a simulation of this system, starting at a position of 1 meter, we get the following response:
 
-{% include image.html path="control6/openloopresponse.png" path-detail="control6/openloopresponse.png" alt="Open loop response of mass on spring system" %}
+<img src="../assets/control6/openloopresponse.png" alt="Open loop response of mass on spring system">
 
 Notice that this plot shows two things happening - the position is oscillating, but also decreasing. There's actually a way to quantify how much the system will oscillate and how quickly it will converge to zero (if it does at all!). In order to see how a system will act, we look at the "poles" of the system. In order to understand what the poles of a system mean, we need to take a quick detour into linear algebra.
 
 Our matrix \\(A\\) is actually a [linear transformation](https://en.wikipedia.org/wiki/Linear_map). That means that if we multiply a vector by \\(A\\), we will get out a new, transformed vector. Multiplication and addition are preserved, such that \\( A(x \times 5) = (Ax) \times 5 \\) and \\( A(x\_1 + x_2) = Ax\_1 + Ax\_2 \\). When you look at \\(A\\) as a linear transformation, you'll see that some vectors don't change direction when you apply the transform to them:
 
-{% include image.html path="control6/eigenvectors.gif" path-detail="control6/eigenvectors.gif" alt="Eigenvector animation. Image Credit: Wikipedia" %}
+<img src="../assets/control6/eigenvectors.gif" alt="Eigenvector animation. Image Credit: Wikipedia">
 
 The vectors that don't change direction when transformed are called "eigenvectors". For this transform, the eigenvectors are the blue and pink arrows. Each eigenvector has an "eigenvalue", which is how much it stretches the vector by. In this example, the eigenvalue of the blue vectors is 3 and the eigenvalue of the pink vectors is 1.
 
@@ -71,7 +71,7 @@ Why is this the case? Well, as it turns out, the derivative of a specific state 
 
 That explains real eigenvalues, but what about imaginary eigenvalues? Let's imagine a system that has two poles, at \\(0+0.1i\\) and \\(0-0.1i\\). Since this system has a real component of zero, it will be marginally stable, but since it has an imaginary component, it will oscillate. Here's a way of visualizing this system:
 
-{% include image.html path="control6/oscillatingsystem.gif" path-detail="control6/oscillatingsystem.gif" alt="Oscillating system animation." %}
+<img src="../assets/control6/oscillatingsystem.gif" alt="Oscillating system animation.">
 
 The blue vector is the position of the system. The red vectors are the different components of that position (the sum of the red vectors will equal the blue vector). The green vectors are the time derivatives of the red vectors. As you can see, the eigenvalue being imaginary causes each component of the position to be imaginary, but since there is always a pair of imaginary poles of the same magnitude but different signs, the actual position will always be real.
 
@@ -111,7 +111,7 @@ So our K matrix is:
 
 And running a simulation of the system with that K matrix gives us:
 
-{% include image.html path="control6/closedloopresponse.png" path-detail="control6/closedloopresponse.png" alt="Closed loop response of mass on spring system" %}
+<img src="../assets/control6/closedloopresponse.png" alt="Closed loop response of mass on spring system">
 
 Much better! It converges in under five seconds with no oscillation, compared with >30 seconds with lots of oscillations for the open-loop response. But wait, if we can place the poles _anywhere_ we want, and the more negative they are the faster the response, why not just place them as far negative as possible? Why not place them at -100 or -1000 or -100000? For that matter, why do we ever _want_ our system to oscillate, if we can just make the imaginary part of the poles zero? Well, the answer is that you can make the system converge as fast as you want, so long as you have enough energy that you can actually apply to the system. In real life, the motors and actuators that are limited in the amount of force that they can apply. We ignore this in the state-space model, since it makes the system non-linear, but it's something that you need to keep in mind when designing a controller. This is also the reason that you might want some oscillation - oscillation will make you reach your target faster than you would otherwise. Sometimes, getting to the target fast is more important than not oscillating much.
 
