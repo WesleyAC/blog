@@ -26,14 +26,11 @@ defaults:
     values:
       layout: articles_by_tag
 exclude:
-  - .travis.yml
   - bin/*
-  - circle.yml
   - Gemfile
   - Gemfile.lock
   - README.md
   - TODO.md
-  - vendor/
 gems:
   - jekyll-assets
 permalink: posts/:slug
