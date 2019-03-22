@@ -1,9 +1,6 @@
 # Mandatory settings
 
 name: Wesley Aptekar-Cassels
-paginate: 10
-paginate_path: "/all/page/:num/"
-#url: # add site url http://example.com/
 
 markdown: redcarpet
 redcarpet:
@@ -51,6 +48,5 @@ exclude:
   - vendor/
 gems:
   - jekyll-assets
-  - jekyll-paginate
   - jekyll-sitemap
 permalink: posts/:slug
