@@ -43,6 +43,9 @@ function control(x, goal) {
 
 Here's a simulation of that! The gray box is the elevator, and the green line is the goal. Press "Run!" to run the simulation! You can edit the code to see what happens in different situations. Press "Run!" again to restart the simulation with the new code.
 
+<script>{% include projects/control1/fabric.js %}</script>
+{% include projects/control1/style.html %}
+
 {% include projects/control1/demo.html id="0" defaulttext=
 "function control(x, goal) {
   return 1.0;

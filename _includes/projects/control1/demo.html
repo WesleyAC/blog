@@ -1,51 +1,17 @@
-<style>
-#canvas-div-{{ include.id }} {
-  float: left;
-  width: 200px;
-}
-
-#text-div-{{ include.id }} {
-  height: 200px;
-  width: auto;
-  margin-left: 210px;
-}
-
-#text-{{ include.id }} {
-  height: 200px;
-  border: 3px solid #cccccc;
-  padding: 5px;
-  font-family: monospace;
-  width: 100%;
-}
-
-#goal-{{ include.id }} {
-  clear: none;
-  float: right;
-  width: 50px;
-}
-
-.clear-col {
-  clear: both;
-}
-</style>
-
 <div>
-  <div id="canvas-div-{{ include.id }}">
+  <div id="canvas-div-{{ include.id }}" class="canvas-outer">
     <canvas id="canvas-{{ include.id }}"></canvas>
   </div>
-  <div id="text-div-{{ include.id }}">
-    <textarea id="text-{{ include.id }}">{{ include.defaulttext }}</textarea>
+  <div id="text-div-{{ include.id }}" class="text-outer">
+    <textarea id="text-{{ include.id }}" class="control-textarea">{{ include.defaulttext }}</textarea>
     <button onclick="ns{{ include.id }}.updateFunction()">Run!</button>
     <div style="clear:none;float:right">Goal</div>
-    <input id="goal-{{ include.id }}" type="number" value="5"></input>
+    <input id="goal-{{ include.id }}" class="goal-input" type="number" value="5"></input>
   </div>
   <div class="clear-col"></div>
 </div>
 
-<script>{% include projects/control1/fabric.js %}</script>
-
 <script>
-
 function sign(number) {
   return number?number<0?-1:1:0
 }
