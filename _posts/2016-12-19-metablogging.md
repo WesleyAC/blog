@@ -6,7 +6,7 @@ tags: [meta]
 ---
 Two and a half years ago I started blogging. I set up a wordpress site on an old (and I mean _old_) dell machine running in my closet, and started writing posts.
 
-Fast forward to today - I found an archive of my old posts, and decided that it's time to start blogging again :heart:
+Fast forward to today - I found an archive of my old posts, and decided that it's time to start blogging again ❤️
 
 There's a few reasons that I decided to start up again:
 

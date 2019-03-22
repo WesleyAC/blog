@@ -7,7 +7,7 @@ tags: [control, robotics, bestof]
 ---
 I've decided to start a series of posts on [Control Theory](https://en.wikipedia.org/wiki/Control_theory)! Here's why:
 
-* Control Theory is really cool, but there aren't many resources available on the internet to learn it :cry:
+* Control Theory is really cool, but there aren't many resources available on the internet to learn it 😢
 * I know a bit about control theory through FRC, and I want to spread that knowledge to others
 * I haven't done the actual code for a lot of this yet, but I want to have an excuse to write it!
 

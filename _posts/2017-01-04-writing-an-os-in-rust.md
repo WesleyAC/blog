@@ -35,4 +35,4 @@ Here are my notes from the process:
 * I like how many options there are with where to go - if I get tired of working on memory, I can just switch over to the keyboard driver, or to making the printing API nicer.
 * Good tutorials take OS development for "wow, only wizards must be able to do that" to "wow, os development is so much fun!". I can't stress enough how good intermezzOS is. Philipp Oppermann's tutorial goes more in depth but there's less explanation on the why. Still, both great tutorials.
 
-If you'd like to check out what I have so far, [here](https://github.com/WesleyAC/subatomic/) it is! The code's pretty bad, since it's my first major Rust project, and it doesn't do much, but I'm proud of it nonetheless :blush:.
+If you'd like to check out what I have so far, [here](https://github.com/WesleyAC/subatomic/) it is! The code's pretty bad, since it's my first major Rust project, and it doesn't do much, but I'm proud of it nonetheless 😊.

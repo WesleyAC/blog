@@ -25,7 +25,7 @@ I figured that it would be easy, but I didn't expect it to be nearly as easy as 
 :End
 ```
 
-`[F]` is the state, and `[E]` is the K-matrix (because TI-Basic doesn't let you use letters higher than J for matrices :cry:).
+`[F]` is the state, and `[E]` is the K-matrix (because TI-Basic doesn't let you use letters higher than J for matrices 😢).
 
 Once the program is done running, the timestep and \\(x\_{1,1}\\) values are in L1 and L2, and can be graphed via statplot.
 
