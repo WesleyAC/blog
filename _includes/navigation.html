@@ -1,17 +1,10 @@
 <nav class="header-nav">
   <a href="{{ '/' | relative_url }}" class="header-logo" title="{{ site.name }}">{{ site.name }}</a>
   <ul class="header-links">
-    {% if site.social.github %}
+    {% if site.rss_enabled == true %}
       <li>
-        <a href="https://github.com/{{ site.social.github }}" target="_blank" title="GitHub">
-          <div style="width:18px">{% include icons/ion-social-github.svg %}</div>
-        </a>
-      </li>
-    {% endif %}
-    {% if site.social.twitter%}
-      <li>
-        <a href="https://twitter.com/{{ site.social.twitter }}" target="_blank" title="Twitter">
-          <div style="width:18px">{% include icons/ion-social-twitter.svg %}</div>
+        <a href="{{ 'feed.xml' | relative_url }}" target="_blank" title="RSS">
+          <div style="width:16px">{% include icons/ion-social-rss.svg %}</div>
         </a>
       </li>
     {% endif %}
@@ -22,10 +15,17 @@
         </a>
       </li>
     {% endif %}
-    {% if site.rss_enabled == true %}
+    {% if site.social.twitter%}
       <li>
-        <a href="{{ 'feed.xml' | relative_url }}" target="_blank" title="RSS">
-          <div style="width:16px">{% include icons/ion-social-rss.svg %}</div>
+        <a href="https://twitter.com/{{ site.social.twitter }}" target="_blank" title="Twitter">
+          <div style="width:18px">{% include icons/ion-social-twitter.svg %}</div>
+        </a>
+      </li>
+    {% endif %}
+    {% if site.social.github %}
+      <li>
+        <a href="https://github.com/{{ site.social.github }}" target="_blank" title="GitHub">
+          <div style="width:18px">{% include icons/ion-social-github.svg %}</div>
         </a>
       </li>
     {% endif %}
