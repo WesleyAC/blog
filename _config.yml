@@ -26,8 +26,8 @@ coffeelocation: NYC
 
 assets:
   compress:
-    css: true
-    js: true
+    css: false
+    js: false
   sources:
     - _assets/fonts
     - _assets/stylesheets
