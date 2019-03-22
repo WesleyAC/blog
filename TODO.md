@@ -7,6 +7,7 @@
 * Audit for unnecessary external JS
 * Switch away from Google Fonts
 * Switch away from Google Analytics
+* Hide old posts
 
 # Notes on switching away from Jekyll
 
