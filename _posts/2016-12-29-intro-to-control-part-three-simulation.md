@@ -57,11 +57,11 @@ Thus we can simulate our elevator's acceleration (and thus it's velocity and pos
 
 We can easily translate this into code as well:
 
-{% highlight javascript %}
+```javascript
 function setForce(force){
   this.elevator.xddot = (force / this.elevator.mass) - (this.elevator.ff / this.elevator.mass * this.elevator.xdot) - this.elevator.fg;
 },
-{% endhighlight %}
+```
 
 This is exactly the code that was used in the previous two posts to do the simulation!
 

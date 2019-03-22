@@ -132,7 +132,7 @@ At the beginning of this, I said that we use state space models because there ar
 
 We're going to simulate running a Proportional-Derivative controller on our elevator using [GNU Octave](https://www.gnu.org/software/octave/) (A free and open-source MATLAB clone). You'll need to have octave installed in order to run this demo. You'll also need to install the "control" package for Octave - you can do this by opening Octave and typing `pkg install -forge control`. Once you've done that, click on the "editor" tab and paste in the following file:
 
-{% highlight matlab %}
+```matlab
 % Setup for simulation
 pkg load control
 times = 0:0.1:20;
@@ -158,7 +158,7 @@ elevatorClosedLoop = ss(A-B*K,B,C,D);
 
 % This simulates the system and plots it on the screen
 lsim(elevatorClosedLoop, 0*ones(size(times)), times, startingPosition);
-{% endhighlight %}
+```
 
 Now you can press F5 to run it, and a plot of position versus time should appear!
 

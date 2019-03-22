@@ -86,7 +86,7 @@ Now let's say that we can apply an arbitrary force \\(u\\) to the system. For th
 Now, let's design a controller that will stop there from being any oscillation, and drive the system to zero much more quickly. Remember, all "designing a controller" means in this case is finding a matrix \\(K\\), where setting \\( u = Kx \\) will cause the system to respond in the way that you want it to. How do we do this? Well, it turns out that it's actually fairly easy to place the poles of a system wherever you want. Since we want to have no oscillation, we'll make the imaginary part of the poles zero, and since we want a fast response time, we'll make the real part of the poles -2.5 (this is pretty arbitrary). We can use matlab/octave to find what our K matrix must be to have the poles of the closed loop system be at -2.5:
 
 
-{% highlight matlab %}
+```matlab
 pkg load control
 
 A = [0 1;
@@ -95,7 +95,7 @@ B = [0;
      1/1];
 
 place(A, B, [-2.5 -2.5])
-{% endhighlight %}
+```
 
 Which gives us the output:
 

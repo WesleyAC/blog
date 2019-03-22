@@ -22,24 +22,24 @@ For this example, we'll look at controlling an elevator. Here's what the situati
 
 How do you get the elevator to go to a specific location? Let's think about writing some code. (I'm using javascript, but the concepts should be clear):
 
-{% highlight javascript %}
+```javascript
 // Function to control our elevator. Returns a
 // value from -1.0 to 1.0, depending on what
 // force you want to apply to the elevator.
 function control(x, goal) {
   // We'll need to do *something* here
 }
-{% endhighlight %}
+```
 
 Imagine that our control function will get called in a loop, with updated x and goal values being passed in every time it's called.
 
 Let's try something!
 
-{% highlight javascript %}
+```javascript
 function control(x, goal) {
   return 1.0;
 }
-{% endhighlight %}
+```
 
 Here's a simulation of that! The gray box is the elevator, and the green line is the goal. Press "Run!" to run the simulation! You can edit the code to see what happens in different situations. Press "Run!" again to restart the simulation with the new code.
 
@@ -50,7 +50,7 @@ Here's a simulation of that! The gray box is the elevator, and the green line is
 
 Uh oh, our elevator keeps crashing into the ceiling! That's no good! We should probably take the `x` and `goal` values into account. Let's try again:
 
-{% highlight javascript %}
+```javascript
 function control(x, goal) {
   if (x < goal) {
     return 1.0;
@@ -60,7 +60,7 @@ function control(x, goal) {
     return 0.0;
   }
 }
-{% endhighlight %}
+```
 
 With this code, if the elevator is below it's goal, it goes up, and if it's higher than it's goal, it goes down! This is called "bang-bang" control.
 
@@ -99,13 +99,13 @@ The simplest way to fix the problems in bang-bang control is to change the amoun
 
 Here's what that might look like in code:
 
-{% highlight javascript %}
+```javascript
 function control(x, goal) {
   error = goal - x;
   p_gain = 0.3;
   return error * p_gain;
 }
-{% endhighlight %}
+```
 
 There's a few things going on here, so let's break it down:
 
@@ -169,7 +169,7 @@ This is basically the same as the formula from before, but with one addition:
 
 This means that we will subtract from the force that we are applying some value that is proportional to how fast the error is changing (that is, it's proportional to the derivative of the error). So how does this look in code? We can think of it as the amount that the error has changed since the last time `control()` was called. Here's how that looks in code:
 
-{% highlight javascript %}
+```javascript
 function control(x, goal) {
   p_gain = 0.6;
   d_gain = 2.5;
@@ -181,7 +181,7 @@ function control(x, goal) {
 
   return (error * p_gain) - (deriv * d_gain);
 }
-{% endhighlight %}
+```
 
 `this.getGlobal()` and `this.setGlobal()` are just an ugly way to have variables that persist across calls of the function and return zero instead of undefined. Also, notice that I've increased the `p_gain`. Since we now slow down when approaching the goal, we can afford to go faster on the proportional values.
 
@@ -212,7 +212,7 @@ Essentially, what we'll do in code is make a variable called `integral`, and eve
 
 Here's the code to actually do that:
 
-{% highlight javascript %}
+```javascript
 function control(x, goal) {
   p_gain = 0.4;
   d_gain = 6.5;
@@ -227,7 +227,7 @@ function control(x, goal) {
 
   return (error * p_gain) + (integral * i_gain) - (deriv * d_gain);
 }
-{% endhighlight %}
+```
 
 And here's the interactive version:
 

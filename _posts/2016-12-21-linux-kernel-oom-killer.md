@@ -14,10 +14,10 @@ I see from scrolling through it that [`oom_badness`](https://git.kernel.org/cgit
 
 Let's look at the function signature:
 
-{% highlight c %}
+```c
 unsigned long oom_badness(struct task_struct *p, struct mem_cgroup *memcg,
 			  const nodemask_t *nodemask, unsigned long totalpages)
-{% endhighlight %}
+```
 
 Here's what I get from this:
 
@@ -30,11 +30,11 @@ Here's what I get from this:
 
 Next we, create a couple of variables:
 
-{% highlight c %}
+```c
 {
 	long points;
 	long adj;
-{% endhighlight %}
+```
 
 `points` keeps track of the number of 'badness points' that this task has - this value is what we will end up returning
 
@@ -75,35 +75,35 @@ So presumably this value will contain something relating the adjustment value!
 
 Let's continue:
 
-{% highlight c %}
+```c
 	if (oom_unkillable_task(p, memcg, nodemask))
 		return 0;
-{% endhighlight %}
+```
 
 Pretty simple - if it's unkillable, return zero (which makes sure that it won't be killed)
 
-{% highlight c %}
+```c
 	p = find_lock_task_mm(p);
-{% endhighlight %}
+```
 
 `find_lock_task_mm` will make sure that the task p has a `->mm` member, returning `NULL` if it can find any subthread with a valid `->mm`.
 
 Returning null causes us to mark the task not to be killed:
 
-{% highlight c %}
+```c
 	if (!p)
 		return 0;
-{% endhighlight %}
+```
 
 If we can find a subthread that has a valid `mm` member, we continue on:
 
-{% highlight c %}
+```c
 	/*
 	 * Do not even consider tasks which are explicitly marked oom
 	 * unkillable or have been already oom reaped or the are in
 	 * the middle of vfork
 	 */
-{% endhighlight %}
+```
 
 A few things to note here:
 
@@ -112,26 +112,26 @@ A few things to note here:
 
 Let's go on:
 
-{% highlight c %}
+```c
 	adj = (long)p->signal->oom_score_adj;
-{% endhighlight %}
+```
 
 And here we figure out exactly what `adj` represents! It is in fact the oom adjustment value that the man page talks about.
 
-{% highlight c %}
+```c
 	if (adj == OOM_SCORE_ADJ_MIN ||
 			test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
 			in_vfork(p)) {
 		task_unlock(p);
 		return 0;
 	}
-{% endhighlight %}
+```
 
 This if statement implements what the comment says it does - pretty simple. I'm not sure why `task_unlock()` is called in this case - it doesn't seem to have to do with anything in this if statement, but there it is!
 
 Moving on to the meat of the 'badness function', we have:
 
-{% highlight c %}
+```c
 	/*
 	 * The baseline for the badness score is the proportion of RAM that each
 	 * task's rss, pagetable and swap space use.
@@ -139,7 +139,7 @@ Moving on to the meat of the 'badness function', we have:
 	points = get_mm_rss(p->mm) + get_mm_counter(p->mm, MM_SWAPENTS) +
 		atomic_long_read(&p->mm->nr_ptes) + mm_nr_pmds(p->mm);
 	task_unlock(p);
-{% endhighlight %}
+```
 
 The line that sets `points` is pretty simple - the number of 'badness points' a process starts with is equal to the sum of three things:
 
@@ -153,14 +153,14 @@ Next, there's the `task_unlock()` line. This explains why there was a `task_unlo
 
 Let's look at the next part of the code:
 
-{% highlight c %}
+```c
 	/*
 	 * Root processes get 3% bonus, just like the __vm_enough_memory()
 	 * implementation used by LSMs.
 	 */
 	if (has_capability_noaudit(p, CAP_SYS_ADMIN))
 		points -= (points * 3) / 100;
-{% endhighlight %}
+```
 
 The "LSMs" that they refer to are, I think, [Linux Security Modules](https://en.wikipedia.org/wiki/Linux_Security_Modules).
 
@@ -168,7 +168,7 @@ This code simply makes processes run by root slightly less likely to be oom-kill
 
 Moving on, we apply the adjustment from `oom_score_adj`:
 
-{% highlight c %}
+```c
 	/* Normalize to oom_score_adj units */
 	adj *= totalpages / 1000;
 	points += adj;
@@ -179,7 +179,7 @@ Moving on, we apply the adjustment from `oom_score_adj`:
 	 */
 	return points > 0 ? points : 1;
 }
-{% endhighlight %}
+```
 
 The most complicated part of this is the `adj *= totalpages / 1000`. I think that the reason for the `totalpages` in this is that the values that we assigned to `points` previously were measured in actual memory usage, while the value of `oom_score_adj` is a static ±1000. This equation converts the value in adj to something that takes into consideration the total amount of RAM available.
 

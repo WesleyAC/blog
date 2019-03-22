@@ -15,7 +15,7 @@ There exist [various](https://github.com/t-oster/VisiCut/wiki/Parametric-SVG) [p
 
 So instead, I decided to roll my own. I'm using [Genshi](https://genshi.edgewall.org/) with a simple python script to edit parameters. Here's an example of what this looks like:
 
-{% highlight svg %}
+```svg
 <?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -23,7 +23,7 @@ So instead, I decided to roll my own. I'm using [Genshi](https://genshi.edgewall
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:py="http://genshi.edgewall.org/" width="100" height="100">
   <circle cx="50" cy="50" r="${radius}" stroke="black" stroke-width="1" fill="none" />
 </svg>
-{% endhighlight %}
+```
 
 That just makes a circle with a user-definable radius.
 

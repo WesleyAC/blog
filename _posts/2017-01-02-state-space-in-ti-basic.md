@@ -12,7 +12,7 @@ TI-Basic holds a special place in my heart - It's a terrible language on a terri
 
 I figured that it would be easy, but I didn't expect it to be nearly as easy as it was! Within 8 lines of TI-Basic, I'd put together a program to simulate a closed-loop state-space system:
 
-{% highlight tibasic %}
+```tibasic
 :ClrAllLists
 :
 :Input "DT> ",D
@@ -23,7 +23,7 @@ I figured that it would be easy, but I didn't expect it to be nearly as easy as 
 :I→L2(dim(L2)+1)
 :[F](1,1)→L1(dim(L1)+1)
 :End
-{% endhighlight %}
+```
 
 `[F]` is the state, and `[E]` is the K-matrix (because TI-Basic doesn't let you use letters higher than J for matrices :cry:).
 
