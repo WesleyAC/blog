@@ -29,7 +29,7 @@ Not only does this make our state space model accurate, it also eliminates the n
 
 So that's feedforward in a nutshell! It's often used for cancelling out the effects of gravity (or another force). Another example of cancelling out gravity is in a robot that I worked on on [Citrus Circuits](http://citruscircuits.org/) - Adrian:
 
-<img src="../assets/control5/adrian.jpg" alt="Adrian">
+<img src="../img/control5/adrian.jpg" alt="Adrian">
 
 Adrian had an arm that we wanted to rotate to a specific angle for shooting. Normally, this would be a non-linear system - The arm was being pulled down by gravity by different amounts depending on it's angle. We knew from modeling the system that the amount of force that was being applied would be proportional to the cosine of the angle of the arm, so we constantly would apply the voltage needed to keep the arm in position. This wasn't exactly feed-forward, since we needed to know where the arm was, but it's close enough that I lump it into the same category.
 
@@ -39,15 +39,15 @@ How can we fix this? Well, first, let's consider the integral term is getting so
 
 Now let's think about how changing the goal might help us - Here's what we've usually been doing:
 
-<img src="../assets/control5/graph1-small.jpg" alt="A graph showing position and goal">
+<img src="../img/control5/graph1-small.jpg" alt="A graph showing position and goal">
 
 In this graph, the dotted line is the goal and the solid line is the position. If you just look at the goal, it's clear that it's static over time:
 
-<img src="../assets/control5/graph2-small.jpg" alt="A graph showing a static goal">
+<img src="../img/control5/graph2-small.jpg" alt="A graph showing a static goal">
 
 What if instead of trying to jump right to the goal, we instead based it off what the system can actually do? That could look like this:
 
-<img src="../assets/control5/graph3-small.jpg" alt="A graph showing a goal that changes over time">
+<img src="../img/control5/graph3-small.jpg" alt="A graph showing a goal that changes over time">
 
 This is called "Motion Profiling", and it can really help make the response of our system! However, motion profiling gets even more powerful when you combine it with feed-forward. There are a few steps involved in this:
 
@@ -58,11 +58,11 @@ The profile that I most commonly use is what's called a "trapezoidal motion prof
 
 Here's what a graph of the target velocity could look like in a trapezoidal profile:
 
-<img src="../assets/control5/trap1.png" alt="Trap Motion 1">
+<img src="../img/control5/trap1.png" alt="Trap Motion 1">
 
 And here's what the position would look like for that profile:
 
-<img src="../assets/control5/trap2.png" alt="Trap Motion 2">
+<img src="../img/control5/trap2.png" alt="Trap Motion 2">
 
 (For completeness, [here's](https://gist.github.com/WesleyAC/861da6df9b172603536f8b01a9469e79) the script that I used to generate these graphs)
 

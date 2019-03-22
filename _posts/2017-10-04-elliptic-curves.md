@@ -38,13 +38,13 @@ For points on the curve, we can define the addition operation geometrically like
 
 > To add two points, \\(A\\) and \\(B\\), draw a line through points \\(A\\) and \\(B\\), and label the third intersection with the line and the curve \\(C\\). We define addition such that \\(A + B = -C\\).
 
-<img src="../assets/elliptic/elliptic_add.png" alt="Elliptic curve addition">
+<img src="../img/elliptic/elliptic_add.png" alt="Elliptic curve addition">
 
 One question that comes up with this approach is what happens if there is no point \\(C\\) on the curve? For example, if \\(B = -A\\), we will never have another point on the curve. For this case, we simple define a point \\(0\\) (often referred to as the "point at infinity"), and say that if there is no other point \\(C\\), then \\(A + B = 0\\). This also fits with our algebraic intuition of what 0 should be, since the only case where \\(A + B = 0\\) is when \\(B = -A\\).
 
 The other question that comes up is what should happen in the case that \\(A = B\\)? In this case, we simply take the line tangent to the curve at \\(A\\), and use that instead of the line going through \\(A\\) and \\(B\\).
 
-<img src="../assets/elliptic/elliptic_double.png" alt="Elliptic curve doubling">
+<img src="../img/elliptic/elliptic_double.png" alt="Elliptic curve doubling">
 
 In doing this, we also define multiplication of a point on a elliptic curve - Since \\(A + A = 2A\\), we can simply repeatedly add the same points in order to multiply by an arbitrary number. (There are more efficient algorithms than this[^3], but those are beyond the scope of this article)
 

@@ -38,27 +38,27 @@ Now, let's imagine how a system that uses this scheduler could go wrong.
 
 We'll have three tasks: one high priority task, one medium priority task, and one low priority task. We also have one shared resource, which can only be used by one task at a time:
 
-<img src="../assets/priority_inversion/1.jpg" alt="Priority inversion 1">
+<img src="../img/priority_inversion/1.jpg" alt="Priority inversion 1">
 
 Next, Task 3, which is low priority, will start to run and will acquire a lock on Resource 1, meaning that no other tasks can use it:
 
-<img src="../assets/priority_inversion/3.jpg" alt="Priority inversion 3">
+<img src="../img/priority_inversion/3.jpg" alt="Priority inversion 3">
 
 Next, Task 2, which is medium priority enters a section of the code that needs to be realtime (called a _critical section_). This pre-empts Task 1, but Task 1 **still has a lock on the resource**.
 
-<img src="../assets/priority_inversion/4.jpg" alt="Priority inversion 4">
+<img src="../img/priority_inversion/4.jpg" alt="Priority inversion 4">
 
 Now, Task 1 - the highest priority task in the system - enters a critical section which needs to use the resource. It can't use the resource, because Task 1 has a lock on the resource, and it can't pre-empt other tasks, because it needs the resource to run it's code! Task 3, the task that has the lock, can't do anything about this though, because it's being pre-empted by Task 2 :cry:
 
-<img src="../assets/priority_inversion/5.jpg" alt="Priority inversion 5">
+<img src="../img/priority_inversion/5.jpg" alt="Priority inversion 5">
 
 Finally, once Task 2 is done doing it's thing, Task 1 can resume running and finish with the resource:
 
-<img src="../assets/priority_inversion/6.jpg" alt="Priority inversion 6">
+<img src="../img/priority_inversion/6.jpg" alt="Priority inversion 6">
 
 And Task 1 can finally have the resource and run:
 
-<img src="../assets/priority_inversion/7.jpg" alt="Priority inversion 7">
+<img src="../img/priority_inversion/7.jpg" alt="Priority inversion 7">
 
 So that's how a high priority task can be blocked by a lower priority task that doesn't need a resource. This is one of the main problems with the scheduler that I've described (called "Fixed priority pre-emptive scheduling").
 

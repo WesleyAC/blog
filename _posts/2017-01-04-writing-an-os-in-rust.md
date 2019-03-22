@@ -8,7 +8,7 @@ Writing an OS is one of those projects that I've always kinda wanted to do, but 
 
 Well, now that I'm trying to learn [Rust](https://www.rust-lang.org/en-US/), I have a perfect excuse to write my own toy operating system. After around a day of programming, this post is about what I learned, and what I'm learning in the process.
 
-<img src="../assets/subatomic1/screenshot.png" alt="My operating system">
+<img src="../img/subatomic1/screenshot.png" alt="My operating system">
 
 First, why Rust for a toy operating system? There are a few reasons:
 

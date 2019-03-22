@@ -6,11 +6,11 @@ tags: [security, google]
 ---
 When you change your Google password, what happens? One would expect that your password gets updated, and everyone's happy.  The reality, however is quite different.  Google stores your old password, and updates your current password.  This allows them to do cool things like remind you that you just changed your password if you type in your old one.
 
-<img src="../assets/google-cool.png" alt="Google being cool">
+<img src="../img/google-cool.png" alt="Google being cool">
 
 And not-so-cool things like keeping your password for ever and ever:
 
-<img src="../assets/google-data-security.png" alt="Google being Google">
+<img src="../img/google-data-security.png" alt="Google being Google">
 
 Not only do they keep a record of your last password, but they also keep a record of every password you've ever had.
 

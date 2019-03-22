@@ -6,7 +6,7 @@ tags: [control]
 ---
 TI-Basic holds a special place in my heart - It's a terrible language on a terrible device, but I have fond memories of wasting time in my Algebra II/Trig class programming 2048, so that I could wast time in class doing something more fun than programming in TI-Basic! Recently, I remembered that my TI-84 supports matrices, and figured that it should be possible to get a [state-space simulation]({% post_url 2016-12-30-intro-to-control-part-four-state-space %}) up and running on it pretty quickly.
 
-<img src="../assets/tiss/graph-small.jpg" alt="Graph">
+<img src="../img/tiss/graph-small.jpg" alt="Graph">
 
 (As an aside, that graph is the exact same thing as the matlab code from part four)
 

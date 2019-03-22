@@ -162,6 +162,6 @@ lsim(elevatorClosedLoop, 0*ones(size(times)), times, startingPosition);
 
 Now you can press F5 to run it, and a plot of position versus time should appear!
 
-<img src="../assets/control4/graph.png" path-detail="control4/graph.png" alt="Graph of elevator position versus time">
+<img src="../img/control4/graph.png" path-detail="control4/graph.png" alt="Graph of elevator position versus time">
 
 This is just barely scratching the surface of what you can do with a state space model - but for now, just know that there are a ton of tools out there that let you do really cool things with state space models.

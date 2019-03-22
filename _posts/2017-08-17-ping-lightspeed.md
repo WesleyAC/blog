@@ -75,7 +75,7 @@ Interestingly, the fastest one of these is Denver to Chicago, which goes at 154.
 
 Overall, the thing that surprised me the most about this was how consistent the timing was:
 
-<img src="../assets/pingspeed/hist_lightspeed.png" alt="Histogram of ping speeds">
+<img src="../img/pingspeed/hist_lightspeed.png" alt="Histogram of ping speeds">
 
 I now have a much better intuition for how fast packets travel, and I hope that this was enlightening for others as well!
 

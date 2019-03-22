@@ -8,7 +8,7 @@ In [part one]({% post_url 2016-12-20-intro-to-control-part-one-pid %}) of my ser
 
 In this case, we'll continue to use the example of an elevator, but we'll make it a specific elevator - the elevator on [1678](http://www.citruscircuits.org/)'s world champion 2015 robot - Lemon Drop:
 
-<img src="../assets/control2/lemondrop.png" alt="Lemon Drop">
+<img src="../img/control2/lemondrop.png" alt="Lemon Drop">
 
 Lemon Drop's elevator had a travel of around 1.3 meters, and was powered by [2 MiniCIM](http://motors.vex.com/mini-cim-motor) motors with a 10:1 gear ratio.
 
@@ -67,7 +67,7 @@ Note that not all systems will need I or D! In general, systems with a lot of fr
 
 Here's an example of how changing PID parameters effects the response of the system:
 
-<img src="../assets/control2/tuning.gif" alt="PID Tuning">
+<img src="../img/control2/tuning.gif" alt="PID Tuning">
 
 Here's an interactive demo! This is based on the elevator example from the previous post. Choose the PID values that you want, and the graph of position over time is instantly updated!
 
