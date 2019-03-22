@@ -4,7 +4,7 @@ title: "Intro to Control Theory Part Two: PID tuning"
 discription: Basics of PID tuning, a note about units, and another interactive demo
 tags: [control, robotics, bestof]
 ---
-In [part one]({% post_url 2016-12-20-intro-to-control-part-one-pid %}) of my series on control theory, I briefly mentioned PID tuning. PID tuning is the process of finding gains for your PID loop that provide a response that's good enough. There are many different ways to tune a PID loop, but before we go into them, let's talk about what the values that we're changing actually represent!
+In [part one](/posts/intro-to-control-part-one-pid) of my series on control theory, I briefly mentioned PID tuning. PID tuning is the process of finding gains for your PID loop that provide a response that's good enough. There are many different ways to tune a PID loop, but before we go into them, let's talk about what the values that we're changing actually represent!
 
 In this case, we'll continue to use the example of an elevator, but we'll make it a specific elevator - the elevator on [1678](http://www.citruscircuits.org/)'s world champion 2015 robot - Lemon Drop:
 

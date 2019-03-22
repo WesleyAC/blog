@@ -50,7 +50,7 @@ The first step in programming the robot was to determine the orientation of the 
 
 Once I knew the angle, I found the offset that the robot would need to be able to be at to balance (theoretically this would be \\(\frac{\pi}{2}\\) radians, but since the center of gravity is not exactly in the middle, it's slightly different.
 
-Once I knew the error from the target angle, I designed a simple [proportional-derivative]({% post_url 2016-12-20-intro-to-control-part-one-pid %}) controller to keep the bot upright. While this worked, there are many improvements that could be made:
+Once I knew the error from the target angle, I designed a simple [proportional-derivative](/posts/intro-to-control-part-one-pid) controller to keep the bot upright. While this worked, there are many improvements that could be made:
 
 * The bot could automatically detect it's center of gravity
 * I could use [LQR](https://en.wikipedia.org/wiki/Linear-quadratic_regulator) instead of PID

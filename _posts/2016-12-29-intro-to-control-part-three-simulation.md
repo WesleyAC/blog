@@ -16,7 +16,7 @@ There are basically two steps:
 1. Create a model of your system
 2. Run your code on that model
 
-It can be hard to know where to start on modeling your system though. Because of that, we'll go through the process of modeling simple elevator from [Part 1]({% post_url 2016-12-20-intro-to-control-part-one-pid %}).
+It can be hard to know where to start on modeling your system though. Because of that, we'll go through the process of modeling simple elevator from [Part 1](/posts/intro-to-control-part-one-pid).
 
 Let's get right into it!
 

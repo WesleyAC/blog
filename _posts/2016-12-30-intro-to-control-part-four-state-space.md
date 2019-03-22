@@ -7,7 +7,7 @@ tags: [control, robotics]
 ---
 _Note: This post will use matrix math pretty extensivly. If you haven't taken a linear algebra class, I'd recommend watching these three videos first: [1](https://www.youtube.com/watch?v=xyAuNHPsq-g) [2](https://www.youtube.com/watch?v=aKhhYguY0DQ) [3](https://www.youtube.com/watch?v=OAh573i_qn8)_
 
-In [Part 3]({% post_url 2016-12-29-intro-to-control-part-three-simulation %}), we covered creating a mathematical model of our system. This is very useful, since it allows us to simulate our system on a computer before we run our controller on a real system. As you find models for more and more systems, you'll realize that they all are basically the same sorts of things - you'll have your differential equation (or equations) which describe how the variables change. It doesn't matter if you're controlling a elevator, a robot, a helicopter, or a self driving car, you can describe them all with a series of differential equations. As a reminder, here's the equation that we got from Part 3:
+In [Part 3](/posts/intro-to-control-part-three-simulation), we covered creating a mathematical model of our system. This is very useful, since it allows us to simulate our system on a computer before we run our controller on a real system. As you find models for more and more systems, you'll realize that they all are basically the same sorts of things - you'll have your differential equation (or equations) which describe how the variables change. It doesn't matter if you're controlling a elevator, a robot, a helicopter, or a self driving car, you can describe them all with a series of differential equations. As a reminder, here's the equation that we got from Part 3:
 
 \\[ \ddot{x} = \frac{u}{m} - \frac{d}{m} \times \dot{x} - A\_{g} \\]
 

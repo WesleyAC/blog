@@ -14,12 +14,12 @@ I've decided to start a series of posts on [Control Theory](https://en.wikipedia
 Here's the index of things that I want to write eventually. I may not do them all, and won't do them in this order:
 
 * Part Zero: Index (This post!)
-* [Part 1: PID]({% post_url 2016-12-20-intro-to-control-part-one-pid %})
-* [Part 2: PID Tuning]({% post_url 2016-12-22-intro-to-control-part-two-pid-tuning %})
-* [Part 3: Simulation]({% post_url 2016-12-29-intro-to-control-part-three-simulation %})
-* [Part 4: State Space]({% post_url 2016-12-30-intro-to-control-part-four-state-space %})
-* [Part 5: Feed Forward and Motion Profiling]({% post_url 2017-01-02-intro-to-control-part-five-feedforward-motion-profiling %})
-* [Part 6: Pole Placement]({% post_url 2017-05-07-intro-to-control-part-six-pole-placement %})
+* [Part 1: PID](/posts/intro-to-control-part-one-pid)
+* [Part 2: PID Tuning](/posts/intro-to-control-part-two-pid-tuning)
+* [Part 3: Simulation](/posts/intro-to-control-part-three-simulation)
+* [Part 4: State Space](/posts/intro-to-control-part-four-state-space)
+* [Part 5: Feed Forward and Motion Profiling](/posts/intro-to-control-part-five-feedforward-motion-profiling)
+* [Part 6: Pole Placement](/posts/intro-to-control-part-six-pole-placement)
 * Motor Models
 * Example Systems/System Modeling
 * State Space Observer

@@ -4,7 +4,7 @@ title: "Intro to Control Theory Part 6: Pole Placement"
 description: Designing State-Space controllers
 tags: [control, robotics]
 ---
-In [Part 4]({% post_url 2016-12-30-intro-to-control-part-four-state-space %}), I covered how to make a state-space model of a system to make running simulations easy. In this post, I'll talk about how to use that model to make a controller for our system.
+In [Part 4](/posts/intro-to-control-part-four-state-space), I covered how to make a state-space model of a system to make running simulations easy. In this post, I'll talk about how to use that model to make a controller for our system.
 
 For this post, I'm going to use an example system that I haven't talked about before - A mass on a spring:
 

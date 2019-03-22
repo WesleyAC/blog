@@ -256,4 +256,4 @@ This makes it reach zero, but it also introduces a new problem - once we are at 
 
 In general, PID controllers tend to be a good way to control many types of systems, from physical systems like this elevator or a self driving car, to chemical systems! There are many more powerful techniques than PID available (and many ways to improve upon PID), but PID is a great introduction to control theory, and a good tool to have available.
 
-That's all for now! I hope that you found this helpful, and if you liked it, check out my [index of control theory posts]({% post_url 2016-12-20-intro-to-control-part-zero-whats-this %})!
+That's all for now! I hope that you found this helpful, and if you liked it, check out my [index of control theory posts](/posts/intro-to-control-part-zero-whats-this)!
