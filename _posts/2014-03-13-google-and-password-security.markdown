@@ -3,6 +3,7 @@ layout: post
 title: Google and Password Security
 description: What Google keeping around old password hashes means for security
 tags: [security, google]
+hide: true
 ---
 When you change your Google password, what happens? One would expect that your password gets updated, and everyone's happy.  The reality, however is quite different.  Google stores your old password, and updates your current password.  This allows them to do cool things like remind you that you just changed your password if you type in your old one.
 

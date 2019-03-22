@@ -5,6 +5,7 @@ layout: default
 {% if site.tags[page.slug] %}
   <ul class="article-list">
     {% for post in site.tags[page.slug] %}
+    {% if post.hide != true %}
       <li class="article-list-item">
         <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
           <h5>{{ post.title }}</h5>
@@ -20,6 +21,7 @@ layout: default
           {% endfor %}
         </div>
       </li>
+    {% endif %}
     {% endfor %}
   </ul>
 {% else %}

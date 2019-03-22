@@ -3,6 +3,7 @@ layout: post
 title: 'Vim and Emacs: Inherent vs. Emergent Complexity'
 description: Time for some editor wars...
 tags: [vim,emacs]
+hide: true
 ---
 Chances are that if you use vim or emacs that you think that $EDITOR is the one true editor, and you pity other poor, misguided souls who use anything else.
 

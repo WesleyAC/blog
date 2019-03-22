@@ -3,6 +3,7 @@ layout: post
 title: Always-Secure Password
 description: A theoretical system for entering a password on a compromised system
 tags: [security]
+hide: true
 ---
 <p>Recently, I was thinking about how to make a password that is secure,no matter where you enter it.  The idea is to make a password that I can enter on someone else's computer, and have them not be able to log in, even if they have a keylogger (Or some other way to see your password.).</p>
 <p>Think about that for a bit...</p>

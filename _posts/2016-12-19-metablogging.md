@@ -3,6 +3,7 @@ layout: post
 title: Metablogging
 description: After almost two and a half years, I'm back to blogging!
 tags: [meta]
+hide: true
 ---
 Two and a half years ago I started blogging. I set up a wordpress site on an old (and I mean _old_) dell machine running in my closet, and started writing posts.
 

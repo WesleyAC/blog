@@ -16,6 +16,7 @@ description: "Main page"
 
 <ul class="article-list">
   {% for post in site.posts %}
+  {% if post.hide != true %}
     <li class="article-list-item">
       <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
         <h5>
@@ -36,5 +37,6 @@ description: "Main page"
         </div>
       </div>
     </li>
+  {% endif %}
   {% endfor %}
 </ul>

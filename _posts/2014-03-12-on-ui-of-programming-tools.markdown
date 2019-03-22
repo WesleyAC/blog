@@ -3,6 +3,7 @@ layout: post
 title: On UI of programming tools
 description: My thoughts on where programming tools are going in the next 100 years
 tags: [vim, linux, ui]
+hide: true
 ---
 Recently, I've been thinking about UI. [Ina talk at Caltech](http://ee2.caltech.edu/centennial/video/19_mead/flash/19_mead.html), Carver Mead said:
 

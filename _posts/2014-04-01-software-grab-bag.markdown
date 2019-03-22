@@ -3,6 +3,7 @@ layout: post
 title: Software Grab Bag
 description: A list of cool software that I've found recently
 tags: [linux, software]
+hide: true
 ---
 <p>I've been discovering some new and awesome software recently.  Here's my grab bag of awesome software that I've found in the past year or so.</p>
 <h2><a href="http://www.zsh.org/">zsh</a></h2>
