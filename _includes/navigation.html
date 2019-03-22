@@ -8,6 +8,13 @@
         </a>
       </li>
     {% endif %}
+    {% if site.social.twitter%}
+      <li>
+        <a href="https://twitter.com/{{ site.social.twitter }}" target="_blank" title="Twitter">
+          <div style="width:18px">{% include icons/ion-social-twitter.svg %}</div>
+        </a>
+      </li>
+    {% endif %}
     {% if site.social.email %}
       <li>
         <a href="mailto:{{ site.social.email }}" target="_blank" title="Email">
