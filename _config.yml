@@ -4,9 +4,6 @@ markdown: redcarpet
 redcarpet:
   extensions: ["footnotes", "tables"]
 
-ga_analytics: UA-89690189-1
-email: me@wesleyac.com
-
 assets:
   compress:
     css: true
