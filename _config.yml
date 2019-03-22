@@ -1,17 +1,11 @@
-# Mandatory settings
-
 name: Wesley Aptekar-Cassels
 
 markdown: redcarpet
 redcarpet:
   extensions: ["footnotes", "tables"]
 
-# Optional settings
-
 ga_analytics: UA-89690189-1
 email: me@wesleyac.com
-
-# Important settings (change at own risk)
 
 assets:
   compress:
