@@ -114,13 +114,6 @@
   text-align: center;
 }
 
-// Paginator
-// =============================================================================
-
-.article-pagination-right {
-  float: right;
-}
-
 // Article page
 // =============================================================================
 
@@ -160,12 +153,6 @@
   }
   blockquote p {
     margin-bottom: 0;
-  }
-  img.emoji {
-    display: inline-block;
-    margin-top: -4px;
-    margin-bottom: 0;
-    vertical-align: middle;
   }
 }
 
