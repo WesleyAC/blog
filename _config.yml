@@ -44,5 +44,4 @@ exclude:
   - vendor/
 gems:
   - jekyll-assets
-  - jekyll-sitemap
 permalink: posts/:slug
