@@ -15,8 +15,7 @@ email: me@wesleyac.com
 
 assets:
   compress:
-    css: false
-    js: false
+    css: true
   sources:
     - _assets/fonts
     - _assets/stylesheets
