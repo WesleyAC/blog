@@ -2,7 +2,7 @@
 layout: post
 title: "Ping at the speed of light"
 description: "How fast are those packets moving?"
-tags: [networking, bestof]
+tags: [networking]
 ---
 
 A few weeks ago, someone mentioned to me that when you send a packet over the internet, it travels at a significant fraction (~80%) of the speed of light, just based on the time it takes to get a response and the physical distance travelled. This was surprising to me, but it was believable enough for me to spend some time investigating it.

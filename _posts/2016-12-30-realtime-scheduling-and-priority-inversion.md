@@ -2,7 +2,7 @@
 layout: post
 title: Realtime Scheduling and Priority Inversion
 description: Learning about what realtime scheduling is and how it can result in priority inversion
-tags: [realtime, robotics, bestof]
+tags: [realtime, robotics]
 ---
 When I'm [programming robots](http://www.citruscircuits.org/), something that often comes up is "realtime" code. What does code being realtime mean? Simply put, realtime code has a known upper bound on the amount of time that it can take to execute. That rules out quite a few things:
 

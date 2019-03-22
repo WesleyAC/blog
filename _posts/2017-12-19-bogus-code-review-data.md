@@ -2,7 +2,7 @@
 layout: post
 title: "A bogus study on code review"
 description: "Why oft-cited data is often wrong"
-tags: [bestof, data]
+tags: [data]
 ---
 
 I saw an [article](https://medium.com/@9len/on-code-review-16ea85f7c585) today about code review. Included in it were a couple graphs purportedly coming from a study on code review. The author didn't refer to the graphs at all in the article, instead interleaving them with unrelated text as a sort of eye-candy.

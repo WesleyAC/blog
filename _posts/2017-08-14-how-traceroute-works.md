@@ -2,7 +2,7 @@
 layout: post
 title: "How traceroute works"
 description: "Implementing traceroute in 23 lines of python"
-tags: [networking, bestof]
+tags: [networking]
 ---
 
 When you send a packet on the internet, what happens to it? This is a surprisingly difficult question to answer - from the perspective of a developer, you tell the OS that you want a packet to go to a specific machine, and a few hundred milliseconds later, you get a response from that machine. The mechanism that lets that happen though, is incredibly complicated. Since your computer is likely not directly connected to the computer that you want to contact, your packet must get routed over a path that will take it to the machine you want to connect to. While routing is a very interesting problem, it's not the one that I'm going to talk about in this post - instead, I'm going to explain how you can figure out what route packets that you send are taking.

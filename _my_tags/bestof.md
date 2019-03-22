@@ -1,4 +1,0 @@
----
-slug: bestof
-name: bestof
----

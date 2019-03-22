@@ -2,7 +2,7 @@
 layout: post
 title: "The two questions I ask every interviewer"
 description: "Applying the engineering process to software interviews"
-tags: [hiring, bestof]
+tags: [hiring]
 ---
 
 I've been going through the software engineering interview rigmarole recently, and there have been two questions that I've started asking at every interview, but have yet to get a good answer to:

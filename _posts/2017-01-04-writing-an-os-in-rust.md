@@ -2,7 +2,7 @@
 layout: post
 title: "Writing an OS in Rust"
 description: "In which I embark on a journey to learn how the heck operating systems work"
-tags: [rust, kernel, bestof]
+tags: [rust, kernel]
 ---
 Writing an OS is one of those projects that I've always kinda wanted to do, but never felt like I had enough experience or knowledge to actually follow through on. Every few years though, I end up opening the [OSDev Wiki](http://wiki.osdev.org/Main_Page), and thinking "What if..."
 

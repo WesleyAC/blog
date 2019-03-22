@@ -2,7 +2,7 @@
 layout: post
 title: "Recursive Filesystem Entries"
 description: "Abusing FAT for fun and profit"
-tags: [software, bestof]
+tags: [software]
 ---
 
 I made a fun file today:

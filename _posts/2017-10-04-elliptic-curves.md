@@ -2,7 +2,7 @@
 layout: post
 title: "Elliptic Curve Cryptography for Beginners"
 description: "A description of ECC without using advanced math"
-tags: [security, crypto, math, bestof]
+tags: [security, crypto, math]
 ---
 
 I find cryptography fascinating, and have recently become interested in elliptic curve cryptography (ECC) in particular. However, it's not easy to find an introduction to elliptic curve cryptography that doesn't assume an advanced math background. This post is an attempt to explain how ECC works using only high school level math. Because of this, I purposely simplify some aspects of this, particularly around terms that have specific mathematical meaning. However, you should still get a good intuitive understanding of elliptic curves from this post.

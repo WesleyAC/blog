@@ -2,7 +2,7 @@
 layout: post
 title: "Intro to Control Theory Part Two: PID tuning"
 discription: Basics of PID tuning, a note about units, and another interactive demo
-tags: [control, robotics, bestof]
+tags: [control, robotics]
 ---
 In [part one](/posts/intro-to-control-part-one-pid) of my series on control theory, I briefly mentioned PID tuning. PID tuning is the process of finding gains for your PID loop that provide a response that's good enough. There are many different ways to tune a PID loop, but before we go into them, let's talk about what the values that we're changing actually represent!
 
