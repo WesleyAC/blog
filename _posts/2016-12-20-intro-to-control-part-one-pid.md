@@ -44,12 +44,14 @@ function control(x, goal) {
 Here's a simulation of that! The gray box is the elevator, and the green line is the goal. Press "Run!" to run the simulation! You can edit the code to see what happens in different situations. Press "Run!" again to restart the simulation with the new code.
 
 <script>{% include projects/control1/fabric.js %}</script>
-{% include projects/control1/style.html %}
+<script>{% include projects/control1/script.js %}</script>
+<style>{% include projects/control1/style.css %}</style>
 
-{% include projects/control1/demo.html id="0" defaulttext=
-"function control(x, goal) {
+{% include projects/control1/demo.html %}
+<script>makeSim(0,`function control(x, goal) {
   return 1.0;
-}" %}
+}`);</script>
+
 
 Uh oh, our elevator keeps crashing into the ceiling! That's no good! We should probably take the `x` and `goal` values into account. Let's try again:
 
@@ -69,8 +71,8 @@ With this code, if the elevator is below it's goal, it goes up, and if it's high
 
 Try it out!
 
-{% include projects/control1/demo.html id="1" defaulttext=
-"function control(x, goal) {
+{% include projects/control1/demo.html %}
+<script>makeSim(1, `function control(x, goal) {
   if (x < goal) {
     return 1.0;
   } else if (x > goal) {
@@ -78,7 +80,7 @@ Try it out!
   } else {
     return 0.0;
   }
-}" %}
+}`);</script>
 
 This gets the elevator to the goal, but there are a few problems:
 
@@ -124,12 +126,12 @@ This is another important concept - a gain. A gain specifies how much weight you
 
 We multiply our error by our proportional gain to get the output force we're applying. In this case, the output is capped to the -1.0 to 1.0 range elsewhere in the code. Play around with it! Try adjusting the `p_gain`. And make sure that you try with the goal both above and below the elevator! Since it's being pulled down by gravity, it'll go down faster than it goes up.
 
-{% include projects/control1/demo.html id="2" defaulttext=
-"function control(x, goal) {
+{% include projects/control1/demo.html %}
+<script>makeSim(2, `function control(x, goal) {
   error = goal - x;
   p_gain = 0.3;
   return error * p_gain;
-}" %}
+}`);</script>
 
 This is a bit better than the bang-bang code, but it's still a long way from perfect. Here are a few problems with it:
 
@@ -190,8 +192,8 @@ function control(x, goal) {
 
 As usual, play around with this code before you go on!
 
-{% include projects/control1/demo.html id="3" defaulttext=
-"function control(x, goal) {
+{% include projects/control1/demo.html %}
+<script>makeSim(3, `function control(x, goal) {
   p_gain = 0.6;
   d_gain = 2.5;
 
@@ -201,7 +203,7 @@ As usual, play around with this code before you go on!
   this.setGlobal(\"last_x\", x);
 
   return (error * p_gain) - (deriv * d_gain);
-}" %}
+}`);</script>
 
 This looks pretty good! There's one small issue though... Try adding `console.log(error)` to that function somewhere - what do you see? (You'll need to open up the window to look at the results - Ctrl + Shift + K in firefox).
 
@@ -236,8 +238,8 @@ And here's the interactive version:
 
 (Again, I've changed some of the gains besides I to compensate for the addition of the I term. Changing the PID gains is called tuning, and it's what you'll spend most of your time doing when you implement PID!)
 
-{% include projects/control1/demo.html id="4" defaulttext=
-"function control(x, goal) {
+{% include projects/control1/demo.html %}
+<script>makeSim(4, `function control(x, goal) {
   p_gain = 0.4;
   d_gain = 6.5;
   i_gain = 0.001
@@ -250,7 +252,7 @@ And here's the interactive version:
   this.setGlobal(\"integral\", integral);
 
   return (error * p_gain) + (integral * i_gain) - (deriv * d_gain);
-}" %}
+}`);</script>
 
 This makes it reach zero, but it also introduces a new problem - once we are at zero, the integral term will still push us in the same direction that we are going! This is called "integral windup," and it's a common problem when choosing the gains for a PID loop. There are a few ways to deal with this, but we aren't going to go into them in this post.
 

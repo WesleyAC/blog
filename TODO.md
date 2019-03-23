@@ -35,14 +35,4 @@ Generating the blog has a few steps:
 
 ## Complex posts
 
-### All includes
-
-* `2017-10-04-elliptic-curves.md`
-* `2016-12-20-intro-to-control-part-one-pid.md`
-* `2016-12-22-intro-to-control-part-two-pid-tuning.md`
-* `2017-01-02-intro-to-control-part-five-feedforward-motion-profiling.md`
-
-### Includes with ID for sandboxing:
-
-* `2016-12-20-intro-to-control-part-one-pid.md`
 * `2016-12-22-intro-to-control-part-two-pid-tuning.md`
