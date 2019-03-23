@@ -3,7 +3,6 @@
 * Audit img alt tags
 * Stop using Jekyll
 * Migrate from SASS to CSS
-* Implement sandboxing for control experiments without IDs in includes
 * Audit for unnecessary external JS
 * Switch away from Google Fonts
 * Switch away from Google Analytics
@@ -32,7 +31,3 @@ Generating the blog has a few steps:
 
 * [pandoc](https://pandoc.org/) supports all the markdown features I need
 * [minify](https://github.com/tdewolff/minify) seems like a reasonable minifier
-
-## Complex posts
-
-* `2016-12-22-intro-to-control-part-two-pid-tuning.md`
