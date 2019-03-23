@@ -71,7 +71,7 @@ Here's an example of how changing PID parameters effects the response of the sys
 
 Here's an interactive demo! This is based on the elevator example from the previous post. Choose the PID values that you want, and the graph of position over time is instantly updated!
 
-{% include projects/control2/demo.html id="0" %}
+{% include projects/control2/demo.html %}
 
 Hopefully that gives you an idea of what changing PID values will do to the response! You might notice that it's really hard to get integral to work right and not wind up too much (although it can be done). I'll cover ways to reduce that issue (and ways to control systems that don't have that problem!) in other posts.
 
