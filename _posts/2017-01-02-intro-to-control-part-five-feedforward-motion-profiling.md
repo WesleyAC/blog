@@ -14,8 +14,12 @@ Not only does this make our state space model accurate, it also eliminates the n
 
 (The force is now outputted in Newtons, capped from -5000 to 5000, so the gains are much larger)
 
-{% include projects/control5/demo.html id="0" defaulttext=
-"function control(x, goal) {
+<script>{% include projects/control5/fabric.js %}</script>
+<script>{% include projects/control5/script.js %}</script>
+<style>{% include projects/control5/style.css %}</style>
+
+{% include projects/control5/demo.html %}
+<script>makeSim(0,`function control(x, goal) {
   p_gain = 500;
   d_gain = 7000;
 
@@ -25,7 +29,7 @@ Not only does this make our state space model accurate, it also eliminates the n
   this.setGlobal(\"last_x\", x);
 
   return (error * p_gain) - (deriv * d_gain) + 980;
-}" %}
+}`);</script>
 
 So that's feedforward in a nutshell! It's often used for cancelling out the effects of gravity (or another force). Another example of cancelling out gravity is in a robot that I worked on on [Citrus Circuits](http://citruscircuits.org/) - Adrian:
 
