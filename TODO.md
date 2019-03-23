@@ -2,7 +2,6 @@
 
 * Audit img alt tags
 * Stop using Jekyll
-* Migrate from SASS to CSS
 * Audit for unnecessary external JS
 * Switch away from Google Fonts
 * Switch away from Google Analytics
@@ -27,7 +26,19 @@ Generating the blog has a few steps:
 * Minify/generate CSS
 * Generate tags
 
+## Tags used
+
+* `{% stylesheet %}` (replace with manual SASS pipeline)
+* `{% include %}`
+* `{% if %}`/`{% else %}`/`{% endif %}`
+* `{% for %}`/`{% endfor %}`
+* `relative_url`
+* `aboslute_url`
+* `date`
+* `xml_escape`
+
 ## Tools
 
 * [pandoc](https://pandoc.org/) supports all the markdown features I need
 * [minify](https://github.com/tdewolff/minify) seems like a reasonable minifier
+* [sass-dart](https://github.com/sass/dart-sass) is a reasonably distributable SASS compiler
