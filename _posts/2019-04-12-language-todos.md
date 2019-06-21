@@ -58,6 +58,18 @@ It seems to me that it shouldn't be too much effort to write a Lisp that compile
 
 I don't think this would be useful, but it would be hilarious.
 
+### A structurally edited language with no names
+
+A language where functions are referred to by a hash of the computation that they perform, rather than by name. Bindings are similarly referred to by hash. You may have an alias file, which provides names for functions, but no names are canonical.
+
+This has a few benefits:
+
+* Languages are trivially internationalized - one can simply look at the same program with an alias file in a different language
+* Dependency versioning is easy - your dependency versions are specified by the hashs of the functions you call. Simple tooling (search and replace, essentially) would allow updating dependencies
+* Linking is easier - no more `__load_bearing` functions and name mangling 
+
+This should be structurally edited to allow for better tooling around showing aliases, etc.
+
 # Why write languages?
 
 I think that a lot of people are confused as to why people write programming languages - we have so many already, what could the new programming language you're writing possibly bring to the table? But in reality, there's a *ton* of design space in programming languages that hasn't been explored yet! It's important that we continue to explore this space, not because every language will be good, but because some of them might bring new ideas to the table, or cause us to see how a combination of old ideas is amazing together. No one knows what it'd be like to program in a borrow-checked language with dependent types, because there isn't one that exists!
@@ -66,4 +78,4 @@ Also, writing a programming language can be a lot of fun! It really demystifies 
 
 I wish more people were writing strange programming languages, or at least talking about what programming languages they want to write. What programming languages do you want to see?
 
-**Last update: 12 April 2019**
+**Last update: 21 June 2019**
