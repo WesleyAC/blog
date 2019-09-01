@@ -70,6 +70,8 @@ This has a few benefits:
 
 This should be structurally edited to allow for better tooling around showing aliases, etc.
 
+[Ramsey Nasser](https://twitter.com/ra) gave a very good talk about this at [Deconstruct 2019](https://www.deconstructconf.com/). The video is not yet posted (as of Sept 2019), but it's based on [this paper](http://ojs.decolonising.digital/index.php/decolonising_digital/article/view/PersonalComputer).
+
 # Why write languages?
 
 I think that a lot of people are confused as to why people write programming languages - we have so many already, what could the new programming language you're writing possibly bring to the table? But in reality, there's a *ton* of design space in programming languages that hasn't been explored yet! It's important that we continue to explore this space, not because every language will be good, but because some of them might bring new ideas to the table, or cause us to see how a combination of old ideas is amazing together. No one knows what it'd be like to program in a borrow-checked language with dependent types, because there isn't one that exists!
