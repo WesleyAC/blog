@@ -5,7 +5,10 @@ description: My thoughts on where programming tools are going in the next 100 ye
 tags: [vim, linux, ui]
 hide: true
 ---
+Disclaimer: I no longer agree with the content of this post. It's hidden from the main page of my site, but so as not to break links, the content is here, unmodified.
+
 Recently, I've been thinking about UI. [Ina talk at Caltech](http://ee2.caltech.edu/centennial/video/19_mead/flash/19_mead.html), Carver Mead said:
+
 
 > Right now, today, we can't see the thing, **at all,** that's going to be the most important 100 years from now.
 

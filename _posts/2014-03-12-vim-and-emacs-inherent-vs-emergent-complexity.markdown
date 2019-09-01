@@ -5,6 +5,8 @@ description: Time for some editor wars...
 tags: [vim,emacs]
 hide: true
 ---
+Disclaimer: I no longer agree with the content of this post. It's hidden from the main page of my site, but so as not to break links, the content is here, unmodified.
+
 Chances are that if you use vim or emacs that you think that $EDITOR is the one true editor, and you pity other poor, misguided souls who use anything else.
 
 After using vim for a while, and recently playing with emacs, I've noticed that both vim and emacs have the same goal, but different methods of getting the result.
