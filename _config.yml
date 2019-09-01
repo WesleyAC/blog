@@ -28,6 +28,7 @@ exclude:
   - Gemfile.lock
   - README.md
   - TODO.md
+  - vendor/*
 gems:
   - jekyll-assets
 permalink: posts/:slug

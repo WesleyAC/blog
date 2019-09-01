@@ -4,3 +4,5 @@
 /.asset-cache/*
 /_site/*
 /_assets/bower/*
+vendor/*
+.bundle/*
