@@ -5,3 +5,5 @@ This is the GitHub repo for my blog. Feel free to file issues/PRs for any typos 
 # Notes
 
 To build on nixos: `nix-shell -p bundler libxml2 --run "bundle install --gemfile=Gemfile --path vendor/cache"`
+
+To rebuild CSS, run `bin/minify.sh`

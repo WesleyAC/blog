@@ -12,6 +12,7 @@
 
 Generating the blog has a few steps:
 
+* Minify CSS
 * Generate files from templates
     * feed.xml
     * index.html
@@ -23,12 +24,10 @@ Generating the blog has a few steps:
     * resume.pdf
     * robots.txt
     * img/
-* Minify/generate CSS
 * Generate tags
 
 ## Tags used
 
-* `{% stylesheet %}` (replace with manual SASS pipeline)
 * `{% include %}`
 * `{% if %}`/`{% else %}`/`{% endif %}`
 * `{% for %}`/`{% endfor %}`
@@ -40,5 +39,4 @@ Generating the blog has a few steps:
 ## Tools
 
 * [pandoc](https://pandoc.org/) supports all the markdown features I need
-* [minify](https://github.com/tdewolff/minify) seems like a reasonable minifier
-* [sass-dart](https://github.com/sass/dart-sass) is a reasonably distributable SASS compiler
+* [minify](https://github.com/tdewolff/minify) seems like a reasonable minifier - used in `bin/minify.sh` script
