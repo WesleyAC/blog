@@ -23,7 +23,7 @@ mv _site/* .
 rm -R _site/
 
 # Push to gh-pages.
-git add -fA
+git add -A
 git commit --allow-empty -m "$(git log -1 --pretty=%B) [ci skip]"
 git push -f -q origin gh-pages
 
