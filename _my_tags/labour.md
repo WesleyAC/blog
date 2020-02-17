@@ -1,0 +1,4 @@
+---
+slug: labour
+name: labour
+---
