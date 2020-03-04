@@ -247,6 +247,11 @@ img {
   margin: 50px 0 15px;
 }
 
+.footnotes ol {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
 .article {
   display: block;
 }
@@ -386,14 +391,21 @@ img {
 
 @media all and (max-width: 767px) {
   .article-list-footer {
-    display: block; }
+    display: block;
+    float: left;
+  }
+
+  .article-list-title {
+    display: block;
+  }
 
   .article-list-divider:last-of-type {
     display: none; }
 
   .article-list-tags {
     display: block;
-    margin-top: -7px; } }
+    margin-top: -7px; }
+}
 
 .header-nav {
   display: block;
