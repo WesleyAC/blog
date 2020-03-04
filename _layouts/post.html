@@ -9,17 +9,18 @@
         <article class="article">
           <header class="article-header">
             <h1>{{ page.title }}</h1>
-            <p>{{ page.description }}</p>
             <div class="article-list-footer">
-              <span class="article-list-date">
-                {{ page.date | date: "%B %-d, %Y" }}
-              </span>
-              <span class="article-list-divider">-</span>
               <div class="article-list-tags">
                 {% for tag in page.tags %}
                   <a href="{{ 'tag/' | relative_url }}{{ tag }}">{{ tag }}</a>
                 {% endfor %}
               </div>
+	      {% if page.tags.size != 0 %}
+              <span class="article-list-divider">-</span>
+	      {% endif %}
+              <span class="article-list-date">
+                {{ page.date | date: "%B %-d, %Y" }}
+              </span>
             </div>
           </header>
 
