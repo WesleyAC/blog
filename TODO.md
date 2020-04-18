@@ -3,8 +3,6 @@
 * Audit img alt tags
 * Stop using Jekyll
 * Audit for unnecessary external JS
-* Switch away from Google Fonts
-* Switch away from Google Analytics
 
 # Notes on switching away from Jekyll
 
