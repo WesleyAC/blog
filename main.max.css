@@ -426,7 +426,7 @@ img {
 
 .header-logo {
   display: inline-block;
-  font-family: "Cormorant Garamond", Courier, serif;
+  font-family: "Cormorant Garamond",Garamond,Baskerville,Baskerville Old Face,Hoefler Text,Times New Roman,serif;
   font-size: 36px;
   font-weight: 900;
   color: #000;
@@ -693,7 +693,7 @@ img {
   .notfound-content h1 {
     display: inline-block;
     margin-bottom: 4px;
-    font-family: "Cormorant Garamond", Courier, serif;
+    font-family: "Cormorant Garamond",Garamond,Baskerville,Baskerville Old Face,Hoefler Text,Times New Roman,serif;
     font-size: 36px; }
     .notfound-content h1 a {
       color: #121111; }
