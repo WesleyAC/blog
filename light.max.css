@@ -9,11 +9,13 @@ html {
 @font-face {
      font-family: 'Cormorant Garamond';
      src: url('fonts/CormorantGaramond-Regular.woff') format('woff');
+     font-display: swap;
 }
 
 @font-face {
      font-family: 'Lato';
      src: url('fonts/LatoLatin-Regular.woff2') format('woff2'), url('fonts/LatoLatin-Regular.woff') format('woff');
+     font-display: swap;
 }
 
 body {
