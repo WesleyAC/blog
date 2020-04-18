@@ -3,6 +3,7 @@
 * Audit img alt tags
 * Stop using Jekyll
 * Audit for unnecessary external JS
+* Switch from MathJax to KaTeX
 
 # Notes on switching away from Jekyll
 
