@@ -15,6 +15,7 @@ fi
 git checkout -b gh-pages
 
 # Build site.
+$(dirname "$0")/minify.sh
 bundle exec jekyll build
 
 # Delete and move files.

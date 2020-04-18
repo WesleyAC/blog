@@ -116,7 +116,7 @@ blockquote {
      font-size: 20px;
      font-style: italic;
      line-height: 1.6;
-     color: #ada8a8;
+     color: #7d7878;
      border-left: 3px solid #615b5b;
 }
 
@@ -601,11 +601,6 @@ img {
 
 .header-links li a {
      font-size: 18px;
-     color: #393636;
-}
-
-.header-links li a:hover {
-     color: #121111;
 }
 
 @media all and (max-width: 415px) {
@@ -640,15 +635,6 @@ img {
 
 .highlight pre {
      margin: 0;
-}
-
-.highlighter-rouge {
-     padding: 2px 4px;
-     font-size: 14px;
-     color: #e74b3c;
-     background: #faf9f9;
-     border: 1px solid #ebeaea;
-     border-radius: 1px;
 }
 
 @media all and (max-width: 767px) {
