@@ -4,17 +4,11 @@ markdown: redcarpet
 redcarpet:
   extensions: ["footnotes", "tables"]
 
-assets:
-  compress:
-    css: true
-  sources:
-    - _assets/fonts
-    - _assets/stylesheets
-    - _vendor/
 collections:
   my_tags:
     output: true
     permalink: /tag/:slug/
+
 defaults:
   -
     scope:
@@ -22,6 +16,7 @@ defaults:
       type: my_tags
     values:
       layout: articles_by_tag
+
 exclude:
   - bin/*
   - Gemfile
@@ -29,6 +24,5 @@ exclude:
   - README.md
   - TODO.md
   - vendor/*
-gems:
-  - jekyll-assets
+
 permalink: posts/:slug
