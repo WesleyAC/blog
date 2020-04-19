@@ -14,18 +14,18 @@ First, I'll assume that you're in protected mode, you have a valid <abbr title="
 Here's how setting up the <abbr title="Advanced Programmable Interrupt Controller">APIC</abbr> goes:
 
 1. Disable the <abbr title="Programmable Interrupt Controller">[PIC](https://wiki.osdev.org/PIC)</abbr>.
-  * Remap the <abbr title="Programmable Interrupt Controller">PIC</abbr>, so that it's interrupts start at 0x20. We do this so that in the case that there are spurious interrupts, they don't get in our way.
+  * Remap the <abbr title="Programmable Interrupt Controller">PIC</abbr>, so that it's interrupts start at `0x20`. We do this so that in the case that there are spurious interrupts, they don't get in our way.
   * Mask off all <abbr title="Interrupt Request">IRQ</abbr>s.
   * [This page](https://web.archive.org/web/20140628205356/www.acm.uiuc.edu/sigops/roll_your_own/i386/irq.html) has instructions for interacting with the PIC - disabling it looks the same, but the mask is `0xFF` instead of `0xF8`.
 2. Depending on the system, you may need to disable PIC mode by writing to the <abbr title="Interrupt Mode Control Register">IMCR</abbr> register. This is unusual on modern systems, but for a correct implementation, read bit 7 of MP feature information byte 2 to check if PIC mode is implemented. [This page](http://zygomatic.sourceforge.net/devref/group__arch__ia32__apic.html) has some instructions for doing this.
-3. Configure the "Spurious Interrupt Vector Register" of the Local APIC, being sure to set bit 8 ("APIC Software Enable/Disable"). 0xFF is a reasonable choice for the spurious vector.
+3. Configure the "Spurious Interrupt Vector Register" of the Local APIC, being sure to set bit 8 ("APIC Software Enable/Disable"). `0xFF` is a reasonable choice for the spurious vector.
 4. Parse the <abbr title="Advanced Configuration and Power Interface">[ACPI](https://wiki.osdev.org/ACPI)</abbr>[^1] tables - specifically, get the <abbr title="Input/Output Advanced Programmable Interrupt Controller">I/O APIC</abbr> address and Local APIC ID out of the <abbr title="Multiple APIC Description Table">[MADT](https://wiki.osdev.org/MADT)</abbr> and read all of the Interrupt Source Override entries - if the IRQ source of any of them is 1, you will need to use the corresponding global system interrupt value when you set up <abbr title="I/O Redirection Table">IOREDTBL</abbr> entry.
-5. Configure the IOREDTBL entry in registers 0x12 and 0x13 (unless you need to use a different one, per the above step).
+5. Configure the IOREDTBL entry in registers `0x12` and `0x13` (unless you need to use a different one, per the above step).
   * Set the vector to whatever your <abbr title="Interrupt Service Routine">ISR</abbr> vector is, deliver mode to fixed (000), destination mode to physical (0), pin polarity to active high (0), trigger mode to edge (0), mask to enabled (0), and set the destination to the Local APIC ID (which you should have from parsing the <abbr title="Multiple APIC Description Table">MADT</abbr>).
-  * Beware - the low bits of the entry are in the first register, and the high bits in the second register - the reverse of what you might expect. You should write the vector to 0x12, and the Local APIC ID to 0x13.
-6. Enable the APIC by setting the 11th bit of the APIC base <abbr title="Model Specific Register">[MSR](https://wiki.osdev.org/MSR)</abbr> (0x1B). This is probably already done for you, but worth checking if things aren't working for you.
+  * Beware - the low bits of the entry are in the first register, and the high bits in the second register - the reverse of what you might expect. You should write the vector to `0x12`, and the Local APIC ID to `0x13`.
+6. Enable the APIC by setting the 11th bit of the APIC base <abbr title="Model Specific Register">[MSR](https://wiki.osdev.org/MSR)</abbr> (`0x1B`). This is probably already done for you, but worth checking if things aren't working for you.
 
-Once you've done all this, you should be able to press a key and have your ISR called. Hooray!
+Once you've done all this, you should be able to press a key and have your ISR called. Hooray! If you want to be able to receive more than one keypress, write a zero dword to the address `0xfee000b0` at the end of your keyboard interrupt handler.
 
 # Debugging Tips
 
