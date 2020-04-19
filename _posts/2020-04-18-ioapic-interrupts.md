@@ -14,7 +14,7 @@ First, I'll assume that you're in protected mode, you have a valid <abbr title="
 Here's how setting up the <abbr title="Advanced Programmable Interrupt Controller">APIC</abbr> goes:
 
 1. Disable the <abbr title="Programmable Interrupt Controller">[PIC](https://wiki.osdev.org/PIC)</abbr>.
-  * Remap the <abbr title="Programmable Interrupt Controller">PIC</abbr>, so that it's interrupts start at `0x20`. We do this so that in the case that there are spurious interrupts, they don't get in our way.
+  * Remap the <abbr title="Programmable Interrupt Controller">PIC</abbr>, so that its interrupts start at `0x20`. We do this so that in the case that there are spurious interrupts, they don't get in our way.
   * Mask off all <abbr title="Interrupt Request">IRQ</abbr>s.
   * [This page](https://web.archive.org/web/20140628205356/www.acm.uiuc.edu/sigops/roll_your_own/i386/irq.html) has instructions for interacting with the PIC - disabling it looks the same, but the mask is `0xFF` instead of `0xF8`.
 2. Depending on the system, you may need to disable PIC mode by writing to the <abbr title="Interrupt Mode Control Register">IMCR</abbr> register. This is unusual on modern systems, but for a correct implementation, read bit 7 of MP feature information byte 2 to check if PIC mode is implemented. [This page](http://zygomatic.sourceforge.net/devref/group__arch__ia32__apic.html) has some instructions for doing this.
