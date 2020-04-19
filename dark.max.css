@@ -46,14 +46,6 @@ img {
      border-top: 1px solid #383838;
 }
 
-.article-list li.article-pagination a {
-     color: #888181;
-}
-
-.article-list li.article-pagination a:hover {
-     color: #ffffff;
-}
-
 .article-list-item h5 {
      color: #ffffff;
 }

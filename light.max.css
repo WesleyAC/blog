@@ -403,33 +403,6 @@ img {
      border-bottom: 0;
 }
 
-.article-list li.article-pagination {
-     display: block;
-     height: 93px;
-     padding: 15px 0 50px;
-}
-
-.article-list li.article-pagination a {
-     display: inline-block;
-     font-size: 11px;
-     font-weight: 600;
-     letter-spacing: .1em;
-     color: #888181;
-     text-transform: uppercase;
-     transition: color 0.2s linear;
-}
-
-.article-list li.article-pagination a .icon {
-     display: inline-block;
-     margin-top: -2px;
-     font-size: 20px;
-     vertical-align: middle;
-}
-
-.article-list li.article-pagination a:hover {
-     color: #121111;
-}
-
 .article-list-item h5 {
      position: relative;
      display: block;
