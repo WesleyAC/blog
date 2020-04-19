@@ -38,7 +38,7 @@ b, strong {
 }
 
 h1, h2, h3, h4, h5, h6 {
-     margin: 0;
+     margin: 0 0 20px;
      line-height: 1.5;
      text-rendering: optimizeLegibility;
 }
@@ -533,7 +533,7 @@ img {
      display: block;
 }
 
-.article-content p, .article-content ul, .article-content ol, .article-content img, .article-content blockquote {
+.article-content > p, .article-content > ul, .article-content > ol, .article-content img, .article-content blockquote {
      display: block;
      margin-bottom: 30px;
 }
