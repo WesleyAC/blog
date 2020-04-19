@@ -396,7 +396,7 @@ img {
 .article-list li {
      position: relative;
      display: block;
-     padding: 20px 0;
+     padding: 5px 0;
 }
 
 .article-list li:last-child {
