@@ -395,8 +395,10 @@ img {
 
 .article-list li {
      position: relative;
-     display: block;
-     padding: 5px 0;
+     display: flex;
+     justify-content: space-between;
+     flex-wrap: wrap;
+     padding: 8px 0;
 }
 
 .article-list li:last-child {
@@ -407,6 +409,7 @@ img {
      position: relative;
      display: block;
      padding-right: 25px;
+     margin-bottom: 0px;
      color: #121111;
      border-bottom: 1px solid transparent;
 }
@@ -432,11 +435,6 @@ img {
      margin: 12px 0 10px;
      font-size: 15px;
      color: #615b5b;
-}
-
-.article-list-footer {
-     display: inline-block;
-     float: right;
 }
 
 .article-list-footer span, .article-list-footer a {
@@ -523,11 +521,6 @@ img {
 }
 
 @media all and (max-width: 767px) {
-    .article-list-footer {
-         display: block;
-         float: left;
-    }
-
     .article-list-title {
          display: block;
     }
