@@ -111,6 +111,12 @@ abbr {
      border-bottom: 1px dotted #ebeaea;
 }
 
+@media (hover: none) {
+    abbr:active::after {
+        content: ' (' attr(title) ')';
+    }
+}
+
 blockquote {
      padding: 0 0 4px 15px;
      margin: 0 0 0 -20px;
