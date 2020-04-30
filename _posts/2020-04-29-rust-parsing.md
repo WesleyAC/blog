@@ -18,7 +18,7 @@ Some of these libraries are only/mostly applicable to one or the other - I will 
 
 ## [nom](https://github.com/Geal/nom/) (v5.1.1)
 
-nom is probably the most famous Rust parsing library - it's a [parser-combinator](https://en.wikipedia.org/wiki/Parser_combinator) library, which means that you write functions to parse little bits of your inputs, then you use the "combinators" that nom provides to combine them together into larger parsers. nom is good for both binary and textual formats, and can handle streaming data (where you start parsing before you have all of the data), which is nice if you want that.
+nom is probably the most famous Rust parsing library - it's a [parser-combinator](http://theorangeduck.com/page/you-could-have-invented-parser-combinators) library, which means that you write functions to parse little bits of your inputs, then you use the "combinators" that nom provides to combine them together into larger parsers. nom is good for both binary and textual formats, and can handle streaming data (where you start parsing before you have all of the data), which is nice if you want that.
 
 I like nom a lot - I really enjoy using parser combinators, and nom is definitely my goto for lots of things, but it does come with a few caveats:
 
