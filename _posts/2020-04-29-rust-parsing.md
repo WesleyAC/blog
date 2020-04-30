@@ -71,7 +71,7 @@ For the binary protocol, I originally wrote a parser with nom, which I was quite
 
 # What I want in the future
 
-I'd love to see a crate that combines the usability of LALRPOP's format with the expressivity of PEG parsers, for when I want to quickly hack together a prototype of something involving a parser, or for cases where optimization is not as important.
+I'd love to see a crate that combines the usability of LALRPOP's format with the expressivity of PEG parsers, for when I want to quickly hack together a prototype of something involving a parser, or for cases where optimization is not as important.[^3]
 
 I'd also love to see nom get better error handling support and docs, as well as more combinators in its library.
 
@@ -81,3 +81,4 @@ I'll also close this out with the caveat that basically all of the parsing I've 
 
 [^1]: I have not performed benchmarking on any of these libraries, but I would expect, and anecdotally hear that nom is faster than most parser-generators (and, for instance, pest's own benchmarks show that nom is faster than pest). YMMV, run benchmarks if you care about performance, etc.
 [^2]: This is a whole other blog post, but an important thing to realize with serde is that, while it's great at writing serializers and deserializers for very generic data formats, for more specialized formats where you need a lot of control over fiddly details, it can be really frustrating/impossible to specify what you want. For instance, treating some `i32`s as varints and others as fixed-width is extremely annoying in serde, but trivial in my custom procmacro solution. Similarly, dealing with different `Vec`s being length-prefixed in different ways is really not something serde is designed to handle.
+[^3]: EDIT: I'm informed that [rust-peg](https://github.com/kevinmehall/rust-peg) may be what I'm looking for, and indeed it looks quite nice. So if you too want this, consider trying rust-peg :)
