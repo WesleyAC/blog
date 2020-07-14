@@ -42,10 +42,6 @@ img {
      background-color: #ffffff;
 }
 
-.footer {
-     border-top: 1px solid #383838;
-}
-
 .article-list-item h5 {
      color: #ffffff;
 }
@@ -76,10 +72,6 @@ img {
 
 .article-content h2, .article-content h3, .article-content h4 {
      color: #ffffff;
-}
-
-.header-nav {
-     border-bottom: 1px solid #383838;
 }
 
 .header-logo {

@@ -150,7 +150,6 @@ img {
 .footer {
      display: block;
      padding: 35px 0 85px;
-     border-top: 1px solid #ebeaea;
 }
 
 .grid {
@@ -544,7 +543,6 @@ img {
 .header-nav {
      display: block;
      padding: 50px 0 20px;
-     border-bottom: 1px solid #ebeaea;
 }
 
 .header-logo {
