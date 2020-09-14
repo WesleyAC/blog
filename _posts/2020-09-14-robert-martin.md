@@ -38,7 +38,7 @@ In his 2017 blog post "[The Dark Path](https://blog.cleancoder.com/uncle-bob/201
 
 Leaving aside the gatekeeping of telling people to "quit your job and never think about being a programmer again," this opinion is obviously ridiculous. He says earlier in the very same blog post:
 
-> \[Scala and Kotlin\] have integrated some functional characteristics. For example, they both have lambdas. This is a good thing, in general. The more we learn about functional programming, the better.
+> \[Swift and Kotlin\] have integrated some functional characteristics. For example, they both have lambdas. This is a good thing, in general. The more we learn about functional programming, the better.
 
 Why is functional programming different from static typing? He provides essentially no justification for this — by his logic, isn't functional programming just a band-aid over programmers making mistakes? For that matter, why use a high-level language at all, if languages aren't the correct place to prevent errors? If only programmers were more careful, we could all just write machine code directly!
 
