@@ -26,3 +26,5 @@ exclude:
   - vendor/*
 
 permalink: posts/:slug
+
+future: true
