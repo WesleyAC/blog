@@ -4,7 +4,7 @@ title: "Name Don'ts"
 description: ""
 ---
 
-I signed up for [Are.na](https://www.are.na/) the other day, since apparently that's where all the cool hip designer kids hang out these days. Their signup flow and name system is a interesting case study in what not to when making a schema to keep track of names.
+I signed up for [Are.na](https://www.are.na/) the other day, since apparently that's where all the cool hip designer kids hang out these days. Their signup flow and name system is a interesting case study in what not to do when making a schema to keep track of names.
 
 <center><img src="../img/name-donts/arena-signup.png" alt="are.na signup form, with separate 'first' and 'last' name boxes"></center>
 
