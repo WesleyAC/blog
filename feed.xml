@@ -1,20 +1,850 @@
----
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>{{ site.name | xml_escape }}</title>
+    <title>Wesley Aptekar-Cassels</title>
     <description></description>
     <link>https://blog.wesleyac.com</link>
-    <atom:link href="https://blog.wesleyac.com/{{ page.path }}" rel="self" type="application/rss+xml" />
-    {% for post in site.posts limit:10 %}
+    <atom:link href="https://blog.wesleyac.com/feed.xml" rel="self" type="application/rss+xml" />
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
-        <description>{{ post.content | xml_escape }}</description>
-        <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
-        <link>https://blog.wesleyac.com{{ post.url }}</link>
-        <guid isPermaLink="true">https://blog.wesleyac.com{{ post.url }}</guid>
+        <title>A simple but safe deploy script</title>
+        <description>&lt;p&gt;I write a lot of small web servers as statically linked, single-file rust binaries, usually using &lt;a href=&quot;https://github.com/emk/rust-musl-builder&quot;&gt;rust-musl-builder&lt;/a&gt; to generate the binary, and &lt;a href=&quot;https://github.com/pyros2097/rust-embed/&quot;&gt;rust-embed&lt;/a&gt; to include the static files as part of the binary. This makes deploying really easy, but it still takes some care to get it really nice. What I want is a system where:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I can run a single command to build and deploy my program&lt;/li&gt;
+&lt;li&gt;There will be minimal downtime&lt;/li&gt;
+&lt;li&gt;The server will always be running a valid version, even if my connection drops while the deploy script is running&lt;/li&gt;
+&lt;li&gt;Rollbacks are easy and fast&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It turns out it&amp;#39;s pretty simple to write this! I&amp;#39;m going to walk through it line-by-line, but you can see the entire script &lt;a href=&quot;https://gist.github.com/WesleyAC/b3aaa0292579158ad566c140415c875d&quot;&gt;here&lt;/a&gt;, if you prefer to see it all at once.&lt;/p&gt;
+
+&lt;p&gt;We have a &lt;code&gt;deploy.sh&lt;/code&gt; script, which will build and deploy our server:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; -e
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;dirname &lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;$#&quot;&lt;/span&gt; -ne 2 &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;usage: &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; user@server-address /path/to/remote/directory/&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We start with a &lt;code&gt;#!/usr/bin/env bash&lt;/code&gt; to tell it to run in bash&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;, &lt;code&gt;set -e&lt;/code&gt; so it will quit if there are any errors, &lt;code&gt;cd $(dirname $0)&lt;/code&gt; to make sure we&amp;#39;re running in the directory we expect to be, and then finally an &lt;code&gt;if&lt;/code&gt; statement to check that the script is being called correctly. Once we&amp;#39;ve gotten that housekeeping out of the way, we carry on and set some variables that we&amp;#39;ll use later:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;SERVER_SSH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;SERVER_PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;BINARY_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;example&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;SERVER_RESTART_COMMAND&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;systemctl restart &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$BINARY_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once we&amp;#39;ve set those, we go ahead and call our build script:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;./build.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now that we have the binary, we need to figure out how to deploy it. We don&amp;#39;t want to overwrite the existing binaries on the server, because then we won&amp;#39;t be able to roll back properly, so we generate a unique name for this binary:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;OUTFILE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./target/x86_64-unknown-linux-musl/release/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$BINARY_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;COMMIT_HASH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;git rev-parse HEAD&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;BUILD_TIMESTAMP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TZ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;UTC date -u +&lt;span class=&quot;s2&quot;&gt;&quot;%s&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;FILE_HASH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;b2sum &lt;span class=&quot;nv&quot;&gt;$OUTFILE&lt;/span&gt; | cut -f1 -d&lt;span class=&quot;s1&quot;&gt;' '&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;REMOTE_FILENAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$BINARY_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$BUILD_TIMESTAMP&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$COMMIT_HASH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$FILE_HASH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This takes the current date in UTC, the commit hash, and a hash of the file, and appends them all to the name of the binary. This is a bit overkill, but it&amp;#39;s nice to have all of that info readily available, so we can see what version is running and when it was deployed just from the filename. Now that we have our file, we can use &lt;code&gt;scp&lt;/code&gt; to transfer it over to the server:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ssh &lt;span class=&quot;nv&quot;&gt;$SERVER_SSH&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;mkdir -p &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SERVER_PATH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/versions/&quot;&lt;/span&gt;
+scp &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$OUTFILE&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SERVER_SSH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SERVER_PATH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/versions/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$REMOTE_FILENAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;At this point, everything we&amp;#39;ve done has been safe from the perspective of our network dropping out — if anything fails in this process, all we&amp;#39;ve done is transfered part of a file to the server, but that won&amp;#39;t do anything bad. When we switch to the new version of the binary, though, we need to be a bit more careful. The most important part of the system that I use is that we never execute a binary directly, we always execute a &lt;a href=&quot;https://en.wikipedia.org/wiki/Symbolic_link&quot;&gt;soft link&lt;/a&gt; to the binary. This means that when we remove the link, the existing server will keep running, since the actual binary that got executed is still the same. Here&amp;#39;s how we go about that:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ssh -q -T &lt;span class=&quot;nv&quot;&gt;$SERVER_SSH&lt;/span&gt; &lt;span class=&quot;sh&quot;&gt;&amp;lt;&amp;lt;EOL
+    nohup sh -c &quot;\
+    rm &quot;$SERVER_PATH/$BINARY_NAME&quot; &amp;amp;&amp;amp; \
+    ln -s &quot;$SERVER_PATH/versions/$REMOTE_FILENAME&quot; &quot;$SERVER_PATH/$BINARY_NAME&quot; &amp;amp;&amp;amp; \
+    $SERVER_RESTART_COMMAND&quot;
+EOL
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This runs a command on the server using &lt;code&gt;nohup&lt;/code&gt;, which will ensure the command keeps running even if we disconnect. We use &lt;code&gt;sh -c&lt;/code&gt; so that all of the commands are being run in the same &lt;code&gt;nohup&lt;/code&gt; session. Then we remove the existing link, make a link to our new version, and restart the server. The only downtime we&amp;#39;ll have is the time it takes for the server to start up, which is negligible for my rust binary. This will also kill existing sessions, but most of the applications I write are written in a way that is fairly robust to server restarts.&lt;/p&gt;
+
+&lt;p&gt;I ensured that this command actually does what I think it does by adding a &lt;code&gt;sleep 60&lt;/code&gt; between the &lt;code&gt;rm&lt;/code&gt; and &lt;code&gt;ln&lt;/code&gt; commands, and killing the deploy script during that sleep, and sure enough, 60 seconds later, the server was up.&lt;/p&gt;
+
+&lt;p&gt;The last bits you need to implement this are the systemd unit file:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;[Unit]
+Description=Example server
+After=network.target
+
+[Service]
+ExecStart=/home/example/example
+User=example
+Group=example
+
+[Install]
+WantedBy=multi-user.target
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;and the build script:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;dirname &lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+docker run --rm -it -v &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;:/home/rust/src -v cargo-git:/home/rust/.cargo/git -v cargo-registry:/home/rust/.cargo/registry -v &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/target/&quot;&lt;/span&gt;:/home/rust/src/target ekidd/rust-musl-builder:nightly-2021-01-01 sudo chown -R rust:rust /home/rust/.cargo/git /home/rust/.cargo/registry /home/rust/src/target
+
+docker run --rm -it -v &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;:/home/rust/src -v cargo-git:/home/rust/.cargo/git -v cargo-registry:/home/rust/.cargo/registry -v &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/target/&quot;&lt;/span&gt;:/home/rust/src/target ekidd/rust-musl-builder:nightly-2021-01-01 cargo build --release
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Although you can absolutely use this technique with any language/build system and init system, with only a little tweaking.&lt;/p&gt;
+
+&lt;p&gt;Doing a rollback is pretty simple — right now, I just ssh onto the server &lt;code&gt;rm&lt;/code&gt; the old link, and &lt;code&gt;ln&lt;/code&gt; the new version I want, but it would be easy to automate that. If I wanted to do that, I&amp;#39;d probably have the deploy script write to a file every time it deployed a new version with the new filename, so that I could quickly roll back to the version N versions ago, or whatever&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;. It&amp;#39;s a little harder to scale this approach to do things like run multiple versions of the server at once to have a load balancer cut over connections slowly, without interrupting users, but for a lot of things you don&amp;#39;t need to be that fancy, and this ~30 line script is more than enough.&lt;/p&gt;
+
+&lt;p&gt;I personally find that this approach hits the sweet spot of simple, understandable, and robust for a lot of my projects, and I hope you find it useful as well!&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;Note that this is the most portable way to do this: some systems (most notably NixOS) don&amp;#39;t have &lt;code&gt;/bin/bash&lt;/code&gt; or &lt;code&gt;/usr/bin/bash&lt;/code&gt;, but do have bash installed&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;You might think you can just &lt;code&gt;sort&lt;/code&gt; the &lt;code&gt;versions/&lt;/code&gt; directory to get this, but that doesn&amp;#39;t actually work: if scp quits unexpectedly, there may be executables that don&amp;#39;t even work in the &lt;code&gt;versions/&lt;/code&gt; directory. We need to know which versions we actually got as far as making the link and starting up.&amp;nbsp;&lt;a href=&quot;#fnref2&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Mon, 01 Mar 2021 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/simple-deploy-script</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/simple-deploy-script</guid>
       </item>
-    {% endfor %}
+    
+      <item>
+        <title>Timezone Bullshit</title>
+        <description>&lt;p&gt;People often use short timezone abbreviations like EST and PST to refer to timezones. If you&amp;#39;re doing this in a computer program, you are almost certainly making a huge mistake. Let&amp;#39;s take take a look, using the disastrously bad &lt;a href=&quot;https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html&quot;&gt;unix libc timezone tools&lt;/a&gt;, which you&amp;#39;re almost certainly using under the hood if you&amp;#39;re writing software on Linux or OSX.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=UTC date
+Wed 10 Feb 2021 12:00:00 AM UTC
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Alright, this looks good. Let&amp;#39;s try to see what time it is in New York:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=America/New_York date
+Tue 09 Feb 2021 07:00:00 PM EST
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Makes sense, New York is 5 hours behind UTC. It outputs the time as &lt;code&gt;EST&lt;/code&gt;, so presumably we can use that as a &lt;code&gt;TZ&lt;/code&gt; variable:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=EST date
+Tue 09 Feb 2021 07:00:00 PM EST
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Which looks like it works! But that&amp;#39;s actually an illusion — say we tried doing this in July, instead of February:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=America/New_York date
+Fri 09 Jul 2021 08:00:00 PM EDT
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now we&amp;#39;re in EDT, since it&amp;#39;s daylight saving time. Makes sense, let&amp;#39;s just plug that into &lt;code&gt;TZ&lt;/code&gt; and see what happens:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=EDT date
+Sat 10 Jul 2021 12:00:00 AM EDT
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And hang on, &lt;code&gt;America/New_York&lt;/code&gt; means &lt;code&gt;EDT&lt;/code&gt;, but &lt;code&gt;EDT&lt;/code&gt; gives us the time in &lt;code&gt;UTC&lt;/code&gt;! What&amp;#39;s going on here?&lt;/p&gt;
+
+&lt;p&gt;Well, it turns out that &lt;code&gt;EDT&lt;/code&gt; isn&amp;#39;t a valid timezone, and &lt;code&gt;date&lt;/code&gt; silently ignores the incorrect timezone variable:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=LOL_THIS_DOESNT_EXIST date
+Sat 10 Jul 2021 12:00:00 AM LOL
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;date&lt;/code&gt; &amp;quot;helpfully&amp;quot; ignores that the timezone is invalid, and outputs the date in UTC, but &lt;em&gt;using the text of the invalid timezone&lt;/em&gt;.  Which is horrifying, but wait, why isn&amp;#39;t EDT a valid timezone? I&amp;#39;m not sure what the actual reason is, but one reason that it&amp;#39;s not correct in the general case to use the short timezone codes is that they aren&amp;#39;t actually unique:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;$ TZ=America/Chicago date
+Tue 09 Feb 2021 06:00:00 PM CST
+$ TZ=Asia/Taipei date
+Wed 10 Feb 2021 08:00:00 AM CST
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;There are actually two timezones that are canonically named &amp;quot;CST&amp;quot;, and they&amp;#39;re 14 hours apart! The format that &lt;code&gt;date&lt;/code&gt; outputs things in causes there to be two distinct moments in time that correspond to any date outputted in the &lt;code&gt;Asia/Taipei&lt;/code&gt; or &lt;code&gt;America/Chicago&lt;/code&gt; timezones, and there&amp;#39;s no way to tell which is which by looking at it — what fun!&lt;/p&gt;
+
+&lt;p&gt;There is no good reason to use short timezone codes like EST, CST, PST — doing so will only bring you pain. Either use the tzdb name like &lt;code&gt;America/New_York&lt;/code&gt;, or use an offset from UTC, depending on what you want.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 10 Feb 2021 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/timezone-bullshit</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/timezone-bullshit</guid>
+      </item>
+    
+      <item>
+        <title>Name Don'ts</title>
+        <description>&lt;p&gt;I signed up for &lt;a href=&quot;https://www.are.na/&quot;&gt;Are.na&lt;/a&gt; the other day, since apparently that&amp;#39;s where all the cool hip designer kids hang out these days. Their signup flow and name system is a interesting case study in what not to do when making a schema to keep track of names.&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;&lt;img src=&quot;../img/name-donts/arena-signup.png&quot; alt=&quot;are.na signup form, with separate 'first' and 'last' name boxes&quot;&gt;&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;When you sign up, you&amp;#39;re asked for your first and last name. Off the bat, we&amp;#39;re not doing so well — if you&amp;#39;re &lt;a href=&quot;https://en.wikipedia.org/wiki/Mononymous_person#Modern_times&quot;&gt;mononymous&lt;/a&gt;, or have more than two parts to your name, you&amp;#39;re out of luck, better pick a last name quick. Many people are &lt;a href=&quot;https://en.wikipedia.org/wiki/List_of_legally_mononymous_people&quot;&gt;legally mononymous&lt;/a&gt;, but far more choose to go by a single name in all aspects of their lives that don&amp;#39;t require their government name — a category that pinterest for silicon valley hipsters surely falls into.&lt;/p&gt;
+
+&lt;p&gt;Once you&amp;#39;ve put in your first and last name, a url for your profile is automatically generated from it — for instance, &amp;quot;Wesley Aptekar-Cassels&amp;quot; turns into &lt;code&gt;are.na/wesley-aptekar-cassels&lt;/code&gt;. This has a handful of problems: if your name does not consist of latin characters (conservatively, at least 1.5 billion people), or your name is not unique, or you want a username without a dash in it, or a username that&amp;#39;s different from your display name, you&amp;#39;re out of luck. Names that consist of non-latin characters cause the profile url to be a random string of letters and numbers, like &lt;code&gt;u9ewar2dcsy&lt;/code&gt;. Making matters worse, if you change your name from one that consists of non-latin characters to a different name, and then change it back, the profile url will be different, breaking all of the old links to your profile forever.&lt;/p&gt;
+
+&lt;p&gt;It&amp;#39;s possible to get around this by putting a unicode space character that isn&amp;#39;t recognized by are.na as whitespace into the last name field, and putting a username in the first name field (as &lt;a href=&quot;https://www.are.na/wesleyac&quot;&gt;I&amp;#39;ve done&lt;/a&gt;), but while useful to know, that&amp;#39;s hardly an excuse.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;ve seen plenty of articles like &lt;a href=&quot;https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/&quot;&gt;Falsehoods Programmers Believe About Names&lt;/a&gt;, but even the most basic stuff (names aren&amp;#39;t all in a latin character set) keeps getting messed up. I recall seeing a comment on the post &lt;a href=&quot;https://nora.codes/post/names-legal-names-and-fractally-deferred-responsibility/&quot;&gt;Names, Legal Names, and Fractally Deferred Responsibility&lt;/a&gt; to the effect of &amp;quot;Why can&amp;#39;t people just have one legal name, and go by that? Isn&amp;#39;t that much easier?&amp;quot; Even ignoring the problems with forcing people to go by their legal name, this ignores the fact that millions of people have multiple legal names, since they exist in multiple legal systems (a Chinese or Russian name for one legal system, and English name for another, for instance). This is pretty basic stuff, if you think for a moment about the existence of other cultures and languages, and yet people keep fucking it up. And not just are.na — I can&amp;#39;t pay with my credit card on Namecheap, because my last name contains an &amp;quot;invalid&amp;quot; character (a dash).&lt;/p&gt;
+
+&lt;p&gt;I reached out to are.na about this, and they said that they&amp;#39;re aware that this is a problem and plan to fix it, which is good. But they wouldn&amp;#39;t need to fix it if they&amp;#39;d just gone for the easy approach in the first place, and had a single &amp;quot;Name&amp;quot; field, allowing arbitrary unicode input. Names are legitimately hard, but getting the basics right isn&amp;#39;t tricky, if you just stop for a moment to consider that not everyone&amp;#39;s name looks like yours.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 09 Dec 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/name-donts</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/name-donts</guid>
+      </item>
+    
+      <item>
+        <title>Reviving Yo: How to Patch an APK</title>
+        <description>&lt;p&gt;I got talking to a friend the other day about &lt;a href=&quot;https://en.wikipedia.org/wiki/Yo_(app)&quot;&gt;Yo&lt;/a&gt;, the app where you can send your friends the word &amp;quot;Yo.&amp;quot; It&amp;#39;s nominally still around, run off donations, but the SSL certificate for the API server has been expired for a little while, so the app doesn&amp;#39;t work anymore. Not to worry, though, that&amp;#39;s something we can fix by patching the APK pretty quickly.&lt;/p&gt;
+
+&lt;p&gt;First, &lt;a href=&quot;https://play.google.com/store/apps/details?id=com.justyo&quot;&gt;download Yo on the Play Store&lt;/a&gt;. Then, download &lt;a href=&quot;https://play.google.com/store/apps/details?id=com.ext.ui&quot;&gt;APK Extractor&lt;/a&gt;, and use it to download the APK off your phone (you&amp;#39;ll need to get it onto your computer somehow, I emailed it to myself). You should have a file called &lt;code&gt;Yo_base.apk&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Next, install &lt;a href=&quot;https://ibotpeaches.github.io/Apktool/&quot;&gt;&lt;code&gt;apktool&lt;/code&gt;&lt;/a&gt;, and use it to decompile the APK:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;apktool if Yo_base.apk
+apktool d Yo_base.apk
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This should make a directory called &lt;code&gt;Yo_base&lt;/code&gt;, which you can edit however you want. I changed &lt;code&gt;https://newapi.justyo.co&lt;/code&gt; to &lt;code&gt;http://newapi.justyo.co&lt;/code&gt; in &lt;code&gt;res/values/strings.xml&lt;/code&gt;, but you could also make other changes as well. Once you&amp;#39;ve done that, recompile the APK like so:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;apktool b Yo_base
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now there should be a &lt;code&gt;Yo_base/dist/Yo_base.apk&lt;/code&gt; file, but it&amp;#39;s not signed, so we can&amp;#39;t use it. Signing it isn&amp;#39;t too tricky though. Using the &lt;code&gt;keytool&lt;/code&gt; and &lt;code&gt;jarsigner&lt;/code&gt; tools that come with the JDK:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore Yo_base/dist/Yo_base.apk alias_name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It&amp;#39;ll ask you to make a password and enter your name and things, I don&amp;#39;t think it really matters what you choose. Once you&amp;#39;ve done all that, you can move the &lt;code&gt;Yo_base/dist/Yo_base.apk&lt;/code&gt; file to your phone, click through all the fuss that Android makes about running a unsigned APK, and start Yoing away! This also works for other apps just as well :)&lt;/p&gt;
+</description>
+        <pubDate>Tue, 10 Nov 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/patching-apks</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/patching-apks</guid>
+      </item>
+    
+      <item>
+        <title>A Conversation on FRP, Databases, and Types</title>
+        <description>&lt;p&gt;&lt;em&gt;This is a transcript of a conversation I had on the &lt;a href=&quot;https://www.recurse.com/scout/click?t=288aaf8d6ddfba372520ec10690a1e1b&quot;&gt;Recurse Center&amp;#39;s&lt;/a&gt; Zulip instance. I thought it was pretty informative, so I&amp;#39;m reproducing it here, lightly edited, with the premission of the participants. There are quite a few comments here, I suggest checking out Iain McCoy, Allie Jones, and Anon #1 if you want the highest-signal parts of the conversation&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wesley Aptekar-Cassels:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;So, I&amp;#39;ve been playing with FRP recently, mostly via &lt;a href=&quot;https://seed-rs.org/&quot;&gt;Seed&lt;/a&gt; but also looking at React and Vue a bit. It seems like the general pattern is that you have one big state object which is a big bucket that has all the state, and then when you change that, all of the state flows down into the objects/components/whatever and they update. This seems nice and good.&lt;/p&gt;
+
+&lt;p&gt;So, common advice is to make your state a single source of truth. If you have types (via rust+wasm or typescript or whatever), you should &lt;a href=&quot;https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/&quot;&gt;design with types&lt;/a&gt; to make illegal states unrepresentable. For instance, if you have a bunch of menu items, one of which can be selected, you probably want to have a &lt;code&gt;current_menu_item: Option&amp;lt;MenuItemId&amp;gt;&lt;/code&gt; rather than a &lt;code&gt;selected&lt;/code&gt; field on each &lt;code&gt;MenuItem&lt;/code&gt; (to give a Rusty example of the syntax).&lt;/p&gt;
+
+&lt;p&gt;This seems all well and good, except for the fact that the idea that what we have as a &amp;quot;single source of truth&amp;quot; is a complete lie: the real single source of truth is the database, in most applications. So, we put all this effort into making a nice data model in our database (as nice as can be expressed in SQL), and then we go and make a bunch of APIs to pull stuff out of our real single source of truth, probably turn it into json and send it to the client, where we then pull it apart and stick it into our client side &amp;quot;single&amp;quot; source of truth (losing and reconstructing all of the type information along the way). This seems like not a very good idea — why do we do this to ourselves?&lt;/p&gt;
+
+&lt;p&gt;To look at a concrete example: I have a &amp;quot;directory&amp;quot; hierarchy stored in a SQL database. I want to display this in the client app. I also have a bunch of &amp;quot;files&amp;quot; that can be in the directories. Each file can be in multiple directories (really, the &amp;quot;directories&amp;quot; are tags, not &amp;quot;directories&amp;quot; in the way one would normally think of them). The nice, single-source-of-truth way to handle this is to have a tree of directories, where each directory has a &lt;code&gt;Vec&amp;lt;FileId&amp;gt;&lt;/code&gt;, and then to have a &lt;code&gt;HashMap&amp;lt;FileId, File&amp;gt;&lt;/code&gt; for storing the necessary metadata about each file. However, there&amp;#39;s a problem here — say you want to, for a given file, find every directory it&amp;#39;s in. The SQL database can get this information easily, but that will be slow — why waste the time with another network request when you have all the information you need right there? But the problem is, the information you need to figure this out isn&amp;#39;t stored in a way that allows you to very nicely access it — you either have to walk the entire directory tree to figure out which directories have the given file in it, or you have to store an index, something like a &lt;code&gt;HashMap&amp;lt;FileId, Vec&amp;lt;DirectoryId&amp;gt;&amp;gt;&lt;/code&gt; — in which case you now have multiple sources of truth for which directories a file is in which you have to keep in sync.&lt;/p&gt;
+
+&lt;p&gt;Back in ye olde days of 200X, this wasn&amp;#39;t a problem — for each page, you&amp;#39;d have a template that the server would fill out with the results of database queries, and send that to the client. But now that client-side code is expected to hold its own state, we have a split source of truth problem.&lt;/p&gt;
+
+&lt;p&gt;The second problem I see with this is types. The server has types that is uses for interacting with objects internally. When stuff is written to the database, all of this type information is thrown away. We then make the type information again when we pull it out of the database (sometimes with slightly different types, if we&amp;#39;ve done a join, or queried only selected fields or something). Then you&amp;#39;ll often do some postprocessing on that that&amp;#39;s too complex to do in SQL, serialize it to JSON, send it to the client, which then reconstructs the type information again in order to use it (sometimes implicitly, in the case of javascript frontends). Why bother with this whole charade? If you&amp;#39;re using Rust on the client and the server (or s/Rust/Typescript/, probably) you can at least automate the serializing and deserializing parts, but you&amp;#39;re still throwing away type information to put things in the database.&lt;/p&gt;
+
+&lt;p&gt;FRP (or maybe just the idea of websites being dynamic) seems good to me overall, but it definitely creates a problem that didn&amp;#39;t used to exist — a split source of truth and multiple losses and reconstructions of type information.&lt;/p&gt;
+
+&lt;p&gt;How do people deal with this in production webapps? And are there good experimental projects to eliminate this complexity? It seems like in many cases, server-side code is just incidental complexity that pops up because there is no good way to directly interface between SQL databases and client side web code.&lt;/p&gt;
+
+&lt;p&gt;I guess maybe a clearer way of thinking about this problem is: there are two types of state: backend state (this is the set of objects that exist, etc), and frontend state: (this object is currently selected, this modal window is open, etc). Current approaches to writing web frontends seem to necessitate making a model which mixes together these two things, which seems non-ideal.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Anon #1:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;It seems like in many cases, server-side code is just incidental complexity that pops up because there is no good way to directly interface between SQL databases and client side web code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I mean, yes! Except the complexity also does frustratingly useful things: prevents scrapers from taking down your DB, gives you a place to put biz analytics / monitoring / alerting, provides an API layer where you can decide to change behavior if you need to (see: the problem of supporting legacy clients for years and years), etc.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I guess maybe a clearer way of thinking about this problem is: there are two types of state: backend state (this is the set of objects that exist, etc), and frontend state: (this object is currently selected, this modal window is open, etc).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I think that this is a good way of looking at different types of state. A lot of modern frontend options (I&amp;#39;m most familiar with React) grew out of a need to manage the sprawling mess that is frontend state -- before React became popular circa mid 2010s, a &lt;em&gt;lot&lt;/em&gt; of frontend apps wouldn&amp;#39;t treat this kind of state in any kind of principled way, and it ended up being a lot of random spaghetti&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Current approaches to writing web frontends seem to necessitate making a model which mixes together these two things, which seems non-ideal.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I think that it&amp;#39;s true both that 1) a lot of approaches mix these concerns and 2) mixing them is a PITA.&lt;/p&gt;
+
+&lt;p&gt;Some approaches (e.g. Relay + React) let you create magical bits of state that can effectively only be changed by calls to the backend, which....kinda gets around the problem? But not in a really clean / easy to understand way.&lt;/p&gt;
+
+&lt;p&gt;Take everything I&amp;#39;m saying with a grain of salt, also, since it&amp;#39;s been a few years since I&amp;#39;ve done any active frontend dev 😄&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wesley Aptekar-Cassels:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I mean, yes! Except the complexity also does frustratingly useful things: prevents scrapers from taking down your DB, gives you a place to put biz analytics / monitoring / alerting, provides an API layer where you can decide to change behavior if you need to (see: the problem of supporting legacy clients for years and years), etc.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Is this true? Like, looking at these individually:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Scrapers: I don&amp;#39;t see how the server/DB separation fundamentally changes this — views of the frontend still require calls to the db. I think that maybe the change here is that scraping modern websites is so monstrously complicated that most companies that aren&amp;#39;t Google or Microsoft don&amp;#39;t do it anymore?&lt;/li&gt;
+&lt;li&gt;Analytics/Monitoring: I have lots of hot takes about this, but — isn&amp;#39;t it much more common for people to do analytics these days via Google Analytics/Mixpanel/Heap/whatever than by writing it themselves? I get that there&amp;#39;s some server-side stuff you might want to log, but I think you can get most of that just by parsing and saving http logs? IDK why analyzing http logs isn&amp;#39;t a more common approach to analytics tbh, it&amp;#39;s &lt;a href=&quot;https://blog.wesleyac.com/posts/google-analytics&quot;&gt;much more accurate&lt;/a&gt; than most other approaches and gives you a ton of flexibility.&lt;/li&gt;
+&lt;li&gt;API layer to change behaviour: I agree that this is important, but I don&amp;#39;t think that switching to an architecture where you use one format all the way through forces you to stop doing this. It just means that providing legacy support looks like putting a proxy in front of the database that speaks the old format on one side and the new format on the other.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I agree that there are a lot of &amp;quot;proven&amp;quot; solutions to these problems in the current DB &amp;lt;-&amp;gt; server &amp;lt;-&amp;gt; client paradigm, but I don&amp;#39;t think that that paradigm fundamentally is the thing that enables those solutions, it seems more like it just happened to evolve that way.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;before React became popular circa mid 2010s, a &lt;em&gt;lot&lt;/em&gt; of frontend apps wouldn&amp;#39;t treat this kind of state in any kind of principled way, and it ended up being a lot of random spaghetti&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;hah, most of the webapps I&amp;#39;ve worked on have been jQuery state soup (even &lt;a href=&quot;http://hanabi.site/script.js&quot;&gt;very recently&lt;/a&gt;). I definitely see that React and React-style frameworks are better than the spaghetti approach the predated it, but it seems like React has inherited plenty of quarks from that model, either for the sake of backwards compatibility, or simply by not examining the problem through a sufficiently novel lens.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Some approaches (e.g. Relay + React) let you create magical bits of state that can effectively only be changed by calls to the backend, which....kinda gets around the problem? But not in a really clean / easy to understand way.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Interesting - I was wondering when writing this if GraphQL is sort of an attempt to solve this problem, but I haven&amp;#39;t seriously looked into it, so I don&amp;#39;t really know exactly what parts of this is solves and how well.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Take everything I&amp;#39;m saying with a grain of salt, also, since it&amp;#39;s been a few years since I&amp;#39;ve done any active frontend dev :smile:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;heh, you&amp;#39;re probably more up to date than me, the last time I worked on a &amp;quot;real&amp;quot; webapp was like... 2014? With jQuery and bootstrap and PHP and MySQL and all that :)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.patrickweaver.net/&quot;&gt;Patrick Weaver&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I don&amp;#39;t have any answers, but wanted to note that this made me consider for the first time that the virtual DOM in the frameworks seems to have the goal of only updating the things that changed by creating a state diff, but often that same change is happening to the non-local state, but there&amp;#39;s no way to use that diff work that&amp;#39;s already been done automatically. It seems like the abstractions aren&amp;#39;t abstract enough.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;[I ask for more elaboration]:&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;If you have a list with keys &lt;code&gt;{ 1: banana, 2: grapefruit, 3: pear }&lt;/code&gt; and the user updates the list to be: &lt;code&gt;{ 1: orange, 2: grapefruit, 3: pear}&lt;/code&gt;, React&amp;#39;s VDOM will compare and say we only need to update the value at key 1, but there&amp;#39;s no way to take that diff work and send it to the DB without programming something to do the same work either on the client and sending a &amp;quot;manually&amp;quot; computed diff, or sending the whole new list to the DB and diffing again on the server.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://tozt.net/&quot;&gt;Jesse Luehrs&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;i&amp;#39;m not super familiar with the details, but my understanding is that this disconnect is one of the things that &lt;a href=&quot;https://www.meteor.com/&quot;&gt;https://www.meteor.com/&lt;/a&gt; is intended to fix - it uses javascript on both the frontend and backend, and uses a special protocol to allow database operations to be able to happen on either end in the same way while still propagating the results to anything else watching it&lt;/p&gt;
+
+&lt;p&gt;i&amp;#39;ve never used it before, so i don&amp;#39;t know how successful it is at being a reasonable thing to use, but it is maybe evidence that your line of thought isn&amp;#39;t entirely on the wrong track&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/imccoy&quot;&gt;Iain McCoy&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I have many many thoughts about this. I spent a while trying to build a thing that used an frp-like thing to define the backend state, and then shared that backend state model around so that the frontend could look shiny and ajax-y. This is a thing you can build!&lt;/p&gt;
+
+&lt;p&gt;You wind up having a bunch of questions like &amp;quot;how do I control the way this backend state gets persisted&amp;quot; and &amp;quot;which bits of backend state get shared with which frontend&amp;quot; and so on. I didn&amp;#39;t get to them, but I&amp;#39;m confident that they are all answerable. There are also questions about how you manage change to a running system, but I think those are answerable too.&lt;/p&gt;
+
+&lt;p&gt;The reason I stopped is that my main motivation was to pursue a single purely-functional representation of backend state, because I thought that would make things easier to reason about. And like... It kind of does? But in the model I had there was a single function from Inputs to State, and any given input could ultimately influence any bit of the state, and that got confusing in something very like the way I was trying to escape from. So now I think the right way to arrange the backend state is with some sort of type discipline that constrains the domain of inputs (and/or intermediate values) that can affect each bit of state.&lt;/p&gt;
+
+&lt;p&gt;You probably still end up with at least two sets of types: the backend state ones and the frontend ones. But I think we could be clearer about &amp;quot;our application has entity A and entity B and they are related in way R and these two types are representations of A and these two types are representations of B and these are the two ways R shows up&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;In most systems I&amp;#39;ve worked on, there is a version of that sentence, but I&amp;#39;d like it to be a sentence the computer understands and not just the people working on it&lt;/p&gt;
+
+&lt;p&gt;And then you might be in a place to tell the computer that the front-end types are faster to access, but also less authoritative, then the backend types, and to talk about when to use one and when to use the other and when to do a fast check followed by an authoritative check and how to assert that the fast check is the same as the authoritative one.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wesley Aptekar-Cassels:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;@Iain McCoy&lt;/strong&gt; That&amp;#39;s super interesting to hear! Did you deal with persisting the backend state to disk at all, or was this all in-memory?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;You probably still end up with at least two sets of types: the backend state ones and the frontend ones. But I think we could be clearer about &amp;quot;our application has entity A and entity B and they are related in way R and these two types are representations of A and these two types are representations of B and these are the two ways R shows up&amp;quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I&amp;#39;m curious why you think that this is the split that makes sense — personally, I&amp;#39;m inclined to think that the taxonomy of types you want is a bit more subtle than &amp;quot;backend&amp;quot; and &amp;quot;frontend&amp;quot;, but I couldn&amp;#39;t tell you exactly how... I think this is also related to thoughts I have about how it should be easier to use an ad-hoc subset of an enum or a struct as a type — I think that would solve a lot of problems...&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://github.com/imccoy&quot;&gt;Iain McCoy&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;My hunch is that the backend types want to be sort of flat, for slicing and dicing in various ways (posts belong equally to message boards and users), but the frontend types want to be hierarchical in ways that make sense for the view at hand. I definitely think there would be other splits emerge over time too! You might have &amp;quot;record as persisted&amp;quot; vs &amp;quot;record in memory&amp;quot; vs &amp;quot;record on the wire&amp;quot;. You might have &amp;quot;record as persisted in a previous version&amp;quot; vs &amp;quot;record as persisted in current version&amp;quot;. You might have &amp;quot;record as seen by owner&amp;quot; and &amp;quot;record as seen by guest&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;I 100% agree about struct and enums. I kind of think that enum cases should be names for particular record types, so you can always write a function that takes the payload of some data constructor&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wesley Aptekar-Cassels:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;There&amp;#39;s &lt;a href=&quot;https://github.com/rust-lang/rfcs/pull/2593&quot;&gt;work happening&lt;/a&gt; in rust to make enum variants usable as types, which is I think what you&amp;#39;re suggesting? But even beyond that, more flexibility in how types are declared seems really useful.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Anon #2:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;And are there good experimental projects to eliminate this complexity? It seems like in many cases, server-side code is just incidental complexity that pops up because there is no good way to directly interface between SQL databases and client side web code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I have always meant to experiment with &lt;a href=&quot;http://postgrest.org/en/v7.0.0/&quot;&gt;PostgREST&lt;/a&gt; to try and find the limits of the problem you&amp;#39;re describing.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Akiva Leffert:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I haven&amp;#39;t really used them, but I think these are the things that &lt;a href=&quot;https://graphql.org/&quot;&gt;graphql&lt;/a&gt; and &lt;a href=&quot;https://www.apollographql.com/&quot;&gt;apollo&lt;/a&gt; are meant to solve. also stuff like firebase which does automatic model syncs between front end and data store. but I&amp;#39;ve definitely ended up in a fair number of cases where how the front end wanted to think about data and how the backend wanted to think about it were only loosely related and any sort of system here needs a fair amount of extensibility for those cases&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://alliejon.es/&quot;&gt;Allie Jones&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing that impacts this problem that I don&amp;#39;t think has been mentioned yet is FE application performance. The limitations on a client/in the browser, and the cost of communicating between client and server, are pretty different from those between a database and backend code. For a fast frontend UI you want just the slice of multiple entities&amp;#39; data that helps you accomplish a specific task (or sometimes I think about it as just what you need for a single application &amp;quot;screen&amp;quot;). You could probably do this data filtering/reformatting directly with database queries, but I think in practice I at least would want more abstraction than (my knowledge of) SQL provides. Doing it on the client would get unusably slow as soon as things got complex, and waste a lot of bandwidth.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;ve used Apollo and GraphQL, and I agree that they are an attempt to solve some aspects of this problem, but in the real-world implementations I&amp;#39;ve seen a lot of backend glue code translating between the client and the database still has to exist. It might not be the &amp;quot;less layers of abstraction&amp;quot; solution Wesley is looking for. :) When you&amp;#39;re using JS on the client you can query your data in a way that matches the abstraction of the database, but you just get an untyped blob of JS primitives in response.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;ve never used it, but Apollo does have a feature to generate Typescript types for your GraphQL queries which seems pretty interesting. (I was looking at &lt;a href=&quot;https://www.apollographql.com/docs/react/development-testing/static-typing/&quot;&gt;https://www.apollographql.com/docs/react/development-testing/static-typing/&lt;/a&gt; out of curiosity.)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wesley Aptekar-Cassels:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;@Allie Jones&lt;/strong&gt; Thanks for the thoughts! I think that:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;For a fast frontend UI you want just the slice of multiple entities&amp;#39; data that helps you accomplish a specific task (or sometimes I think about it as just what you need for a single application &amp;quot;screen&amp;quot;)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Is a really good way of thinking about it, and my question is sort of &amp;quot;how do you reconcile wanting a frontend that does very little computation and just displays what the server tells it to&amp;quot; with &amp;quot;try to have a single source of truth&amp;quot; — especially given that sometimes, the frontend will have to do computation to avoid network latency (for instance, filtering a list of results for a search term that the user is typing in live, like @-completion in zulip, etc)&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Doing it on the client would get unusably slow as soon as things got complex, and waste a lot of bandwidth.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I think that as is becomes safe/common to deploy webassembly in production (currently it&amp;#39;s at 93% browser support, only 2 percentage points less than CSS grid), this may change — it doesn&amp;#39;t change the bandwidth part of your concern, but it does mean that the way to get &amp;quot;fast&amp;quot; web apps may shift from doing computation quickly on the server side and then suffering network latency to sending a lot of data to the client and then doing more computation there, enabling really low latency for user interaction. This also makes sense with how compute resources have changed, it&amp;#39;s pretty standard now for a big webapp like gmail to take a few hundred megabytes of RAM. If you&amp;#39;re going to be using that much ram, might as well get a lot of speed out of it by prefetching a bunch of data so you can display it to the user faster. In fact, it seems like apps like this could probably actually use less bandwidth, if they&amp;#39;re written in a way to make caching and saving to localstorage easier (using content-addressable storage more, for instance). As many native apps demonstrate, modern consumer computers do tend to have enough compute capacity to make fast apps, even if javascript can&amp;#39;t necessarily access it :)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://alliejon.es/&quot;&gt;Allie Jones&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;m getting away from your question here, and I don&amp;#39;t want to derail too much, but at least for my work-work (on a high-traffic, somewhat international e-commerce site) our web applications have to accommodate lower-powered mobile devices and mobile internet connections, and in that environment there&amp;#39;s still a pretty steep cost to having a lot of client JS. But that&amp;#39;s a practical limitation and something that will almost certainly improve over time.&lt;/p&gt;
+
+&lt;p&gt;Re: web applications as distributed systems, &lt;a href=&quot;https://pouchdb.com/&quot;&gt;PouchDB&lt;/a&gt; doesn&amp;#39;t address types but it does lean into that idea by keeping all of your data on-client and then syncing with the server when you&amp;#39;re online.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://donnywinston.com/&quot;&gt;Donny Winston&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I used Meteor circa 2014 as a way to harmonize front- and back-end state as one database that stored data exactly as the front-end expected it, which is to say, untyped JSON. The development experience was a pleasure given this constraint. The database was a set of JSON-document collections via MongoDB. Through websockets and an authentication-respecting pub/sub protocol, the subset of your database that the front-end needed at any given time was synced to the client, and I used a built-in “minimongo” browser JS library that quacked like the backend MongoDB server library. So, that was the solution at the time — ditch SQL (or use it as a system of record that syncs with your application’s MongoDB via periodic ETL?) in order to achieve the kind of harmony you articulated.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://vaibhavsagar.com/&quot;&gt;Vaibhav Sagar&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Backend FRP in particular is something my previous company is working on. The approach they are taking involves writing your backend logic in a way that is agnostic to the order of events (i.e. if you receive events out of order it should still do the right thing) over a view of the database (Postgres in their case), and then they parse the write-ahead log and send events accordingly. It&amp;#39;s a really cool problem but much much harder than they expected. My old boss actually &lt;a href=&quot;https://zfoh.ch/zurihac2019/#speaker-ryan-trinkle&quot;&gt;gave a talk&lt;/a&gt; on it when he thought it was ready but then it turned out that it wasn&amp;#39;t anywhere close (sadly the video was lost). I kept trying to get him to look at Frank McSherry&amp;#39;s dataflow stuff because it seemed like it was relevant but he was convinced he already knew everything he needed to know. Maybe &lt;strong&gt;@[NAME REDACTED]&lt;/strong&gt; can provide more insight on how that is going.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;http://wwn.nebcorp.com/&quot;&gt;Joe Ardent&lt;/a&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I wonder if you can square this circle by shifting your frame, and breaking your truth into different components (reading back through the thread I see that I&amp;#39;m about to just restate/formulate what &lt;strong&gt;@Iain McCoy&lt;/strong&gt; already said, but I&amp;#39;ll go on anyway). Like Ian said, there are backend types and frontend types, and the frontend state could be less &amp;quot;a source of truth&amp;quot; and more &amp;quot;a correct statement about the current state of things&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;and so the front end state is, again like Ian said with &amp;quot;in memory&amp;quot; or &amp;quot;on the wire&amp;quot; or &amp;quot;committed to the backend truth-source&amp;quot;, information to the user about what&amp;#39;s going on with what they&amp;#39;ve done and how it impacts the future history of your interaction&lt;/p&gt;
+
+&lt;p&gt;(this is all in the context of a web application, but I suppose it also applies to other software that is not &amp;quot;local first&amp;quot; primarily)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Wesley Aptekar-Cassels:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Related blog post: &lt;a href=&quot;https://macwright.com/2020/05/10/spa-fatigue.html&quot;&gt;https://macwright.com/2020/05/10/spa-fatigue.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The dream of APIs is that you have generic, flexible endpoints upon which you can build any web application. That idea breaks down pretty fast.&lt;/p&gt;
+
+&lt;p&gt;Most interactive web applications start to triangulate on “one query per page.” API calls being generic or reusable never seems to persist as a value in infrastructure. This is because a large portion of web applications are, at their core, query &amp;amp; transformation interfaces on top of databases. The hardest performance problems they tend to have are query problems and transfer problems.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;hr&gt;&lt;/p&gt;
+
+&lt;p&gt;This is something that I&amp;#39;ve been thinking about for a while, and I expect I&amp;#39;ll think about for a while longer, but I&amp;#39;m curious to see what other answers people have to these questions.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 09 Nov 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/frp-databases-types</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/frp-databases-types</guid>
+      </item>
+    
+      <item>
+        <title>The Case for Learning Adblock</title>
+        <description>&lt;p&gt;Learning how to write adblock rules has significantly increased my satisfaction with using the internet. I think many people don&amp;#39;t realize how powerful adblock rules can be — you can run somewhat complex transforms of the presentation of websites using a relatively simple and lightweight tool that you likely already have installed. In this post, I&amp;#39;ll quickly go over some examples of uBlock rules that were simple to write and made me much happier. I use &lt;a href=&quot;https://ublockorigin.com/&quot;&gt;uBlock Origin&lt;/a&gt;, but you should be able to get similar results with any adblocker.&lt;/p&gt;
+
+&lt;h2&gt;Blocking Youtube Recommendations&lt;/h2&gt;
+
+&lt;p&gt;I used to find it really easy to get sucked into spending a lot of time on Youtube, following recommended video rabbit holes. I didn&amp;#39;t want to quit Youtube entirely, since there are some people on Youtube that make videos I enjoy, I just don&amp;#39;t want to get sucked into watching recommended video after recommended video. Fixing this is three simple adblock rules, that took about 15 minutes to write:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;www.youtube.com##ytd-watch-next-secondary-results-renderer.ytd-watch-flexy.style-scope
+www.youtube.com##a.ytp-suggestion-set.ytp-videowall-still
+www.youtube.com##ytd-browse[page-subtype=home]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Muting Lobste.rs Users&lt;/h2&gt;
+
+&lt;p&gt;I find several posters on &lt;a href=&quot;https://lobste.rs&quot;&gt;Lobsters&lt;/a&gt; annoying, but it&amp;#39;s simple to mute them:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;lobste.rs##.byline a:has-text(username):upward(3)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Muting Zulip Users&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://zulip.com/&quot;&gt;Zulip&lt;/a&gt; is a really great group chat app, but it &lt;a href=&quot;https://github.com/zulip/zulip/issues/15085&quot;&gt;doesn&amp;#39;t currently let you mute users&lt;/a&gt;. Not to worry though, we can quickly build this ourselves:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;subdomain.zulipchat.com##.sender_name:has-text(username):upward(5) .message_content
+subdomain.zulipchat.com##.sender_name:has-text(username):upward(5) .inline_profile_picture:style(visibility:hidden;height:1px!important)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This way, we&amp;#39;ll still see that the user sent a message, but the contents will be hidden, and it&amp;#39;ll only take up one vertical line of text to display their username.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;EDIT: This doesn&amp;#39;t quite work as is — it probably needs to be rweritten using xpath to work for the case where a muted user posts multiple messages one after another&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2&gt;Disabling Websites&lt;/h2&gt;
+
+&lt;p&gt;If you want to disable a distracting website completely, that&amp;#39;s simple:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;badwebsite.com##html:remove()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You could just have the entire rule be &lt;code&gt;badwebsite.com&lt;/code&gt;, but then uBlock will offer a UI to blow through the block if I visit the site, which usually isn&amp;#39;t what I want.&lt;/p&gt;
+
+&lt;h2&gt;Removing Distracting Sci-Hub Gif&lt;/h2&gt;
+
+&lt;p&gt;When you view a paper on &lt;a href=&quot;https://sci-hub.do/&quot;&gt;Sci-Hub&lt;/a&gt;, it shows a gif of Alexandra Elbakyan waving at you. While I appreciate everything she&amp;#39;s done for science, I find the gif distracting, so I remove it like so:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;sci-hub.st###minime
+sci-hub.do###minime
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Learning Adblock&lt;/h1&gt;
+
+&lt;p&gt;Adblock filters are an excellent tool for making the web work the way you want them to, but they can be intimidating to learn! For simple stuff, you can open the &amp;quot;Element Picker&amp;quot; interface, but for more complicated rules I usually open up the inspector and sometimes look at &lt;a href=&quot;https://github.com/gorhill/uBlock/wiki/Static-filter-syntax&quot;&gt;the uBlock wiki&lt;/a&gt;. I&amp;#39;ve found a lot of value in realizing that I can customize my web experience and investing a bit of time in learning how to write adblock rules. I hope you consider writing some rules for yourself!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 03 Nov 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/adblock</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/adblock</guid>
+      </item>
+    
+      <item>
+        <title>A Quick Primer on Robert &quot;Uncle Bob&quot; Martin</title>
+        <description>&lt;p&gt;Robert &amp;quot;Uncle Bob&amp;quot; Martin is in the discourse again, this time for &lt;a href=&quot;http://web.archive.org/web/20200913095211/http://blog.cleancoder.com/uncle-bob/2020/09/12/TheDisinvitation.html&quot;&gt;planning to sue conference organizers and speakers&lt;/a&gt; if he is offered a slot to speak at a conference and later has it rescinded. Martin is widely respected and followed in the software industry, having coauthored the Agile Manifesto, written several books, and given many talks. However, I&amp;#39;ve personally found his technical ideas to be consistently dogmatic and sloppy, he repeatedly makes sexist remarks and made many people feel uncomfortable and unwelcome at conferences and communities he&amp;#39;s in, and I find his views on race and politics extremely harmful. This post is a primer on why I think Martin&amp;#39;s views on software are frequently unhelpful and incorrect, as well as an overview of some of his comments on race, gender, and politics.&lt;/p&gt;
+
+&lt;h1&gt;The Technical&lt;/h1&gt;
+
+&lt;p&gt;First, let&amp;#39;s examine Martin&amp;#39;s advice on its own merits. What does he believe about code, and how does he justify that?&lt;/p&gt;
+
+&lt;h3&gt;Clean Code&lt;/h3&gt;
+
+&lt;p&gt;As an intro to how Martin thinks about writing code, let&amp;#39;s take a look at his 2009 book, &lt;em&gt;Clean Code&lt;/em&gt;&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. Sam Hughes has a &lt;a href=&quot;https://qntm.org/clean&quot;&gt;detailed blog post&lt;/a&gt; about this book if you want a full dissection of it, but let&amp;#39;s just pull out a few quotes:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Martin says that functions should not be large enough to hold &lt;em&gt;nested&lt;/em&gt; control structures (conditionals and loops); equivalently, they should not be indented to more than two levels. He says blocks should be one line long, consisting probably of a single function call. He says that an ideal function has &lt;em&gt;zero arguments&lt;/em&gt; (but still no side effects??), and that a function with just three arguments is confusing and difficult to test. Most bizarrely, Martin asserts that an ideal function is &lt;em&gt;two to four lines of code long&lt;/em&gt;. This piece of advice is actually placed at the start of the chapter. It&amp;#39;s the first and most important rule&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Hughes goes on to discuss Martin&amp;#39;s example refactoring of some code from &lt;a href=&quot;http://www.fitnesse.org/&quot;&gt;FitNesse&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;I&amp;#39;ll say again: this is Martin&amp;#39;s own code, written to his personal standards. This is the ideal, presented to us as a learning example.
+&lt;br&gt;&lt;br&gt;
+I will confess at this stage that my Java skills are dated and rusty, almost as dated and rusty as this book, which is from 2008. But surely, even in 2008, this code was illegible trash?
+&lt;br&gt;&lt;br&gt;
+Let&amp;#39;s ignore the wildcard &lt;code&gt;import&lt;/code&gt;.
+&lt;br&gt;&lt;br&gt;
+We have two public, static methods, one private constructor and fifteen private methods. Of the fifteen private methods, fully thirteen of them either have side effects (they modify variables which were not passed into them as arguments, such as &lt;code&gt;buildIncludeDirective&lt;/code&gt;, which has side effects on &lt;code&gt;newPageContent&lt;/code&gt;) or call out to other methods which have side effects (such as &lt;code&gt;include&lt;/code&gt;, which calls &lt;code&gt;buildIncludeDirective&lt;/code&gt;). Only &lt;code&gt;isTestPage&lt;/code&gt; and &lt;code&gt;findInheritedPage&lt;/code&gt; look to be side-effect-free. They still make use of variables which aren&amp;#39;t passed into them (&lt;code&gt;pageData&lt;/code&gt; and &lt;code&gt;testPage&lt;/code&gt; respectively) but they &lt;em&gt;appear&lt;/em&gt; to do so in side-effect-free ways.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I recommend the &lt;a href=&quot;https://qntm.org/clean&quot;&gt;original post&lt;/a&gt; for more examples, but the gist of it is that pretty much the whole book is filled with bad advice like this. Now that we&amp;#39;ve taken a look at &lt;em&gt;Clean Code&lt;/em&gt;, let&amp;#39;s turn our attention to some of his more recent opinions.&lt;/p&gt;
+
+&lt;h3&gt;Tools and Discipline&lt;/h3&gt;
+
+&lt;p&gt;In his 2017 blog post &amp;quot;&lt;a href=&quot;https://blog.cleancoder.com/uncle-bob/2017/01/11/TheDarkPath.html&quot;&gt;The Dark Path&lt;/a&gt;,&amp;quot; Martin discusses programming languages that make some classes of errors impossible (looking at the examples of Swift and Kotlin). On the topic of defects in software, he writes:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Ask yourself why we are trying to plug defects with language features.  The answer ought to be obvious.  We are trying to plug these defects because these defects happen too often.
+&lt;br&gt;&lt;br&gt;
+Now, ask yourself why these defects happen too often.  If your answer is that our languages don’t prevent them, then I strongly suggest that you quit your job and never think about being a programmer again; because defects are &lt;em&gt;never&lt;/em&gt; the fault of our languages.  Defects are the fault of &lt;em&gt;programmers&lt;/em&gt;.   It is &lt;em&gt;programmers&lt;/em&gt; who create defects – not languages.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Leaving aside the gatekeeping of telling people to &amp;quot;quit your job and never think about being a programmer again,&amp;quot; this opinion is obviously ridiculous. He says earlier in the very same blog post:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[Swift and Kotlin] have integrated some functional characteristics. For example, they both have lambdas. This is a good thing, in general. The more we learn about functional programming, the better.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Why is functional programming different from static typing? He provides essentially no justification for this — by his logic, isn&amp;#39;t functional programming just a band-aid over programmers making mistakes? For that matter, why use a high-level language at all, if languages aren&amp;#39;t the correct place to prevent errors? If only programmers were more careful, we could all just write machine code directly!&lt;/p&gt;
+
+&lt;p&gt;This is a consistent part of Martin&amp;#39;s ideology — in &amp;quot;&lt;a href=&quot;http://blog.cleancoder.com/uncle-bob/2017/10/04/CodeIsNotTheAnswer.html&quot;&gt;Tools are not the Answer&lt;/a&gt;&amp;quot;, he writes:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[T]he solution to the software apocalypse is not more tools. The solution is better programming discipline.
+&lt;br&gt;
+[...]
+&lt;br&gt;
+And right there, ladies and gentlemen, you can see both the cause of the apocalypse, and the obvious solution.
+&lt;br&gt;&lt;br&gt;
+The cause:
+&lt;br&gt;
+&lt;ol&gt;
+&lt;li&gt;Too many programmer take sloppy short-cuts under schedule pressure.&lt;/li&gt;
+&lt;li&gt;Too many other programmers think it’s fine, and provide cover.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;br&gt;
+The obvious solution:
+&lt;ol&gt;
+&lt;li&gt;Raise the level of software discipline and professionalism.&lt;/li&gt;
+&lt;li&gt;Never make excuses for sloppy work.&lt;/li&gt;
+&lt;/ol&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This sort of thinking is pervasive in Martin&amp;#39;s writing — he consistently sells TDD and &amp;quot;discipline&amp;quot; as dogmatic solutions to all programming problems, ignoring that better tools help you write better code, even if they are not a wholesale replacement for &amp;quot;discipline&amp;quot;. It&amp;#39;s easy and comforting to blame individual programmers for bad code. But if you&amp;#39;re actually interested in making software better, then you should realize that being careful and using tools that prevent mistakes are not mutually exclusive — using tools that prevent mistakes frees up your mental energy to focus on preventing higher level errors, rather than worrying about null pointer exceptions and double-frees.&lt;/p&gt;
+
+&lt;h3&gt;Types&lt;/h3&gt;
+
+&lt;p&gt;Given that Martin talks so much about why tests are superior to types, he doesn&amp;#39;t seem to have a good understanding of what type systems actually do. For instance, he writes:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/unclebobmartin/status/1135894377329508355&quot;&gt;Thus, the testing burden is independent of typing.  The number of tests you write and execute is unaffected by the type system of your language.&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Which Shriram Krishnamurthi provides an &lt;a href=&quot;https://twitter.com/ShriramKMurthi/status/1136411753590472707&quot;&gt;excellent response to&lt;/a&gt;, explaining why this is factually incorrect:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A sound type system literally precludes certain behaviors, so the set of tests you write when they are precluded not only can be different, in the extreme, it must be (e.g., you can&amp;#39;t write that ill-typed test).
+&lt;br&gt;&lt;br&gt;[...]&lt;br&gt;&lt;br&gt;
+As others have also pointed, parametricity is a case in point. If I have a language with relational parametricity, a parametric type (e.g., forall T . &lt;something involving type T&gt;) is a universal quantifier with a strong guarantee about ALL T. I don&amp;#39;t need to test them all. 
+&lt;br&gt;
+Curiously, there&amp;#39;s &lt;em&gt;value&lt;/em&gt; to doing so at multiple types for T, because it provides explanatory power to the reader reading the tests to understand the function (e.g., in docs). In fact, @PyretLang&amp;#39;s test-based type inference infers quantifiers from such polymorphic uses!
+&lt;br&gt;&lt;br&gt;[...]&lt;br&gt;&lt;br&gt;
+Let me move on to a more interesting case. Suppose you&amp;#39;re writing a device driver, packet filter, etc. One thing you care about deeply is termination. So one of the things you&amp;#39;d like to test for is termination.
+&lt;br&gt;
+Termination is fun: runs exactly into proof-vs-testability, as in the original thread. You can&amp;#39;t prove it always terminates. You can only run several tests and make sure they all did. You need a timeout. That only says &amp;quot;didn&amp;#39;t terminate quickly&amp;quot;. May have done so a bit later.
+&lt;br&gt;
+Except, of course, that I&amp;#39;m lying and set you up. The HP is undecidable &lt;em&gt;for a certain language&lt;/em&gt;. You can easily solve the HP if you change the language. One of my fun puzzles in a model checking class is to encode the HP and show that it appears trivially decidable. WAT.
+&lt;br&gt;
+So let&amp;#39;s bring this back to types. One of the canonical languages of study in PL is the Simply-Typed Lambda Calculus (STLC). And the STLC has this glorious property that every program in it is guaranteed to terminate. It enjoys that property &lt;em&gt;because of the type system&lt;/em&gt;.
+&lt;br&gt;
+This is a rather awesome result. You can have a pretty powerful language, EVEN with full-fledged lambdas, and no matter what you do, you can&amp;#39;t make it go into an infinite loop.
+&lt;br&gt;&lt;br&gt;[...]&lt;br&gt;&lt;br&gt;
+At any rate, I believe this constitutes a definitive refutation: &amp;quot;The number of tests you write and execute is [most certainly affected] by the type system of your language.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This, of course, doesn&amp;#39;t stop Martin from &lt;a href=&quot;https://twitter.com/unclebobmartin/status/1204089346141216768&quot;&gt;making the same claim later&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This sort of sloppiness is extremely common for Martin — in &lt;a href=&quot;https://twitter.com/hillelogram/status/1137126800914550785&quot;&gt;another tweet thread&lt;/a&gt;, he fundamentally misunderstands what the halting problem is, and how it relates to provability.&lt;/p&gt;
+
+&lt;h3&gt;Testing&lt;/h3&gt;
+
+&lt;p&gt;Since Martin appears to believe that testing and discipline are the primary ways that we should seek to improve software quality, let&amp;#39;s look at his thoughts on testing:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/unclebobmartin/status/1135508568323629057&quot;&gt;If you can write production code that covers all cases then you can write tests that cover all cases.&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is trivially incorrect: if you write code that can generate an infinite output, then you will not be able to test all of the outputs. Martin &lt;a href=&quot;https://twitter.com/unclebobmartin/status/1135592854171082752&quot;&gt;responds&lt;/a&gt; to this by saying that it doesn&amp;#39;t matter, since we work on finite state machines, not infinite state machines, completely ignoring the real-world impractically of testing large input sets. If you want to test multiplying two 64-bit numbers&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;, and each test takes 1 nanosecond, you&amp;#39;ll be waiting 10²² years for an answer (that&amp;#39;s around 1 sextillion years). Personally, most of the programs that I write tests for are more complicated than multiplying two 64 bit numbers, so I need some more powerful tools than just testing every case that my code will ever see. If you&amp;#39;re interested in actually learning tools that will help you test large and complicated systems, consider using property-based testing and generative testing in addition to unit testing.&lt;/p&gt;
+
+&lt;h1&gt;The Politics&lt;/h1&gt;
+
+&lt;p&gt;While Martin advocates for a small, dogmatic, and incorrect set of technical ideas for making code better, that&amp;#39;s not why most people are upset with him — it&amp;#39;s far more common for people to be upset about his views on race and gender, and particularly the way that someone in a position of power expressing those views hurts people in the communities that he&amp;#39;s a part of. Let&amp;#39;s take a quick tour of some of these views.&lt;/p&gt;
+
+&lt;h3&gt;Presidential Politics&lt;/h3&gt;
+
+&lt;p&gt;Martin &lt;a href=&quot;https://twitter.com/unclebobmartin/status/1279392044163780609&quot;&gt;tweeted a quote from Trump&lt;/a&gt;, &lt;a href=&quot;https://twitter.com/unclebobmartin/status/1008689152878108674&quot;&gt;voted for Trump&lt;/a&gt;, and has said that there&amp;#39;s &amp;quot;&lt;a href=&quot;https://twitter.com/unclebobmartin/status/1037672852294721536&quot;&gt;plenty to agree with&lt;/a&gt;&amp;quot; in Trump&amp;#39;s policies.&lt;/p&gt;
+
+&lt;h3&gt;Gender&lt;/h3&gt;
+
+&lt;p&gt;Martin has a long, well known history of making sexist remarks in talks at conferences and in blog posts. He made sexist remarks during his &lt;a href=&quot;https://twitter.com/sarahmei/status/895327923346984960&quot;&gt;2009 RailsConf keynote&lt;/a&gt;. He later &lt;a href=&quot;https://twitter.com/sarahmei/status/895335200854384641&quot;&gt;said that he &amp;quot;misspoke&amp;quot;&lt;/a&gt;, but &lt;a href=&quot;https://twitter.com/sarahmei/status/895335422821228544&quot;&gt;didn&amp;#39;t remove the bit from his talk&lt;/a&gt;. in 2012, he &lt;a href=&quot;https://gist.github.com/unclebob/2508746&quot;&gt;apologized&lt;/a&gt; for making more sexist comments, but his apology for those remarks didn&amp;#39;t stop him from writing &lt;a href=&quot;https://meaganwaller.com/framework-whipped/&quot;&gt;a blog post&lt;/a&gt; with multiple sexist metaphors about female secretaries, harems, and concubines. He &lt;a href=&quot;https://gist.github.com/unclebob/2abcce451bafeab421f2&quot;&gt;apologized&lt;/a&gt;, but that hasn&amp;#39;t stopped him from &lt;a href=&quot;http://blog.cleancoder.com/uncle-bob/2017/08/09/ThoughtPolice.html&quot;&gt;defending James Damore&lt;/a&gt;. He has a long history of making sexist comments, apologizing for them, then doing the exact same things again and again.&lt;/p&gt;
+
+&lt;h3&gt;Race&lt;/h3&gt;
+
+&lt;p&gt;Martin says that he&amp;#39;s &amp;quot;&lt;a href=&quot;https://twitter.com/Grady_Booch/status/1282116356381437952/photo/2&quot;&gt;disgusted&lt;/a&gt;&amp;quot; by the NFL players who didn&amp;#39;t stand during the national anthem and that they should be fired (he&amp;#39;s &lt;a href=&quot;https://twitter.com/unclebobmartin/status/1279771445963321345&quot;&gt;against cancel culture&lt;/a&gt; though, and thinks that it&amp;#39;s &amp;quot;evil&amp;quot; to get people fired for debate). He also writes that police &lt;a href=&quot;https://twitter.com/Grady_Booch/status/1282116356381437952/photo/1&quot;&gt;do not target people of color&lt;/a&gt;, and that the United States was not founded on slavery.&lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;I continue to be baffled as to why so many people follow and respect Robert Martin. His technical opinions are dogmatic and frequently incorrect, and he has been consistently sexist and an apologist for racism and authoritarianism. If you respect and follow Martin&amp;#39;s work, I think it&amp;#39;s worth evaluating why that is, and I hope that this post will help you in doing so.&lt;/p&gt;
+
+&lt;p&gt;I trust that Martin will be &lt;a href=&quot;https://blog.cleancoder.com/uncle-bob/2018/12/16/unoffended.html&quot;&gt;unoffended&lt;/a&gt; by this post.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Thanks to Hillel Wayne, Dan Luu, and one or more people who would prefer to remain anonymous for sources/comments/feedback/discussion about this post&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;I have not read &lt;em&gt;Clean Code&lt;/em&gt;, but based on excerpts and reviews from people I trust, I don&amp;#39;t really feel that I need to. I&amp;#39;ve read enough clearly bad advice from direct quotes from it that I don&amp;#39;t particularly want to spend my time reading the whole thing.&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;If you think that this sort of test is impractical and the sort of thing no one would do, consider that CPU manufacturers regularly write tests for this sort of behaviour, and &lt;a href=&quot;https://en.wikipedia.org/wiki/Pentium_FDIV_bug&quot;&gt;pay significantly when they get it wrong&lt;/a&gt;.&amp;nbsp;&lt;a href=&quot;#fnref2&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Mon, 14 Sep 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/robert-martin</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/robert-martin</guid>
+      </item>
+    
+      <item>
+        <title>Notes on Parsing in Rust</title>
+        <description>&lt;p&gt;I&amp;#39;ve recently been writing a bit of parsing code in Rust, and I&amp;#39;ve been jumping back and forth between a few different parsing libraries - they all have different advantages and disadvantages, so I wanted to write up some notes here to help folks who are undecided choose what libraries and techniques to consider, and also to offer some suggestions for the future of the Rust parsing ecosystem.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;m writing this after writing parsers for two fairly different usecases:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;a fairly simple binary format (mostly just serializing structs, but it also has varints, fixed-point numbers, various types of containers)&lt;/li&gt;
+&lt;li&gt;a very simple templating language (&lt;a href=&quot;https://shopify.github.io/liquid/&quot;&gt;liquid-template&lt;/a&gt;-esque)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Some of these libraries are only/mostly applicable to one or the other - I will note when that is the case.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Last updated: April 2020&lt;/strong&gt; - the Rust ecosystem is evolving quickly, things may have changed since this was written.&lt;/p&gt;
+
+&lt;h2&gt;&lt;a href=&quot;https://github.com/Geal/nom/&quot;&gt;nom&lt;/a&gt; (v5.1.1)&lt;/h2&gt;
+
+&lt;p&gt;nom is probably the most famous Rust parsing library - it&amp;#39;s a &lt;a href=&quot;http://theorangeduck.com/page/you-could-have-invented-parser-combinators&quot;&gt;parser-combinator&lt;/a&gt; library, which means that you write functions to parse little bits of your inputs, then you use the &amp;quot;combinators&amp;quot; that nom provides to combine them together into larger parsers. nom is good for both binary and textual formats, and can handle streaming data (where you start parsing before you have all of the data), which is nice if you want that.&lt;/p&gt;
+
+&lt;p&gt;I like nom a lot - I really enjoy using parser combinators, and nom is definitely my goto for lots of things, but it does come with a few caveats:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The documentation isn&amp;#39;t great, and figuring out how you&amp;#39;re supposed to use it can be difficult. It&amp;#39;s gotten &lt;em&gt;a lot&lt;/em&gt; better now that it&amp;#39;s no longer macro-based, but it can still be pretty frustrating to figure out.&lt;/li&gt;
+&lt;li&gt;The documentation being lacking exacerbates the fact that the selection of combinators and helper functions isn&amp;#39;t as large as I&amp;#39;d like - for instance, I spent quite a while looking for something that operated like &lt;a href=&quot;https://github.com/Geal/nom/issues/1147&quot;&gt;&lt;code&gt;take_until1&lt;/code&gt;&lt;/a&gt;, just to find out that it doesn&amp;#39;t exist in the current version of nom, and I&amp;#39;d have to implement it myself.&lt;/li&gt;
+&lt;li&gt;The error handling story is not good. It&amp;#39;s possible that I&amp;#39;m just holding it wrong, since apparently error handling was improved in 5.0, but after reading all of the available docs and some of the source code, I wasn&amp;#39;t able to figure out how to return custom error types in a way that&amp;#39;s not extremely verbose. And that&amp;#39;s just to get &lt;em&gt;any&lt;/em&gt; information out - if you want to get spans and human-friendly error messages, that&amp;#39;s probably even harder.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Overall, I liked using nom, and will probably continue to use it, especially for small to medium sized parsers where I care about performance&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. Hopefully the error handling will get better soon, and it can be my goto for more things.&lt;/p&gt;
+
+&lt;h2&gt;&lt;a href=&quot;https://github.com/lalrpop/lalrpop/&quot;&gt;LALRPOP&lt;/a&gt; (v0.18.1)&lt;/h2&gt;
+
+&lt;p&gt;LALRPOP is a parser-generator, meaning that it takes in a file that describes the grammar you want to parse, and generates code that implements a parser for that grammar. You can check out some examples of what the grammar files look like &lt;a href=&quot;https://github.com/lalrpop/lalrpop/tree/5ba76e258747753e5ddcc1ace386d4d56a598924/doc/calculator/src&quot;&gt;here&lt;/a&gt;. It&amp;#39;s designed primarily for textual formats.&lt;/p&gt;
+
+&lt;p&gt;It&amp;#39;s primary goal is usability, and that really shows - since the grammar is designed specifically to work with Rust, it can directly generate the Rust structs that describe your AST, which is really really nice - you don&amp;#39;t need to write any repetitive code at all, you can just describe your grammar and get an AST out. However, there&amp;#39;s a big caveat here - LALRPOP splits out the parsing and lexing phases, and the built-in lexer is described by the author as being &lt;a href=&quot;https://github.com/lalrpop/lalrpop/issues/193#issuecomment-286704517&quot;&gt;&amp;quot;intended to be a toy&amp;quot;&lt;/a&gt;, and it seems pretty annoying to write your own. So, if you have a grammar that requires a non-trivial lexer, you still will need to write Rust code.&lt;/p&gt;
+
+&lt;p&gt;The particular issue that bit me is if you have two &amp;quot;terminals&amp;quot; that are ambiguous, even if the grammar isn&amp;#39;t ambiguous overall (because only one of the terminals will be able to be parsed at any given time), LALRPOP will not be able to parse the grammar. For instance, a silly example:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;grammar;
+
+pub Main: () = {
+  &quot;foo: &quot; &amp;lt;foo: Foo&amp;gt; =&amp;gt; foo,
+  &quot;bar: &quot; &amp;lt;bar: Bar&amp;gt; =&amp;gt; bar,
+};
+
+Foo: String = {
+  &amp;lt;value: r&quot;[A-Za-z0-9]+&quot;&amp;gt; =&amp;gt; value,
+};
+
+Bar: String = {
+  &amp;lt;value: r&quot;[A-Z]+&quot;&amp;gt; =&amp;gt; value,
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This grammar parses either the string &amp;quot;foo: &amp;quot; followed by any number of alphanumeric characters, or the string &amp;quot;bar: &amp;quot; followed by any number of uppercase latin letters. This is non-ambiguous, but LALRPOP does not accept it, because &amp;quot;any alphanumeric character&amp;quot; is ambiguous with &amp;quot;any uppercase latin letter&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;I ran into this issue and stopped using LALRPOP (since I was too lazy to figure out how to write my lexer the way LALRPOP wanted me to). Which is a shame, since LALRPOP is extremely nice otherwise! Being able to just write the grammar file and get structs out is amazing, and the grammar language seems quite nice. There&amp;#39;s an &lt;a href=&quot;https://github.com/lalrpop/lalrpop/issues/195&quot;&gt;open issue&lt;/a&gt; for fixing this, but unfortunately it seems pretty fundamental to LALRPOP&amp;#39;s current design.&lt;/p&gt;
+
+&lt;h2&gt;&lt;a href=&quot;https://github.com/pest-parser/pest&quot;&gt;pest&lt;/a&gt; (v2.1.3)&lt;/h2&gt;
+
+&lt;p&gt;pest is a parser-generator using &lt;a href=&quot;https://en.wikipedia.org/wiki/Parsing_expression_grammar&quot;&gt;PEG&lt;/a&gt; as an input, making it more powerful than LALRPOP (presumably at the cost of being slower, but I haven&amp;#39;t tried to benchmark either of them). This makes it very easy to write a grammar and get a tree back, but unfortunately the tree that you get has no types associated with it (unlike LALRPOP), so you need to manually write the code to take the output of pest and write it into an AST that you&amp;#39;d actually want to use. This code tends to be pretty rote and easy to write, but you still do have to write it, which is a bit annoying, and keeping it in sync with a changing grammar seems extremely annoying and bug-prone.&lt;/p&gt;
+
+&lt;p&gt;pest also has a pretty nice error handling story, given that it gives you spans to work with so you can report errors fairly easily. I haven&amp;#39;t used it enough to see how that really scales up for more complicated things, but superficially, it seems pretty nice.&lt;/p&gt;
+
+&lt;h1&gt;What I went with&lt;/h1&gt;
+
+&lt;p&gt;For the template parser, I went with pest, since it allowed me to get a prototype of the ground as quickly as possible, which is what I was optimizing for for that project. I don&amp;#39;t think I&amp;#39;d be happy with it in the long term (keeping the untyped pest output to AST code in sync with the grammar long-term seems really frustrating and error prone), but I was very happy with it as a prototype.&lt;/p&gt;
+
+&lt;p&gt;For the binary protocol, I originally wrote a parser with nom, which I was quite happy with. However, once I wanted to implement serialization as well as parsing, after a quick detour trying to use serde&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;, I decided to implement both parsing and serializing using a custom procmacro which I wrote myself (with the help of &lt;a href=&quot;https://github.com/BurntSushi/byteorder&quot;&gt;byteorder&lt;/a&gt;), and I ended up happier with that solution than I was with the original nom parser - it ended up being fewer lines of code, as well as seeming simpler overall.&lt;/p&gt;
+
+&lt;h1&gt;What I want in the future&lt;/h1&gt;
+
+&lt;p&gt;I&amp;#39;d love to see a crate that combines the usability of LALRPOP&amp;#39;s format with the expressivity of PEG parsers, for when I want to quickly hack together a prototype of something involving a parser, or for cases where optimization is not as important.&lt;sup id=&quot;fnref3&quot;&gt;&lt;a href=&quot;#fn3&quot; rel=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;d also love to see nom get better error handling support and docs, as well as more combinators in its library.&lt;/p&gt;
+
+&lt;p&gt;And implementing all of this was also definitely a good reminder that writing a parser by hand can be a good choice a lot of the time as well! You don&amp;#39;t always have to turn to a library to solve your problems.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;ll also close this out with the caveat that basically all of the parsing I&amp;#39;ve done has been for extremely small &amp;quot;toy&amp;quot; problems, and so this post ignores a lot of concerns that I&amp;#39;d have writing something more &amp;quot;real&amp;quot; - particularly, I think it&amp;#39;s quite a bit harder to get good error messages out of a parser-generator than a parser-combinator or a handwritten parser, and error messages are generally a really important and underappreciated part of parser design.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;I have not performed benchmarking on any of these libraries, but I would expect, and anecdotally hear that nom is faster than most parser-generators (and, for instance, pest&amp;#39;s own benchmarks show that nom is faster than pest). YMMV, run benchmarks if you care about performance, etc.&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;This is a whole other blog post, but an important thing to realize with serde is that, while it&amp;#39;s great at writing serializers and deserializers for very generic data formats, for more specialized formats where you need a lot of control over fiddly details, it can be really frustrating/impossible to specify what you want. For instance, treating some &lt;code&gt;i32&lt;/code&gt;s as varints and others as fixed-width is extremely annoying in serde, but trivial in my custom procmacro solution. Similarly, dealing with different &lt;code&gt;Vec&lt;/code&gt;s being length-prefixed in different ways is really not something serde is designed to handle.&amp;nbsp;&lt;a href=&quot;#fnref2&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn3&quot;&gt;
+&lt;p&gt;EDIT: I&amp;#39;m informed that &lt;a href=&quot;https://github.com/kevinmehall/rust-peg&quot;&gt;rust-peg&lt;/a&gt; may be what I&amp;#39;m looking for, and indeed it looks quite nice. So if you too want this, consider trying rust-peg :)&amp;nbsp;&lt;a href=&quot;#fnref3&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 29 Apr 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/rust-parsing</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/rust-parsing</guid>
+      </item>
+    
+      <item>
+        <title>How to set up the APIC to get keyboard interrupts</title>
+        <description>&lt;p&gt;So, you&amp;#39;re writing a hobby operating system. It&amp;#39;s 64-bit, because what even is the point of a computer if you can&amp;#39;t count to 18,446,744,073,709,551,615? You&amp;#39;re writing it on x86, because you like sadness and misery. How do you set up the &lt;abbr title=&quot;Advanced Programmable Interrupt Controller&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/APIC&quot;&gt;APIC&lt;/a&gt;&lt;/abbr&gt; and &lt;abbr title=&quot;Input/Output Advanced Programmable Interrupt Controller&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/IOAPIC&quot;&gt;I/O APIC&lt;/a&gt;&lt;/abbr&gt; to get keyboard interrupts?&lt;/p&gt;
+
+&lt;p&gt;I struggled with this a bit, so here&amp;#39;s a guide. It doesn&amp;#39;t have code, because all of my code is written in a custom dialect of Forth, which won&amp;#39;t help you much. It does have all of the steps, because figuring that out is the hard part.&lt;/p&gt;
+
+&lt;p&gt;First, I&amp;#39;ll assume that you&amp;#39;re in protected mode, you have a valid &lt;abbr title=&quot;Global Descriptor Table&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/GDT&quot;&gt;GDT&lt;/a&gt;&lt;/abbr&gt;, and a valid &lt;abbr title=&quot;Interrupt Descriptor Table&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/IDT&quot;&gt;IDT&lt;/a&gt;&lt;/abbr&gt; with at least one working &lt;abbr title=&quot;Interrupt Service Routine&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/ISR&quot;&gt;ISR&lt;/a&gt;&lt;/abbr&gt;. You should be able to trigger an &lt;abbr title=&quot;Interrupt Request&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/IRQ&quot;&gt;IRQ&lt;/a&gt;&lt;/abbr&gt; with the &lt;code&gt;int&lt;/code&gt; instruction and have something happen.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;#39;s how setting up the &lt;abbr title=&quot;Advanced Programmable Interrupt Controller&quot;&gt;APIC&lt;/abbr&gt; goes:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Disable the &lt;abbr title=&quot;Programmable Interrupt Controller&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/PIC&quot;&gt;PIC&lt;/a&gt;&lt;/abbr&gt;.
+
+&lt;ul&gt;
+&lt;li&gt;Remap the &lt;abbr title=&quot;Programmable Interrupt Controller&quot;&gt;PIC&lt;/abbr&gt;, so that its interrupts start at &lt;code&gt;0x20&lt;/code&gt;. We do this so that in the case that there are spurious interrupts, they don&amp;#39;t get in our way.&lt;/li&gt;
+&lt;li&gt;Mask off all &lt;abbr title=&quot;Interrupt Request&quot;&gt;IRQ&lt;/abbr&gt;s.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://web.archive.org/web/20140628205356/www.acm.uiuc.edu/sigops/roll_your_own/i386/irq.html&quot;&gt;This page&lt;/a&gt; has instructions for interacting with the PIC - disabling it looks the same, but the mask is &lt;code&gt;0xFF&lt;/code&gt; instead of &lt;code&gt;0xF8&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Depending on the system, you may need to disable PIC mode by writing to the &lt;abbr title=&quot;Interrupt Mode Control Register&quot;&gt;IMCR&lt;/abbr&gt; register. This is unusual on modern systems, but for a correct implementation, read bit 7 of MP feature information byte 2 to check if PIC mode is implemented. &lt;a href=&quot;http://zygomatic.sourceforge.net/devref/group__arch__ia32__apic.html&quot;&gt;This page&lt;/a&gt; has some instructions for doing this.&lt;/li&gt;
+&lt;li&gt;Configure the &amp;quot;Spurious Interrupt Vector Register&amp;quot; of the Local APIC, being sure to set bit 8 (&amp;quot;APIC Software Enable/Disable&amp;quot;). &lt;code&gt;0xFF&lt;/code&gt; is a reasonable choice for the spurious vector.&lt;/li&gt;
+&lt;li&gt;Parse the &lt;abbr title=&quot;Advanced Configuration and Power Interface&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/ACPI&quot;&gt;ACPI&lt;/a&gt;&lt;/abbr&gt;&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; tables - specifically, get the &lt;abbr title=&quot;Input/Output Advanced Programmable Interrupt Controller&quot;&gt;I/O APIC&lt;/abbr&gt; address and Local APIC ID out of the &lt;abbr title=&quot;Multiple APIC Description Table&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/MADT&quot;&gt;MADT&lt;/a&gt;&lt;/abbr&gt; and read all of the Interrupt Source Override entries - if the IRQ source of any of them is 1, you will need to use the corresponding global system interrupt value when you set up &lt;abbr title=&quot;I/O Redirection Table&quot;&gt;IOREDTBL&lt;/abbr&gt; entry.&lt;/li&gt;
+&lt;li&gt;Configure the IOREDTBL entry in registers &lt;code&gt;0x12&lt;/code&gt; and &lt;code&gt;0x13&lt;/code&gt; (unless you need to use a different one, per the above step).
+
+&lt;ul&gt;
+&lt;li&gt;Set the vector to whatever your &lt;abbr title=&quot;Interrupt Service Routine&quot;&gt;ISR&lt;/abbr&gt; vector is, deliver mode to fixed (000), destination mode to physical (0), pin polarity to active high (0), trigger mode to edge (0), mask to enabled (0), and set the destination to the Local APIC ID (which can get from reading from the local APICs register &lt;code&gt;0x20&lt;/code&gt;, or from the CPUID feature information function).&lt;/li&gt;
+&lt;li&gt;Beware - the low bits of the entry are in the first register, and the high bits in the second register - the reverse of what you might expect. You should write the vector to &lt;code&gt;0x12&lt;/code&gt;, and the Local APIC ID to &lt;code&gt;0x13&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;For a correct implementation, make sure to read the current value of the register, overwrite only the bits you care about (keeping the reserved bits as-is), then write that value back. In practice, setting the reserved bits to zero won&amp;#39;t cause anything to break on systems I&amp;#39;ve seen, but you might as well do things right.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Enable the APIC by setting the 11th bit of the APIC base &lt;abbr title=&quot;Model Specific Register&quot;&gt;&lt;a href=&quot;https://wiki.osdev.org/MSR&quot;&gt;MSR&lt;/a&gt;&lt;/abbr&gt; (&lt;code&gt;0x1B&lt;/code&gt;). This is probably already done for you, but worth checking if things aren&amp;#39;t working for you.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Once you&amp;#39;ve done all this, you should be able to press a key and have your ISR called. Hooray! If you want to be able to receive more than one keypress, write a zero dword to the address &lt;code&gt;0xfee000b0&lt;/code&gt; at the end of your keyboard interrupt handler.&lt;/p&gt;
+
+&lt;h1&gt;Debugging Tips&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;GDB can be pretty useful for poking around at memory - it&amp;#39;s worth setting up GBD with QEMU so you can poke around - you can pass &lt;code&gt;-s -S&lt;/code&gt; to qemu (to start the GDB server and to pause the kernel on start, respectively), then start gdb and type &lt;code&gt;target remote :1234&lt;/code&gt; to connect. See the &lt;a href=&quot;https://wiki.osdev.org/QEMU#GDB-Stub&quot;&gt;OSDev wiki&lt;/a&gt; for more info :)&lt;/li&gt;
+&lt;li&gt;If you&amp;#39;re not sure if you&amp;#39;re writing to the correct register, try reading from it and seeing if the value you get back makes sense - oftentimes there are default values, and if you&amp;#39;re writing to the wrong thing, reading what it is before you try to write can reveal that.&lt;/li&gt;
+&lt;li&gt;Work incrementally - it can be good to enable the PIC to check that your ISR works with that before you disable the PIC.&lt;/li&gt;
+&lt;li&gt;When in doubt, go to the authoritative documentation - while the OSDev wiki is nice, it is not nearly as complete as the Intel manual, and is often missing information. Reading the Intel manual is a good skill to practice. See the resources section below.&lt;/li&gt;
+&lt;li&gt;Hardcoding values at first is fine - if you know that the local APIC ID of your bootstrap processor is always zero, and you know that the IOREDTBL has the destination zeroed by default, you don&amp;#39;t need to write the local APIC id at first, you can just leave that register alone. Similarly, if you know you don&amp;#39;t have any relevant Interrupt Source Override entries in your MADT, don&amp;#39;t worry about handling the case where you do, until you get things working properly without complicating anything.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Resources&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf&quot;&gt;Intel Software Developer&amp;#39;s Manual&lt;/a&gt; - Chapter 10 is the relevant part here.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://pdos.csail.mit.edu/6.828/2014/readings/ia32/ioapic.pdf&quot;&gt;I/O APIC datasheet&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://uefi.org/sites/default/files/resources/ACPI_5_1release.pdf&quot;&gt;ACPI Specification&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The state of documentation for x86_64 hobbyist operating system development is quite poor compared to 32bit x86, but getting things working is very rewarding - I hope you stick with it!&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;Who the hell decided that &lt;abbr title=&quot;Advanced Programmable Interrupt Controller&quot;&gt;APIC&lt;/abbr&gt; and &lt;abbr title=&quot;Advanced Configuration and Power Interface&quot;&gt;ACPI&lt;/abbr&gt;, two completely different but slightly overlapping things, should have names that are anagrams of each other? Why? What for?&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sat, 18 Apr 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/ioapic-interrupts</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/ioapic-interrupts</guid>
+      </item>
+    
+      <item>
+        <title>Why talk about compensation?</title>
+        <description>&lt;p&gt;There&amp;#39;s been some Twitter discourse about people working in tech sharing their salaries - it started with &lt;a href=&quot;https://twitter.com/ZacSweers/status/1228205724255154177&quot;&gt;Zac Sweers&lt;/a&gt;, and many other people shared their compensation. As that was happening, there was some backlash&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; , saying that people sharing their salaries is basically just flexing, and instead of bragging on Twitter, people should just go out and do something that actually helps, like unionizing.&lt;/p&gt;
+
+&lt;p&gt;While I don&amp;#39;t think that the current iteration of people sharing their salaries on Twitter is as useful as it could be, I think that it&amp;#39;s incredibly important for people to talk about their pay, and I want to tell you a few stories about why. To start with, we&amp;#39;ll have to go back a decade - a group of employees of tech companies including Google, Apple, and Intel filed &lt;a href=&quot;https://danluu.com/google-wage-fixing/&quot;&gt;a class action lawsuit&lt;/a&gt;, stating that their employers colluded in a wage-fixing agreement to keep salaries down.&lt;/p&gt;
+
+&lt;p&gt;Steve Jobs was at the source of much of the wage-fixing, becoming angry when companies hired Apple employees - he wrote to Google co-founder Sergey Brin regarding the Safari team:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;if you hire a single one of these people that means war.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;When a Google employee &lt;a href=&quot;https://www.reuters.com/article/us-apple-lawsuit/steve-jobs-told-google-to-stop-poaching-workers-idUSTRE80Q27420120127&quot;&gt;referred an Apple employee for a job&lt;/a&gt;, Steve Jobs emailed Eric Schmidt, who responded by firing the Google employee who had sent the referral. Google&amp;#39;s staffing director saying upon hearing about the situation that the employee &amp;quot;will be terminated within the hour,&amp;quot; and to &amp;quot;Please extend my apologies as appropriate to Steve Jobs.&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;When Palm, Inc refused to participate in the wage-fixing agreement, Steve Jobs wrote:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This is not satisfactory to Apple.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;m sure you realize the asymmetry in the financial resources of our respective companies when you say: &amp;quot;we will both just end up paying a lot of lawyers a lot of money.&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;My advice is to take a look at our patent portfolio before you make a final decision here.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A Senior Vice President at Google wrote about compensation that:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[The] long-term ... right approach is not to deal with these situations as one-offs but to have a systematic approach to compensation that makes it very difficult for anyone to get a better offer.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As a result of driving wages down for more than half a decade, the companies paid out around $3,840 to each affected employee. I&amp;#39;ll let you do the math on that one.&lt;/p&gt;
+
+&lt;p&gt;So I think that it&amp;#39;s obvious that employers have shown in interest in keeping salaries down, and one of the tools that is used to do that is making sure people don&amp;#39;t have information about how much their coworkers are being paid. And while tech workers have it pretty good in terms of compensation (at least here in the States), the number of people I know who save their company tens or hundreds of millions of dollars, and as a reward are given raises less than a tenth of a percent of what they saved makes me think that it&amp;#39;s worth talking about who&amp;#39;s capturing the value of our labour.&lt;/p&gt;
+
+&lt;p&gt;But how we talk about our salaries matters - just knowing that other people are out there, making four or five times as much as you are doesn&amp;#39;t help your situation much unless you&amp;#39;re able to negotiate that raise for yourself.&lt;/p&gt;
+
+&lt;p&gt;A friend of mine recently learned that one of his coworkers made around 1.6x what he did. If the story ended there, it wouldn&amp;#39;t be too interesting. But instead of just leaving for greener pastures, or negotiating a raise for himself, he started talking to his coworkers about how much they made. As it turned out, everyone except one person all made about the same amount - why was that person&amp;#39;s work (doing the same work on the same project team) worth 60% more than everyone else&amp;#39;s? Just a couple months after talking frankly about compensation, the highly-paid coworker and my friend negotiated for an extra week of vacation (not just for themselves, but for everyone at the company). And it&amp;#39;s not just vacation - collectively, everyone at the company negotiated for oncall compensation as well. After talking to his coworkers about their compensation, and collectively bargaining for fairer compensation, my friend has now gone on to sign an offer at a different company for significantly more money - all because of open conversations about salary and working environments, and collective action to improve that for everyone.&lt;/p&gt;
+
+&lt;p&gt;By talking with our coworkers, being open about our salaries, and bargaining collectively, we can not just improve our own conditions, but also lift up everyone around us. People have fought and been killed for &lt;a href=&quot;https://en.wikipedia.org/wiki/Protected_concerted_activity&quot;&gt;our right to openly discuss compensation&lt;/a&gt;, and I think it&amp;#39;s worth exercising that right. So talk to your coworkers, and if you see me around the office or in person, know that I&amp;#39;m happy to talk about how much I&amp;#39;m paid and what I know about salary bands at any place I&amp;#39;ve worked.&lt;/p&gt;
+
+&lt;p&gt;By talking to your coworkers and building solidarity, we can build a fairer and better world together.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;I&amp;#39;m not going to link any specific tweets, but I saw this from a few places.&amp;nbsp;&lt;a href=&quot;#fnref1&quot; rev=&quot;footnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Mon, 17 Feb 2020 00:00:00 +0800</pubDate>
+        <link>https://blog.wesleyac.com/posts/wages</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/wages</guid>
+      </item>
+    
   </channel>
 </rss>

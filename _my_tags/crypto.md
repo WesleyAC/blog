@@ -1,4 +1,0 @@
----
-slug: crypto 
-name: Crypto 
----

@@ -1,4 +1,0 @@
----
-slug: google
-name: Google
----

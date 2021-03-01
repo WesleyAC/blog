@@ -1,4 +1,0 @@
----
-slug: entrepreneurship
-name: entrepreneurship
----

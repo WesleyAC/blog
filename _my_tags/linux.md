@@ -1,4 +1,0 @@
----
-slug: linux
-name: Linux
----

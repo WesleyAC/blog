@@ -1,4 +1,0 @@
----
-slug: sysadmin
-name: Sysadmin
----

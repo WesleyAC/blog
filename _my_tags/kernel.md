@@ -1,4 +1,0 @@
----
-slug: kernel
-name: Kernel
----
