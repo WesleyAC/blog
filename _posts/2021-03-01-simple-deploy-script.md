@@ -4,7 +4,7 @@ title: "A simple but safe deploy script"
 description: ""
 ---
 
-I write a lot of small web servers as statically linked, single-file rust files, usually using [rust-musl-builder](https://github.com/emk/rust-musl-builder) to generate the binary, and [rust-embed](https://github.com/pyros2097/rust-embed/) to include the static files as part of the binary. This makes deploying really easy, but it still takes some care to get it really nice. What I want is a system where:
+I write a lot of small web servers as statically linked, single-file rust binaries, usually using [rust-musl-builder](https://github.com/emk/rust-musl-builder) to generate the binary, and [rust-embed](https://github.com/pyros2097/rust-embed/) to include the static files as part of the binary. This makes deploying really easy, but it still takes some care to get it really nice. What I want is a system where:
 
 * I can run a single command to build and deploy my program
 * There will be minimal downtime
