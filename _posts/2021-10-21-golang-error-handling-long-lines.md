@@ -70,3 +70,9 @@ Is the invocation that you're supposed to use, but the compiler won't warn you, 
 I was interested in giving Go another shot, after having some major compile-speed frustrations with Rust stemming from people being too clever with types, but I don't feel that I can take a language where it's this easy to fuck up error handling seriously.
 
 Error handling can be subtle and nuanced in a lot of ways, but one of my baseline expectations for any modern language is that errors will not be silent: static, default-on tooling should be able to give you a list of every error you aren't handling, and ideally, just reading the source code should make unhandled errors legible without having to have knowledge of library code. I'm sad that Go seems to fail that benchmark.
+
+---
+
+<br>
+
+Update: Someone asked me about the feasibility of writing a static check to catch this error. It seem to me that it should be quite easy, given the static analysis infrastructure that exists already for Go, but th problem is that this kind of API (which Go seems to have a lot of) doesn't express the error semantics in the types, but rather leaves it implicit in the structure of the library code — this means that a static check for this can't be generic, but instead has to specifically know about the error semantics of `bufio.Scanner`, which are only expressed in the docs. It's easy to make a static check for this exact thing, but it's essentially impossible to write a static check that will catch this entire category of error.
