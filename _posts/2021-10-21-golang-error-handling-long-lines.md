@@ -6,7 +6,7 @@ description: ""
 
 I was recently trying to work with a dataset that was provided to me as a MySQL database dump. Since I'm not a masochist, I certainly wasn't going to run a MySQL database. Instead, I figured, I'd just write a quick little script to parse the database dump and write it out to a nicer format.
 
-I figured I'd just grab some off-the-shelf SQL parser, write a tiny bit of hacky glue code, and be done — [sqlparser-rs](https://github.com/sqlparser-rs/sqlparser-rs/issues/362) was the first thing I reached for, but I quickly found that its support for MySQL was [not up to snuff](https://github.com/sqlparser-rs/sqlparser-rs/issues/362). Abandoning sqlparser-rs, I turned to [pingcap/parser](https://github.com/pingcap/parser/), which claimed to target the MySQL dialect. The only catch: I have to deal with writing Go. But it's just a tiny script, how bad can it be?
+I planned to just grab some off-the-shelf SQL parser, write a tiny bit of hacky glue code, and be done — [sqlparser-rs](https://github.com/sqlparser-rs/sqlparser-rs/issues/362) was the first thing I reached for, but I quickly found that its support for MySQL was [not up to snuff](https://github.com/sqlparser-rs/sqlparser-rs/issues/362). Abandoning sqlparser-rs, I turned to [pingcap/parser](https://github.com/pingcap/parser/), which claimed to target the MySQL dialect. The only catch: I have to deal with writing Go. But it's just a tiny script, how bad can it be?
 
 I started with a simple script to loop through all the lines in the file:
 
