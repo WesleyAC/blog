@@ -5,7 +5,7 @@ description: ""
 date: 2021-10-29 19:30:00
 ---
 
-A while ago, I was curious how the speed of `document.getElementById` compared to `document.querySelector` in Javascript. `querySelector` has to do a lot more work, so one would expect that it would be slower, but I didn't know if the difference was enough to care about.
+A while ago, I was curious how the speed of `document.getElementById` compared to `document.querySelector` in Javascript for selecting a single element by ID. `querySelector` has to do a lot more work, so one would expect that it would be slower, but I didn't know if the difference was enough to care about.
 
 I wrote a little benchmark to test this. You can run it by clicking <button onclick="run_test()" id="run_button">here</button>. This creates 100,000 elements, and then selects them all in a loop. It does this 105 times, and ignores the first 5 results (to avoid caching effects). It then plots a historgram of the average time per function call (in milliseconds) for each run. There is a template string used in the loop that I'm testing, so the exact numbers are slightly inflated, but in a way that is consistent across both functions.
 
