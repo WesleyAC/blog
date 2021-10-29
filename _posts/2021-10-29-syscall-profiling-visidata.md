@@ -4,7 +4,7 @@ title: "Quick and Dirty Syscall Profiling with strace and VisiData"
 description: ""
 ---
 
-[Bert](http://somethingdoneright.net/) and I got talking this morning about Python startup time — Bert has a theory that batching `stat` calls via io_uring might lead to worthwhile interpreter startup time improvements.
+[Bert](http://somethingdoneright.net/) and I got talking this morning about Python startup time — Bert has [a theory](http://somethingdoneright.net/2021/10/29/investigating-python-startup-time.html) that batching `stat` calls via io_uring might lead to worthwhile interpreter startup time improvements.
 
 In order to start validating that, we first wanted to see what system calls the python interpreter made. I made a blank python file:
 
