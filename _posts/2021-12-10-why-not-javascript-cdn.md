@@ -4,7 +4,7 @@ title: "Reasons to avoid Javascript CDNs"
 description: ""
 ---
 
-Many javascript projects have install instructions recommending that people use a CDN like [jsdelivr](https://www.jsdelivr.com/) or [unpkg](https://unpkg.com/) to include the code on their website. This has the advantage that it's quicker to get started with, and it's often claimed to load faster. However, it also has downsides when it comes to privacy, security, and systemic risk, and it may actually be slower in some common cases. Here are some reasons not to use a javsacript CDN, and some alternatives to consider instead.
+Many javascript projects have install instructions recommending that people use a CDN like [jsdelivr](https://www.jsdelivr.com/) or [unpkg](https://unpkg.com/) to include the code on their website. This has the advantage that it's quicker to get started with, and it's often claimed to load faster. However, it also has downsides when it comes to privacy, security, and systemic risk, and it may actually be slower in some common cases. Here are some reasons not to use a javascript CDN, and some alternatives to consider instead.
 
 ## Systemic Risk
 
@@ -38,4 +38,4 @@ The takeaway here is that if you're using a CDN for any reason other than lazine
 
 What I do is just download the library that I want and include the files in my repo, just like any other source file. I usually do this in a directory called `vendored` or `3p`, and be sure to include the version number of the package that I downloaded in the filename. This takes maybe 60 seconds more work than including the CDN version, which seems worth it to me for the privacy, robustness, and speed benefits.
 
-If you are going to use a CDN, at the very least, include a SRI hash — they're super easy to generate with [this tool](https://www.srihash.org/). And if you're a library author who writes install instructions recommending the use of a CDN, *definitly* include a SRI hash — that way people don't need to know to do it themselves, they can just copy and paste it.
+If you are going to use a CDN, at the very least, include a SRI hash — they're super easy to generate with [this tool](https://www.srihash.org/). And if you're a library author who writes install instructions recommending the use of a CDN, *definitely* include a SRI hash — that way people don't need to know to do it themselves, they can just copy and paste it.
