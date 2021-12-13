@@ -8,6 +8,7 @@
     <link>https://blog.wesleyac.com</link>
     <atom:link href="https://blog.wesleyac.com/{{ page.path }}" rel="self" type="application/rss+xml" />
     {% for post in site.posts limit:10 %}
+    {% if post.hide != true %}
       <item>
         <title>{{ post.title | xml_escape }}</title>
         <description>{{ post.content | xml_escape }}</description>
@@ -15,6 +16,7 @@
         <link>https://blog.wesleyac.com{{ post.url }}</link>
         <guid isPermaLink="true">https://blog.wesleyac.com{{ post.url }}</guid>
       </item>
+    {% endif %}
     {% endfor %}
   </channel>
 </rss>
