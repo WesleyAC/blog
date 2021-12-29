@@ -21,7 +21,7 @@ GEM
       forwardable-extended (~> 2.5)
     fastimage (2.0.1)
       addressable (~> 2)
-    ffi (1.9.14)
+    ffi (1.15.4)
     forwardable-extended (2.6.0)
     html-proofer (3.4.0)
       activesupport (>= 4.2, < 6.0)
@@ -78,7 +78,7 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
-    redcarpet (3.3.4)
+    redcarpet (3.5.1)
     rouge (1.11.1)
     safe_yaml (1.0.4)
     sass (3.4.23)
@@ -110,4 +110,4 @@ DEPENDENCIES
   uglifier
 
 BUNDLED WITH
-   2.1.4
+   2.2.24
