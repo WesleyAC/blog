@@ -4,7 +4,7 @@ title: "The Curse of NixOS"
 description: ""
 ---
 
-I've used [NixOS](https://nixos.org/) as the only OS on my laptop for around three years at this point. Installing it has felt sort of like a curse: on the one hand, it's so clearly the only operating system that actually gets how package management should be done. After using it, I can't go back to anything else. One the other hand, it's extremely complicated constantly changing software that requires configuration with the second-worst homegrown config programming language I've ever used[^1].
+I've used [NixOS](https://nixos.org/) as the only OS on my laptop for around three years at this point. Installing it has felt sort of like a curse: on the one hand, it's so clearly the only operating system that actually gets how package management should be done. After using it, I can't go back to anything else. On the other hand, it's extremely complicated constantly changing software that requires configuration with the second-worst homegrown config programming language I've ever used[^1].
 
 I don't think that NixOS is the future, but I do absolutely think that the *ideas* in it are, so I want to write about what I think it gets right and what it gets wrong, in the hopes that other projects can take note. As such, this post will not assume knowledge of NixOS — if you've used NixOS significantly, there probably isn't anything new in here for you.
 
