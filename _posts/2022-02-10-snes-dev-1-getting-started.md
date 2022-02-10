@@ -20,12 +20,16 @@ I'm also not going to explain features of the SNES that have already been explai
 
 The example code will be kept brutally simple, to the point of maybe even being a little gross. This is to encourage you to make your own copy of it, edit it, and make it your own. I recommend copying the code from part one, and then applying the changes in each new part manually, so that you can clean things up and move things around as you go. In each section, I'll link both to the complete code and a diff from the previous part.
 
+## Setup
+
 With that out of the way, let's get started. Step one is installing a couple tools — we'll need:
 
 * A 65816 assembler and linker. I will be using `ca65` and `ld65`, which come with [`cc65`](https://cc65.github.io/).
 * A SNES emulator. I highly recommend [Mesen-S](https://mesen.ca/). It's sadly no longer being developed, but it works well, and it has the best debugger I've found. I also test my code on [bsnes](https://github.com/bsnes-emu/bsnes) and [zsnes](https://zsnes.com/) sometimes — you should ensure that your code works at least on Mesen-S (which does things like randomize uninitialized memory) and bsnes (which is widely thought to be the most accurate emulator).
 
 Go ahead and install both of those, and load up Mesen-S with a totally legitimate ROM file that I'm sure you have lying around. Once you're there, take a look at the debugging tools — try single stepping in the debugger, looking at the memory, and looking at the character set / tile set / sprite viewers. These are extremely useful tools, and it's good to have some familiarity with them *before* things start going wrong. If you don't know 65816 assembly, it's probably useful to single-step through a few dozen instructions with a 6502 / 65816 reference open, predicting what each instruction will do and checking your work each time. It's fine to not totally understand everything, but it's good to get a feel for things!
+
+## Resources
 
 That's really all you need! Before jumping into writing some code, here are some resources that I've found helpful:
 
@@ -43,6 +47,8 @@ That's really all you need! Before jumping into writing some code, here are some
 
 You don't need to read all of those — most of this is more reference material than anything else — but it's useful to know that it's there.
 
+## Code
+
 With that out of the way, let's dive into the code! You can find the whole thing [on GitHub](https://github.com/WesleyAC/snes-dev/tree/main/part1/src). I recommend skimming it all now so you have a overview in your head, then coming back to this to read the explanation, but you're welcome to do whatever you want.
 
 There are six main files:
@@ -56,7 +62,7 @@ There are six main files:
 
 The `registers.inc` and `macros.inc` files should be fairly self-explanatory, so I won't bother talking about them more. The header file is a little less self-explanatory, but if you look at documentation for the header format, it should be pretty clear what it's doing. The main reason you might need to edit this in the future is changing the name of the ROM or changing the interrupt handlers.
 
-With those out of the way, let's look at `init.asm`. We start out with `sei` to disable IRQs, and then do `clc`, `xce` to transition from the 6502-compatible mode to 65816 mode (this is just a magic incantation). `cld` disables decimal mode — I'm not 100% sure that's needed, but it seems good, you usually don't want to be in decimal mode.
+With those out of the way, let's look at `init.asm`. We start out with `sei` to disable IRQs, and then do `clc`, `xce` to transition from the 6502-compatible mode to 65816 mode (this is just a magic incantation). `cld` disables [decimal mode](http://6502.org/tutorials/decimal_mode.html) — I'm not 100% sure that's needed, but it seems good, you usually don't want to be in decimal mode.
 
 After that, we mostly just set a bunch of registers to zero — they might be initialized to random values on boot, so we set them to zero to have a clean slate. We also turn off the screen and disable color math, which is used for some transparency/etc effects.
 
