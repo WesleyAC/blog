@@ -611,7 +611,6 @@ img {
 
 @media all and (max-width: 767px) {
     .highlight {
-         padding: 50px 25px;
          font-size: 14px;
     }
 }
