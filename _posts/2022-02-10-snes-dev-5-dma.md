@@ -26,7 +26,7 @@ lda #<VMDATAL
 sta BBAD0
 ```
 
-This tells the SNES that we want this DMA to write to the `VMDATAL` register, and since set the mode to `001`, it'll also write to `VMDATAL + 1`, which is `VMDATAH`.
+This tells the SNES that we want this DMA to write to the `VMDATAL` register, and since we set the mode to `001`, it'll also write to `VMDATAL + 1`, which is `VMDATAH`.
 
 ```
 ldx #.loword(charset)
