@@ -18,7 +18,7 @@ In particular, I'm not going to be explaining 65816 assembly, although I will li
 
 I'm also not going to explain features of the SNES that have already been explained a million other times on the internet. For a overview of the features of the SNES, I recommend the [Super NES Features](https://www.youtube.com/watch?v=57ibhDU2SAI&list=PLHQ0utQyFw5KCcj1ljIhExH_lvGwfn6GV) series of videos from Retro Game Mechanics Explained. At the beginning of each post, I'll write about what you'll need to know to understand it, and link to the relevant videos or documents. This series of posts can be thought of as a sort of companion series to those videos, in order to bridge the gap from theory to practice with small, concrete, working examples.
 
-The example code will be kept brutally simple, to the point of maybe even being a little gross. This is to encourage you to make your own copy of it, edit it, and make it your own. I recommend copying the code from part one, and then applying the changes in each new part manually, so that you can clean things up and move things around as you go. In each section, I'll link both to the complete code, and to a diff from the previous part.
+The example code will be kept brutally simple, to the point of maybe even being a little gross. This is to encourage you to make your own copy of it, edit it, and make it your own. I recommend copying the code from part one, and then applying the changes in each new part manually, so that you can clean things up and move things around as you go. In each section, I'll link both to the complete code and a diff from the previous part.
 
 With that out of the way, let's get started. Step one is installing a couple tools — we'll need:
 
