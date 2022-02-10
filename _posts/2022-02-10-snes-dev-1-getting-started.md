@@ -58,7 +58,7 @@ There are six main files:
 * `init.asm`: Initialization code, which puts the SNES into a relatively consistent state when it boots up. It's very simple — most people would use something more complicated — but that's good for being able to understand what it's doing.
 * `main.asm`: This is where the action happens! It makes the screen red, then waits forever.
 * `header.asm`: This defines the [ROM header](https://snesdev.mesen.ca/wiki/index.php?title=Internal_ROM_Header), with the name of the cartridge, miscellaneous data, and the [vector table](https://ersanio.gitbook.io/assembly-for-the-snes/deep-dives/vector).
-* `lorom256k.cfg`: The linker configuration, which defines how to mush all of the assembly together into the final ROM file, in what is typically called a "[LoROM](https://emudev.de/q00-snes/memory-mapping-the-tale-of-lorom-and-mmio/)" format.
+* `lorom.cfg`: The linker configuration, which defines how to mush all of the assembly together into the final ROM file, in what is typically called a "[LoROM](https://emudev.de/q00-snes/memory-mapping-the-tale-of-lorom-and-mmio/)" format.
 
 The `registers.inc` and `macros.inc` files should be fairly self-explanatory, so I won't bother talking about them more. The header file is a little less self-explanatory, but if you look at documentation for the header format, it should be pretty clear what it's doing. The main reason you might need to edit this in the future is changing the name of the ROM or changing the interrupt handlers.
 
