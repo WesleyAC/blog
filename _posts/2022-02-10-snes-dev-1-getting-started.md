@@ -33,7 +33,8 @@ Go ahead and install both of those, and load up Mesen-S with a totally legitimat
 
 That's really all you need! Before jumping into writing some code, here are some resources that I've found helpful:
 
-* [fullsnes — SNES hardware specs](https://problemkaputt.de/fullsnes.htm) — A super valuable resource for looking up documentation on what different registers do. If you see some code using a register you haven't seen before, look it up here.
+* [Anomie's Register Doc](https://bin.smwcentral.net/u/4842/regs.txt) — A explanation of what each SNES register does. If you see some code using a register you haven't seen before, look it up here.
+* [fullsnes — SNES hardware specs](https://problemkaputt.de/fullsnes.htm) — Another resource describing different registers, in a little more detail.
 * [Official SNES Developer Manual](http://nuclear.mutantstargoat.com/articles/snes_notes/refs/snes_dev_manual1.pdf) — It can be hard to find things, but this is the most authoritative source for how the SNES works.
 * [Super NES Features](https://www.youtube.com/watch?v=57ibhDU2SAI&list=PLHQ0utQyFw5KCcj1ljIhExH_lvGwfn6GV) — A playlist of videos explaining almost all of the features of the SNES, at the level of detail that's useful for programming for the SNES. Well worth watching through.
 * [SNES Development Wiki](https://wiki.superfamicom.org/) — Highly variable in quality, but extensive.
