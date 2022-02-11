@@ -18,7 +18,7 @@ With that in mind, the [code](https://github.com/WesleyAC/snes-dev/tree/main/par
 
 ...how do we know that did anything, though? Everything looks exactly the same!
 
-This is a great time to introduce another useful tool in Mesen-S: the event viewer. It provides a visualization of what type of code is running, and where in the fram it's running. Open up "Debug → Event Viewer", and compare what it looks like before and after the change. It should be pretty obvious what the difference is :)
+This is a great time to introduce another useful tool in Mesen-S: the event viewer. It provides a visualization of what type of code is running, and where in the frame it's running. Open up "Debug → Event Viewer", and compare what it looks like before and after the change. It should be pretty obvious what the difference is :)
 
 This wasn't that exciting of a section, but it unlocks a bunch of exciting things! On your own, try making a tile that you can move around with the controller — at this point, you should have all the tools you need!
 
