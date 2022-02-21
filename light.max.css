@@ -3,13 +3,7 @@
 }
 
 html {
-     font-size: 16px;
-}
-
-@font-face {
-     font-family: 'Cormorant Garamond';
-     src: url('fonts/CormorantGaramond-Regular.woff') format('woff');
-     font-display: swap;
+     font-size: 18px;
 }
 
 @font-face {
@@ -18,12 +12,37 @@ html {
      font-display: swap;
 }
 
+@font-face {
+    font-family: 'harriet';
+    src: url('fonts/Harriet-v2-Text-Regular-latin1.woff2') format('woff2'),
+         url('fonts/Harriet-v2-Text-Regular-latin1.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'harriet';
+    src: url('fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2') format('woff2'),
+         url('fonts/Harriet-v2-Text-Regular-Italic-latin1.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'harriet';
+    src: url('fonts/Harriet-v2-Text-Bold-latin1.woff2') format('woff2'),
+         url('fonts/Harriet-v2-Text-Bold-latin1.woff') format('woff');
+    font-weight: bold;
+    font-display: swap;
+}
+
 body {
      margin: 0 auto;
      font-family: "Lato", Helvetica, Arial, sans-serif;
      -webkit-font-smoothing: antialiased;
      font-weight: 400;
-     line-height: 1.8;
+     line-height: 1.55;
      color: #615b5b;
      background: #fff;
 }
@@ -44,45 +63,45 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-     font-size: 25.6px;
+     font-size: 32px;
      font-weight: 400;
      letter-spacing: -.03em;
      color: #121111;
 }
 
 h2 {
-     font-size: 24px;
+     font-size: 30px;
      font-weight: 400;
 }
 
 h3 {
-     font-size: 20.8px;
+     font-size: 26px;
      font-weight: 500;
 }
 
 h4 {
-     font-size: 17.6px;
+     font-size: 22px;
      font-weight: 500;
 }
 
 h5 {
-     font-size: 18.72px;
+     font-size: 23.4px;
      font-weight: 500;
 }
 
 h6 {
-     font-size: 16px;
+     font-size: 20px;
 }
 
 @media all and (max-width: 767px) {
     h1 {
-         font-size: 24px;
+         font-size: 30px;
     }
     h2 {
-         font-size: 21.6px;
+         font-size: 27px;
     }
     h3 {
-         font-size: 20px;
+         font-size: 25px;
     }
 }
 
@@ -120,7 +139,7 @@ abbr {
 blockquote {
      padding: 0 0 4px 15px;
      margin: 0 0 0 -20px;
-     font-family: "Lato", Helvetica, Arial, sans-serif;
+     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
      font-size: 20px;
      font-style: italic;
      line-height: 1.6;
@@ -165,7 +184,7 @@ img {
      width: 100%;
      padding: 0 20px;
      margin: 0;
-     font-size: 16px;
+     font-size: 19px;
      text-align: left;
      vertical-align: top;
 }
@@ -376,6 +395,7 @@ img {
 
 .about {
      padding: 20px 0;
+     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }
 
 .about h1 {
@@ -444,7 +464,7 @@ img {
 
 .article-list-footer span, .article-list-footer a {
      display: inline-block;
-     font-size: 12px;
+     font-size: 14px;
      color: #ada8a8;
      text-transform: uppercase;
      vertical-align: middle;
@@ -507,6 +527,7 @@ img {
 
 .article-content {
      display: block;
+     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }
 
 .article-content > p, .article-content > ul, .article-content > ol, .article-content img, .article-content blockquote {
@@ -547,9 +568,9 @@ img {
 
 .header-logo {
      display: inline-block;
-     font-family: "Cormorant Garamond",Garamond,Baskerville,Baskerville Old Face,Hoefler Text,Times New Roman,serif;
+     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
      font-size: 36px;
-     font-weight: 900;
+     font-weight: 500;
      color: #000;
      text-decoration: none;
 }
@@ -607,12 +628,6 @@ img {
 
 .highlight pre {
      margin: 0;
-}
-
-@media all and (max-width: 767px) {
-    .highlight {
-         font-size: 14px;
-    }
 }
 
 .highlight .c {
@@ -886,7 +901,7 @@ img {
 .notfound-content h1 {
      display: inline-block;
      margin-bottom: 4px;
-     font-family: "Cormorant Garamond",Garamond,Baskerville,Baskerville Old Face,Hoefler Text,Times New Roman,serif;
+     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
      font-size: 36px;
 }
 
