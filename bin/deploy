@@ -31,6 +31,8 @@ git push -f -q origin gh-pages
 
 # Move back to previous branch.
 git checkout -
+# Copy over fonts, which are deleted due to gitignore
+git show gh-pages:fonts/ | grep Harriet-v2 | xargs -I {} sh -c "git show gh-pages:fonts/{} > fonts/{}"
 
 echo "Deployed Successfully!"
 
