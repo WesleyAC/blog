@@ -259,6 +259,9 @@ footer {
 
 .header-nav {
      padding: 50px 0 20px;
+     display: flex;
+     justify-content: space-between;
+     flex-wrap: wrap;
 }
 
 .header-logo {
@@ -284,23 +287,16 @@ footer {
      margin-left: 0;
 }
 
-@media all and (max-width: 415px) {
-    .header-nav {
-         text-align: center;
+@media all and (max-width: 550px) {
+    .header-logo {
+	 text-align: center;
+	 margin-left: auto;
+	 margin-right: auto;
     }
 
     .header-links {
-         display: block;
-         float: none;
-         text-align: center;
-    }
-
-    .header-links li {
-         margin: 0 10px;
-    }
-
-    .header-links li:last-child {
-         margin-right: 0;
+	 margin-left: auto;
+	 margin-right: auto;
     }
 }
 
