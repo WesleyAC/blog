@@ -3,25 +3,23 @@
 {% include head.html %}
 <body>
   <main>
-    <div class="grid-cell">
-      {% include navigation.html %}
-      <article>
-        <header class="article-header">
-          <h1>{{ page.title }}</h1>
-          <div class="article-list-date">
-            {{ page.date | date: "%B %-d, %Y" }}
-          </div>
-        </header>
-
-        <div class="article-content">
-          {{ content }}
+    {% include navigation.html %}
+    <article>
+      <header class="article-header">
+        <h1>{{ page.title }}</h1>
+        <div class="article-list-date">
+          {{ page.date | date: "%B %-d, %Y" }}
         </div>
+      </header>
 
-        <br>
-        {% include calltoaction.html %}
-        <br>
-      </article>
-    </div>
+      <div class="article-content">
+        {{ content }}
+      </div>
+
+      <br>
+      {% include calltoaction.html %}
+      <br>
+    </article>
   </main>
   <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
 </body>
