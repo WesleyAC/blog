@@ -239,13 +239,6 @@ img {
      text-decoration: none;
 }
 
-.article-list-item p {
-     display: block;
-     margin: 12px 0 10px;
-     font-size: 15px;
-     color: #615b5b;
-}
-
 .article-list-date {
      font-size: 14px;
      color: #ada8a8;
