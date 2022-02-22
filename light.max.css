@@ -227,9 +227,6 @@ img {
 }
 
 .article-list-item h5 {
-     position: relative;
-     display: block;
-     padding-right: 25px;
      margin-bottom: 0px;
      color: #121111;
      border-bottom: 1px solid transparent;
