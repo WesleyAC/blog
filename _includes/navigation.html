@@ -1,25 +1,17 @@
 <nav class="header-nav">
   <a href="{{ '/' | relative_url }}" class="header-logo" title="{{ site.name }}">{{ site.name }}</a>
-  <ul class="header-links">
-    <li>
-      <a href="{{ 'feed.xml' | relative_url }}" target="_blank" title="RSS">
-        <div style="width:16px">{% include icons/ion-social-rss.svg %}</div>
-      </a>
-    </li>
-    <li>
-      <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
-        <div style="width:18px">{% include icons/ion-at.svg %}</div>
-      </a>
-    </li>
-    <li>
-      <a href="https://twitter.com/WAptekar" target="_blank" title="Twitter">
-        <div style="width:20px">{% include icons/ion-social-twitter.svg %}</div>
-      </a>
-    </li>
-    <li>
-      <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
-        <div style="width:18px">{% include icons/ion-social-github.svg %}</div>
-      </a>
-    </li>
-  </ul>
+  <div class="header-links">
+    <a href="{{ 'feed.xml' | relative_url }}" target="_blank" title="RSS">
+      <div style="width:16px">{% include icons/ion-social-rss.svg %}</div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px">{% include icons/ion-at.svg %}</div>
+    </a>
+    <a href="https://twitter.com/WAptekar" target="_blank" title="Twitter">
+      <div style="width:20px">{% include icons/ion-social-twitter.svg %}</div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px">{% include icons/ion-social-github.svg %}</div>
+    </a>
+  </div>
 </nav>

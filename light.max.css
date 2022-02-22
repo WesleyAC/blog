@@ -271,20 +271,12 @@ footer {
 }
 
 .header-links {
-     float: right;
+     display: flex;
+     gap: 20px;
+     align-items: baseline;
      padding: 0;
      margin: 20px 0 0;
      list-style: none;
-}
-
-.header-links li {
-     display: inline-block;
-     margin-left: 20px;
-     vertical-align: middle;
-}
-
-.header-links li:first-child {
-     margin-left: 0;
 }
 
 @media all and (max-width: 550px) {
