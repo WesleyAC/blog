@@ -1,3 +1,4 @@
+@media screen and (prefers-color-scheme: dark) {
 body {
      color: #fafafa;
      background: #121111;
@@ -136,3 +137,4 @@ img {
 .highlight .vi { color: #f8f8f2 } /* Name.Variable.Instance */
 .highlight .vm { color: #f8f8f2 } /* Name.Variable.Magic */
 .highlight .il { color: #ae81ff } /* Literal.Number.Integer.Long */
+}
