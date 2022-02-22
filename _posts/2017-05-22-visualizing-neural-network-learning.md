@@ -54,7 +54,7 @@ The way that this works is pretty simple - if just one of the inputs is 1, it wi
 
 This is fundamentally how neural networks work. That said, there are a couple things that you'll need to change to go from this model to a "real" neural network:
 
-##### Activation function
+### Activation function
 
 We've been using a step function as our activation. This is simple, but can cause problems when we're trying to do more complicated things. The most commonly used activation is probably the [sigmoid](https://en.wikipedia.org/wiki/Sigmoid_function) or [ReLU](https://en.wikipedia.org/wiki/ReLU). The sigmoid function works well as an activation for a few reasons:
 
@@ -64,16 +64,16 @@ We've been using a step function as our activation. This is simple, but can caus
 
 However, recently, the ReLU has become more popular for most networks, since it seems to often give better results. However, both have their own benefits and drawbacks.
 
-##### Bias
+### Bias
 
 In our examples so far, we've always wanted to have an input of zero result in an output of zero. However, what if this wasn't the case? The current setup that we have doesn't allow for a neuron with zero input to output anything other than zero! In order to fix this, we introduce a "bias". A bias is a neuron that always outputs 1, which is connected to every non-input neuron in the network. By adjusting the weights of the connections to the bias neuron, you can get a non-zero output from a zero input. Even if you want a zero input to result in a zero output, it's best to add a bias to your network - it will often result in better performance or faster training.
 
-##### Training
+### Training
 
 A topic that I didn't get into in this post is how to find the weights for the connections. While manually finding weights works for simple logical functions, it quickly becomes impossible with hundreds or thousands of neurons. Luckily, there are many ways to automatically train neural networks, which I'll discuss in future posts.
 
 <img src="../img/nnvis1/animation.gif" alt="XOR Perceptron Animation">
 
-##### Implementation
+### Implementation
 
 While it can sometimes be useful to think of neural networks as a network of neurons, as I've shown in this post. However, it's often better to think about neural networks on the level of layers. This is useful, since each layer can be represented as a matrix of weights. This makes it easy and fast to implement a network, since there are many optimized matrix implementations out there.
