@@ -223,14 +223,6 @@ footer {
      vertical-align: middle;
 }
 
-.article-empty {
-     display: block;
-     margin: 100px 0;
-     font-style: italic;
-     color: #ada8a8;
-     text-align: center;
-}
-
 .article-header {
      display: block;
      font-family: "Lato", Helvetica, Arial, sans-serif;

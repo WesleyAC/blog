@@ -2,23 +2,8 @@
 layout: default
 ---
 
-{% if site.tags[page.slug] %}
-  <ul class="article-list">
-    {% for post in site.tags[page.slug] %}
-    {% if post.hide != true %}
-      <li class="article-list-item">
-        <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
-          <h2>{{ post.title }}</h2>
-        </a>
-        <div class="article-list-date">
-          {{ post.date | date: "%B %-d, %Y" }}
-        </div>
-      </li>
-    {% endif %}
-    {% endfor %}
-  </ul>
-{% else %}
-  <p class="article-empty">
-    There are no posts in {{ page.slug }}.
-  </p>
-{% endif %}
+<center>
+	Tag pages have been deprecated.
+	<br>
+	If you arrived here from a link, please <a href="mailto:me@wesleyac.com">email me</a> and let me know where you came from.
+</center>
