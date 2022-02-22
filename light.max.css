@@ -80,18 +80,6 @@ h3 {
      font-weight: 500;
 }
 
-@media all and (max-width: 767px) {
-    h1 {
-         font-size: 30px;
-    }
-    h2 {
-         font-size: 27px;
-    }
-    h3 {
-         font-size: 25px;
-    }
-}
-
 a {
      color: #615b5b;
      text-decoration: underline;
