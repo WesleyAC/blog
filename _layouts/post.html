@@ -11,12 +11,6 @@
             <h1>{{ page.title }}</h1>
             <div class="article-list-footer">
               <div class="article-list-tags">
-                {% for tag in page.tags %}
-                  <a href="{{ 'tag/' | relative_url }}{{ tag }}">{{ tag }}</a>
-                {% endfor %}
-	        {% if page.tags.size != 0 %}
-                <span class="article-list-divider">-</span>
-	        {% endif %}
                 <span class="article-list-date">
                   {{ page.date | date: "%B %-d, %Y" }}
                 </span>
