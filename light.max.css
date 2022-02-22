@@ -155,10 +155,10 @@ footer {
      padding: 35px 0 85px;
 }
 
-.grid {
-     display: block;
+main {
      padding: 0;
-     margin: 0 -20px;
+     margin: 0 auto;
+     max-width: 900px;
 }
 
 .grid-cell {
@@ -169,12 +169,6 @@ footer {
      font-size: 19px;
      text-align: left;
      vertical-align: top;
-}
-
-.grid-centered {
-     max-width: 900px;
-     margin-right: auto;
-     margin-left: auto;
 }
 
 .about {
