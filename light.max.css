@@ -185,7 +185,6 @@ main {
 .article-header {
      font-family: "Lato", Helvetica, Arial, sans-serif;
      margin-bottom: 25px;
-     margin-top: 25px;
 }
 
 .article-content > p, .article-content > ul, .article-content > ol, .article-content img, .article-content blockquote {
