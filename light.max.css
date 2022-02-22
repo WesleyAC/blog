@@ -206,10 +206,6 @@ main {
      margin-top: 25px;
 }
 
-.article-header h1 {
-     display: inline-block;
-}
-
 .article-content > p, .article-content > ul, .article-content > ol, .article-content img, .article-content blockquote {
      margin-bottom: 30px;
 }
