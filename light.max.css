@@ -223,10 +223,6 @@ footer {
      vertical-align: middle;
 }
 
-.article-list-title {
-     display: inline-block;
-}
-
 .article-list-divider {
      margin: 0 15px;
 }
@@ -278,10 +274,6 @@ footer {
 }
 
 @media all and (max-width: 767px) {
-    .article-list-title {
-         display: block;
-    }
-
     .article-list-divider:last-of-type {
          display: none;
     }

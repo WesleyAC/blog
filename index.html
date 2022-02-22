@@ -19,7 +19,7 @@ description: "Main page"
   {% for post in site.posts %}
   {% if post.hide != true %}
     <li class="article-list-item">
-      <a href="{{ post.url | relative_url }}" title="{{ post.title }}" class="article-list-title">
+      <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
         <h2>{{ post.title }}</h2>
       </a>
       <div class="article-list-date">
