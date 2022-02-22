@@ -287,11 +287,6 @@ img {
      margin: 0 15px;
 }
 
-.article-list-tags {
-     display: inline-block;
-     vertical-align: top;
-}
-
 .article-empty {
      display: block;
      margin: 100px 0;
@@ -349,11 +344,6 @@ img {
 
     .article-list-divider:last-of-type {
          display: none;
-    }
-
-    .article-list-tags {
-         display: block;
-         margin-top: -7px;
     }
 }
 
