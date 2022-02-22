@@ -39,7 +39,7 @@ html {
 
 body {
      margin: 0 auto;
-     font-family: "Lato", Helvetica, Arial, sans-serif;
+     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
      -webkit-font-smoothing: antialiased;
      font-weight: 400;
      line-height: 1.55;
@@ -125,7 +125,6 @@ abbr {
 blockquote {
      padding: 0 0 4px 15px;
      margin: 0 0 0 -20px;
-     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
      font-size: 20px;
      font-style: italic;
      line-height: 1.6;
@@ -181,7 +180,6 @@ img {
 
 .about {
      padding: 20px 0;
-     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }
 
 .footnotes ol {
@@ -203,6 +201,7 @@ img {
 .article-list li {
      display: flex;
      justify-content: space-between;
+     font-family: "Lato", Helvetica, Arial, sans-serif;
      flex-wrap: wrap;
      padding: 8px 0;
 }
@@ -251,6 +250,7 @@ img {
 
 .article-header {
      display: block;
+     font-family: "Lato", Helvetica, Arial, sans-serif;
      margin-bottom: 25px;
      margin-top: 25px;
 }
@@ -268,7 +268,6 @@ img {
 
 .article-content {
      display: block;
-     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 }
 
 .article-content > p, .article-content > ul, .article-content > ol, .article-content img, .article-content blockquote {
@@ -303,7 +302,6 @@ img {
 
 .header-logo {
      display: inline-block;
-     font-family: harriet, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
      font-size: 36px;
      font-weight: 500;
      color: #000;
