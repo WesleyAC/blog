@@ -221,7 +221,9 @@ img {
      padding: 8px 0;
 }
 
-.article-list-item h5 {
+.article-list-item h2 {
+     font-size: 23.4px;
+     font-weight: 500;
      margin-bottom: 0px;
      color: #121111;
 }

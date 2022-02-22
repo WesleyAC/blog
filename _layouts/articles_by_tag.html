@@ -8,7 +8,7 @@ layout: default
     {% if post.hide != true %}
       <li class="article-list-item">
         <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
-          <h5>{{ post.title }}</h5>
+          <h2>{{ post.title }}</h2>
         </a>
         <div class="article-list-date">
           {{ post.date | date: "%B %-d, %Y" }}
