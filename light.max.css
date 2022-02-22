@@ -221,14 +221,9 @@ img {
      padding: 8px 0;
 }
 
-.article-list li:last-child {
-     border-bottom: 0;
-}
-
 .article-list-item h5 {
      margin-bottom: 0px;
      color: #121111;
-     border-bottom: 1px solid transparent;
 }
 
 .article-list-item a {
