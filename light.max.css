@@ -169,7 +169,6 @@ main {
 }
 
 .article-list {
-     display: block;
      padding: 0;
      margin-top: 20px;
      list-style: none;
@@ -202,7 +201,6 @@ main {
 }
 
 .article-header {
-     display: block;
      font-family: "Lato", Helvetica, Arial, sans-serif;
      margin-bottom: 25px;
      margin-top: 25px;
@@ -212,17 +210,11 @@ main {
      display: inline-block;
 }
 
-.article-content {
-     display: block;
-}
-
 .article-content > p, .article-content > ul, .article-content > ol, .article-content img, .article-content blockquote {
-     display: block;
      margin-bottom: 30px;
 }
 
 .article-content h2, .article-content h3 {
-     display: block;
      margin-bottom: 10px;
      font-family: "Lato", Helvetica, Arial, sans-serif;
      color: #121111;
