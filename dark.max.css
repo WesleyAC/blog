@@ -156,11 +156,3 @@ img {
 .highlight .vi { color: #f8f8f2 } /* Name.Variable.Instance */
 .highlight .vm { color: #f8f8f2 } /* Name.Variable.Magic */
 .highlight .il { color: #ae81ff } /* Literal.Number.Integer.Long */
-
-.notfound-content h1 a {
-     color: #ffffff;
-}
-
-.notfound-content p a {
-     color: #ffffff;
-}
