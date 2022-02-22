@@ -156,19 +156,14 @@ footer {
 }
 
 main {
-     padding: 0;
+     padding: 0 20px;
      margin: 0 auto;
      max-width: 900px;
+     font-size: 19px;
 }
 
 .grid-cell {
-     display: inline-block;
      width: 100%;
-     padding: 0 20px;
-     margin: 0;
-     font-size: 19px;
-     text-align: left;
-     vertical-align: top;
 }
 
 .about {
