@@ -50,16 +50,8 @@ img {
      color: #fafafa;
 }
 
-.article-list-footer span, .article-list-footer a {
+.article-list-date {
      color: #ada8a8;
-}
-
-.article-list-footer a {
-     color: #fafafa;
-}
-
-.article-list-footer a:hover {
-     color: #ffffff;
 }
 
 .article-empty {

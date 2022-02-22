@@ -258,17 +258,11 @@ img {
      color: #615b5b;
 }
 
-.article-list-footer span, .article-list-footer a {
-     display: inline-block;
+.article-list-date {
      font-size: 14px;
      color: #ada8a8;
      text-transform: uppercase;
      vertical-align: middle;
-}
-
-.article-list-footer a {
-     margin-right: 7.5px;
-     color: #615b5b;
 }
 
 .article-list-footer a:hover {
