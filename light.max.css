@@ -394,10 +394,6 @@ img {
      margin-left: 0;
 }
 
-.header-links li a {
-     font-size: 18px;
-}
-
 @media all and (max-width: 415px) {
     .header-nav {
          text-align: center;
