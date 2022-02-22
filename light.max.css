@@ -207,6 +207,7 @@ main {
      display: flex;
      justify-content: space-between;
      flex-wrap: wrap;
+     align-items: baseline;
 }
 
 .header-logo {
@@ -220,20 +221,17 @@ main {
      gap: 20px;
      align-items: baseline;
      padding: 0;
-     margin: 20px 0 0;
      list-style: none;
 }
 
 @media all and (max-width: 550px) {
     .header-logo {
 	 text-align: center;
-	 margin-left: auto;
-	 margin-right: auto;
+	 margin: 0 auto;
     }
 
     .header-links {
-	 margin-left: auto;
-	 margin-right: auto;
+	 margin: 0 auto;
     }
 }
 
