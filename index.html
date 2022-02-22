@@ -20,10 +20,7 @@ description: "Main page"
   {% if post.hide != true %}
     <li class="article-list-item">
       <a href="{{ post.url | relative_url }}" title="{{ post.title }}" class="article-list-title">
-        <h5>
-          {{ post.title }}
-          <span class="icon icon-ios-arrow-thin-right"></span>
-        </h5>
+        <h5>{{ post.title }}</h5>
       </a>
       <div class="article-list-date">
         {{ post.date | date: "%B %-d, %Y" }}
