@@ -223,14 +223,6 @@ footer {
      vertical-align: middle;
 }
 
-.article-list-footer a:hover {
-     color: #121111;
-}
-
-.article-list-footer a:last-child {
-     margin-right: 0;
-}
-
 .article-list-title {
      display: inline-block;
 }
