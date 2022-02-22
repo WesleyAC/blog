@@ -4,6 +4,7 @@
 
 html {
      font-size: 18px;
+     -webkit-text-size-adjust: 100%;
 }
 
 @font-face {
@@ -266,6 +267,22 @@ main {
     }
 }
 
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-size: 100%;
+  line-height: 1.15;
+}
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+
 .highlight {
      padding: 18px;
      margin: 0;
@@ -274,6 +291,14 @@ main {
      font-weight: 400;
      background: #faf9f9;
      border-radius: 4px;
+}
+
+pre,
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
 }
 
 .highlight pre {
