@@ -51,7 +51,7 @@ So, that's the explanation for *why* we have each of these keys. Once we have th
 
 * We need to do a exchange between the ephemeral keys (`EK` and `SPK`), in order to get forward secrecy.
 * We need to involve `IK_s` and `IK_r`, to provide mutual authentication.
-* We don't want to use `DH(IK_s, IK_r)`, because doing so does not provide any forward secrecy.
+* We don't want to use `DH(IK_s, IK_r)`, because doing so does not provide any forward secrecy, and not doing so provides better deniability (since anyone could forge a convincing looking transcript of a X3DH session without knowing either of the identity private keys, by generating all the ephemeral keys themselves)
 
 With those constraints, we end up with the only thing we can have:
 
