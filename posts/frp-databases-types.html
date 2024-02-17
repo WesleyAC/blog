@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | A Conversation on FRP, Databases, and Types</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="A Conversation on FRP, Databases, and Types">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/frp-databases-types">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/frp-databases-types">
+  <meta name="twitter:title" content="A Conversation on FRP, Databases, and Types">
+  <meta name="twitter:description" content="">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>A Conversation on FRP, Databases, and Types</h1>
+        <div class="article-list-date">
+          Nov 9, 2020
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p><em>This is a transcript of a conversation I had on the <a href="https://www.recurse.com/scout/click?t=288aaf8d6ddfba372520ec10690a1e1b">Recurse Center&#39;s</a> Zulip instance. I thought it was pretty informative, so I&#39;m reproducing it here, lightly edited, with the premission of the participants. There are quite a few comments here, I suggest checking out Iain McCoy, Allie Jones, and Anon #1 if you want the highest-signal parts of the conversation</em></p>
+
+<p><strong>Wesley Aptekar-Cassels:</strong></p>
+
+<p>So, I&#39;ve been playing with FRP recently, mostly via <a href="https://seed-rs.org/">Seed</a> but also looking at React and Vue a bit. It seems like the general pattern is that you have one big state object which is a big bucket that has all the state, and then when you change that, all of the state flows down into the objects/components/whatever and they update. This seems nice and good.</p>
+
+<p>So, common advice is to make your state a single source of truth. If you have types (via rust+wasm or typescript or whatever), you should <a href="https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/">design with types</a> to make illegal states unrepresentable. For instance, if you have a bunch of menu items, one of which can be selected, you probably want to have a <code>current_menu_item: Option&lt;MenuItemId&gt;</code> rather than a <code>selected</code> field on each <code>MenuItem</code> (to give a Rusty example of the syntax).</p>
+
+<p>This seems all well and good, except for the fact that the idea that what we have as a &quot;single source of truth&quot; is a complete lie: the real single source of truth is the database, in most applications. So, we put all this effort into making a nice data model in our database (as nice as can be expressed in SQL), and then we go and make a bunch of APIs to pull stuff out of our real single source of truth, probably turn it into json and send it to the client, where we then pull it apart and stick it into our client side &quot;single&quot; source of truth (losing and reconstructing all of the type information along the way). This seems like not a very good idea — why do we do this to ourselves?</p>
+
+<p>To look at a concrete example: I have a &quot;directory&quot; hierarchy stored in a SQL database. I want to display this in the client app. I also have a bunch of &quot;files&quot; that can be in the directories. Each file can be in multiple directories (really, the &quot;directories&quot; are tags, not &quot;directories&quot; in the way one would normally think of them). The nice, single-source-of-truth way to handle this is to have a tree of directories, where each directory has a <code>Vec&lt;FileId&gt;</code>, and then to have a <code>HashMap&lt;FileId, File&gt;</code> for storing the necessary metadata about each file. However, there&#39;s a problem here — say you want to, for a given file, find every directory it&#39;s in. The SQL database can get this information easily, but that will be slow — why waste the time with another network request when you have all the information you need right there? But the problem is, the information you need to figure this out isn&#39;t stored in a way that allows you to very nicely access it — you either have to walk the entire directory tree to figure out which directories have the given file in it, or you have to store an index, something like a <code>HashMap&lt;FileId, Vec&lt;DirectoryId&gt;&gt;</code> — in which case you now have multiple sources of truth for which directories a file is in which you have to keep in sync.</p>
+
+<p>Back in ye olde days of 200X, this wasn&#39;t a problem — for each page, you&#39;d have a template that the server would fill out with the results of database queries, and send that to the client. But now that client-side code is expected to hold its own state, we have a split source of truth problem.</p>
+
+<p>The second problem I see with this is types. The server has types that is uses for interacting with objects internally. When stuff is written to the database, all of this type information is thrown away. We then make the type information again when we pull it out of the database (sometimes with slightly different types, if we&#39;ve done a join, or queried only selected fields or something). Then you&#39;ll often do some postprocessing on that that&#39;s too complex to do in SQL, serialize it to JSON, send it to the client, which then reconstructs the type information again in order to use it (sometimes implicitly, in the case of javascript frontends). Why bother with this whole charade? If you&#39;re using Rust on the client and the server (or s/Rust/Typescript/, probably) you can at least automate the serializing and deserializing parts, but you&#39;re still throwing away type information to put things in the database.</p>
+
+<p>FRP (or maybe just the idea of websites being dynamic) seems good to me overall, but it definitely creates a problem that didn&#39;t used to exist — a split source of truth and multiple losses and reconstructions of type information.</p>
+
+<p>How do people deal with this in production webapps? And are there good experimental projects to eliminate this complexity? It seems like in many cases, server-side code is just incidental complexity that pops up because there is no good way to directly interface between SQL databases and client side web code.</p>
+
+<p>I guess maybe a clearer way of thinking about this problem is: there are two types of state: backend state (this is the set of objects that exist, etc), and frontend state: (this object is currently selected, this modal window is open, etc). Current approaches to writing web frontends seem to necessitate making a model which mixes together these two things, which seems non-ideal.</p>
+
+<p><strong>Anon #1:</strong></p>
+
+<blockquote>
+<p>It seems like in many cases, server-side code is just incidental complexity that pops up because there is no good way to directly interface between SQL databases and client side web code.</p>
+</blockquote>
+
+<p>I mean, yes! Except the complexity also does frustratingly useful things: prevents scrapers from taking down your DB, gives you a place to put biz analytics / monitoring / alerting, provides an API layer where you can decide to change behavior if you need to (see: the problem of supporting legacy clients for years and years), etc.</p>
+
+<blockquote>
+<p>I guess maybe a clearer way of thinking about this problem is: there are two types of state: backend state (this is the set of objects that exist, etc), and frontend state: (this object is currently selected, this modal window is open, etc).</p>
+</blockquote>
+
+<p>I think that this is a good way of looking at different types of state. A lot of modern frontend options (I&#39;m most familiar with React) grew out of a need to manage the sprawling mess that is frontend state -- before React became popular circa mid 2010s, a <em>lot</em> of frontend apps wouldn&#39;t treat this kind of state in any kind of principled way, and it ended up being a lot of random spaghetti</p>
+
+<blockquote>
+<p>Current approaches to writing web frontends seem to necessitate making a model which mixes together these two things, which seems non-ideal.</p>
+</blockquote>
+
+<p>I think that it&#39;s true both that 1) a lot of approaches mix these concerns and 2) mixing them is a PITA.</p>
+
+<p>Some approaches (e.g. Relay + React) let you create magical bits of state that can effectively only be changed by calls to the backend, which....kinda gets around the problem? But not in a really clean / easy to understand way.</p>
+
+<p>Take everything I&#39;m saying with a grain of salt, also, since it&#39;s been a few years since I&#39;ve done any active frontend dev 😄</p>
+
+<p><strong>Wesley Aptekar-Cassels:</strong></p>
+
+<blockquote>
+<p>I mean, yes! Except the complexity also does frustratingly useful things: prevents scrapers from taking down your DB, gives you a place to put biz analytics / monitoring / alerting, provides an API layer where you can decide to change behavior if you need to (see: the problem of supporting legacy clients for years and years), etc.</p>
+</blockquote>
+
+<p>Is this true? Like, looking at these individually:</p>
+
+<ul>
+<li>Scrapers: I don&#39;t see how the server/DB separation fundamentally changes this — views of the frontend still require calls to the db. I think that maybe the change here is that scraping modern websites is so monstrously complicated that most companies that aren&#39;t Google or Microsoft don&#39;t do it anymore?</li>
+<li>Analytics/Monitoring: I have lots of hot takes about this, but — isn&#39;t it much more common for people to do analytics these days via Google Analytics/Mixpanel/Heap/whatever than by writing it themselves? I get that there&#39;s some server-side stuff you might want to log, but I think you can get most of that just by parsing and saving http logs? IDK why analyzing http logs isn&#39;t a more common approach to analytics tbh, it&#39;s <a href="https://blog.wesleyac.com/posts/google-analytics">much more accurate</a> than most other approaches and gives you a ton of flexibility.</li>
+<li>API layer to change behaviour: I agree that this is important, but I don&#39;t think that switching to an architecture where you use one format all the way through forces you to stop doing this. It just means that providing legacy support looks like putting a proxy in front of the database that speaks the old format on one side and the new format on the other.</li>
+</ul>
+
+<p>I agree that there are a lot of &quot;proven&quot; solutions to these problems in the current DB &lt;-&gt; server &lt;-&gt; client paradigm, but I don&#39;t think that that paradigm fundamentally is the thing that enables those solutions, it seems more like it just happened to evolve that way.</p>
+
+<blockquote>
+<p>before React became popular circa mid 2010s, a <em>lot</em> of frontend apps wouldn&#39;t treat this kind of state in any kind of principled way, and it ended up being a lot of random spaghetti</p>
+</blockquote>
+
+<p>hah, most of the webapps I&#39;ve worked on have been jQuery state soup (even <a href="http://hanabi.site/script.js">very recently</a>). I definitely see that React and React-style frameworks are better than the spaghetti approach the predated it, but it seems like React has inherited plenty of quarks from that model, either for the sake of backwards compatibility, or simply by not examining the problem through a sufficiently novel lens.</p>
+
+<blockquote>
+<p>Some approaches (e.g. Relay + React) let you create magical bits of state that can effectively only be changed by calls to the backend, which....kinda gets around the problem? But not in a really clean / easy to understand way.</p>
+</blockquote>
+
+<p>Interesting - I was wondering when writing this if GraphQL is sort of an attempt to solve this problem, but I haven&#39;t seriously looked into it, so I don&#39;t really know exactly what parts of this is solves and how well.</p>
+
+<blockquote>
+<p>Take everything I&#39;m saying with a grain of salt, also, since it&#39;s been a few years since I&#39;ve done any active frontend dev :smile:</p>
+</blockquote>
+
+<p>heh, you&#39;re probably more up to date than me, the last time I worked on a &quot;real&quot; webapp was like... 2014? With jQuery and bootstrap and PHP and MySQL and all that :)</p>
+
+<p><strong><a href="https://www.patrickweaver.net/">Patrick Weaver</a>:</strong></p>
+
+<p>I don&#39;t have any answers, but wanted to note that this made me consider for the first time that the virtual DOM in the frameworks seems to have the goal of only updating the things that changed by creating a state diff, but often that same change is happening to the non-local state, but there&#39;s no way to use that diff work that&#39;s already been done automatically. It seems like the abstractions aren&#39;t abstract enough.</p>
+
+<p><em>[I ask for more elaboration]:</em></p>
+
+<p>If you have a list with keys <code>{ 1: banana, 2: grapefruit, 3: pear }</code> and the user updates the list to be: <code>{ 1: orange, 2: grapefruit, 3: pear}</code>, React&#39;s VDOM will compare and say we only need to update the value at key 1, but there&#39;s no way to take that diff work and send it to the DB without programming something to do the same work either on the client and sending a &quot;manually&quot; computed diff, or sending the whole new list to the DB and diffing again on the server.</p>
+
+<p><strong><a href="https://tozt.net/">Jesse Luehrs</a>:</strong></p>
+
+<p>i&#39;m not super familiar with the details, but my understanding is that this disconnect is one of the things that <a href="https://www.meteor.com/">https://www.meteor.com/</a> is intended to fix - it uses javascript on both the frontend and backend, and uses a special protocol to allow database operations to be able to happen on either end in the same way while still propagating the results to anything else watching it</p>
+
+<p>i&#39;ve never used it before, so i don&#39;t know how successful it is at being a reasonable thing to use, but it is maybe evidence that your line of thought isn&#39;t entirely on the wrong track</p>
+
+<p><strong><a href="https://github.com/imccoy">Iain McCoy</a>:</strong></p>
+
+<p>I have many many thoughts about this. I spent a while trying to build a thing that used an frp-like thing to define the backend state, and then shared that backend state model around so that the frontend could look shiny and ajax-y. This is a thing you can build!</p>
+
+<p>You wind up having a bunch of questions like &quot;how do I control the way this backend state gets persisted&quot; and &quot;which bits of backend state get shared with which frontend&quot; and so on. I didn&#39;t get to them, but I&#39;m confident that they are all answerable. There are also questions about how you manage change to a running system, but I think those are answerable too.</p>
+
+<p>The reason I stopped is that my main motivation was to pursue a single purely-functional representation of backend state, because I thought that would make things easier to reason about. And like... It kind of does? But in the model I had there was a single function from Inputs to State, and any given input could ultimately influence any bit of the state, and that got confusing in something very like the way I was trying to escape from. So now I think the right way to arrange the backend state is with some sort of type discipline that constrains the domain of inputs (and/or intermediate values) that can affect each bit of state.</p>
+
+<p>You probably still end up with at least two sets of types: the backend state ones and the frontend ones. But I think we could be clearer about &quot;our application has entity A and entity B and they are related in way R and these two types are representations of A and these two types are representations of B and these are the two ways R shows up&quot;</p>
+
+<p>In most systems I&#39;ve worked on, there is a version of that sentence, but I&#39;d like it to be a sentence the computer understands and not just the people working on it</p>
+
+<p>And then you might be in a place to tell the computer that the front-end types are faster to access, but also less authoritative, then the backend types, and to talk about when to use one and when to use the other and when to do a fast check followed by an authoritative check and how to assert that the fast check is the same as the authoritative one.</p>
+
+<p><strong>Wesley Aptekar-Cassels:</strong></p>
+
+<p><strong>@Iain McCoy</strong> That&#39;s super interesting to hear! Did you deal with persisting the backend state to disk at all, or was this all in-memory?</p>
+
+<blockquote>
+<p>You probably still end up with at least two sets of types: the backend state ones and the frontend ones. But I think we could be clearer about &quot;our application has entity A and entity B and they are related in way R and these two types are representations of A and these two types are representations of B and these are the two ways R shows up&quot;</p>
+</blockquote>
+
+<p>I&#39;m curious why you think that this is the split that makes sense — personally, I&#39;m inclined to think that the taxonomy of types you want is a bit more subtle than &quot;backend&quot; and &quot;frontend&quot;, but I couldn&#39;t tell you exactly how... I think this is also related to thoughts I have about how it should be easier to use an ad-hoc subset of an enum or a struct as a type — I think that would solve a lot of problems...</p>
+
+<p><strong><a href="https://github.com/imccoy">Iain McCoy</a>:</strong></p>
+
+<p>My hunch is that the backend types want to be sort of flat, for slicing and dicing in various ways (posts belong equally to message boards and users), but the frontend types want to be hierarchical in ways that make sense for the view at hand. I definitely think there would be other splits emerge over time too! You might have &quot;record as persisted&quot; vs &quot;record in memory&quot; vs &quot;record on the wire&quot;. You might have &quot;record as persisted in a previous version&quot; vs &quot;record as persisted in current version&quot;. You might have &quot;record as seen by owner&quot; and &quot;record as seen by guest&quot;.</p>
+
+<p>I 100% agree about struct and enums. I kind of think that enum cases should be names for particular record types, so you can always write a function that takes the payload of some data constructor</p>
+
+<p><strong>Wesley Aptekar-Cassels:</strong></p>
+
+<p>There&#39;s <a href="https://github.com/rust-lang/rfcs/pull/2593">work happening</a> in rust to make enum variants usable as types, which is I think what you&#39;re suggesting? But even beyond that, more flexibility in how types are declared seems really useful.</p>
+
+<p><strong>Anon #2:</strong></p>
+
+<blockquote>
+<p>And are there good experimental projects to eliminate this complexity? It seems like in many cases, server-side code is just incidental complexity that pops up because there is no good way to directly interface between SQL databases and client side web code.</p>
+</blockquote>
+
+<p>I have always meant to experiment with <a href="http://postgrest.org/en/v7.0.0/">PostgREST</a> to try and find the limits of the problem you&#39;re describing.</p>
+
+<p><strong>Akiva Leffert:</strong></p>
+
+<p>I haven&#39;t really used them, but I think these are the things that <a href="https://graphql.org/">graphql</a> and <a href="https://www.apollographql.com/">apollo</a> are meant to solve. also stuff like firebase which does automatic model syncs between front end and data store. but I&#39;ve definitely ended up in a fair number of cases where how the front end wanted to think about data and how the backend wanted to think about it were only loosely related and any sort of system here needs a fair amount of extensibility for those cases</p>
+
+<p><strong><a href="https://alliejon.es/">Allie Jones</a>:</strong></p>
+
+<p>One thing that impacts this problem that I don&#39;t think has been mentioned yet is FE application performance. The limitations on a client/in the browser, and the cost of communicating between client and server, are pretty different from those between a database and backend code. For a fast frontend UI you want just the slice of multiple entities&#39; data that helps you accomplish a specific task (or sometimes I think about it as just what you need for a single application &quot;screen&quot;). You could probably do this data filtering/reformatting directly with database queries, but I think in practice I at least would want more abstraction than (my knowledge of) SQL provides. Doing it on the client would get unusably slow as soon as things got complex, and waste a lot of bandwidth.</p>
+
+<p>I&#39;ve used Apollo and GraphQL, and I agree that they are an attempt to solve some aspects of this problem, but in the real-world implementations I&#39;ve seen a lot of backend glue code translating between the client and the database still has to exist. It might not be the &quot;less layers of abstraction&quot; solution Wesley is looking for. :) When you&#39;re using JS on the client you can query your data in a way that matches the abstraction of the database, but you just get an untyped blob of JS primitives in response.</p>
+
+<p>I&#39;ve never used it, but Apollo does have a feature to generate Typescript types for your GraphQL queries which seems pretty interesting. (I was looking at <a href="https://www.apollographql.com/docs/react/development-testing/static-typing/">https://www.apollographql.com/docs/react/development-testing/static-typing/</a> out of curiosity.)</p>
+
+<p><strong>Wesley Aptekar-Cassels:</strong></p>
+
+<p><strong>@Allie Jones</strong> Thanks for the thoughts! I think that:</p>
+
+<blockquote>
+<p>For a fast frontend UI you want just the slice of multiple entities&#39; data that helps you accomplish a specific task (or sometimes I think about it as just what you need for a single application &quot;screen&quot;)</p>
+</blockquote>
+
+<p>Is a really good way of thinking about it, and my question is sort of &quot;how do you reconcile wanting a frontend that does very little computation and just displays what the server tells it to&quot; with &quot;try to have a single source of truth&quot; — especially given that sometimes, the frontend will have to do computation to avoid network latency (for instance, filtering a list of results for a search term that the user is typing in live, like @-completion in zulip, etc)</p>
+
+<blockquote>
+<p>Doing it on the client would get unusably slow as soon as things got complex, and waste a lot of bandwidth.</p>
+</blockquote>
+
+<p>I think that as is becomes safe/common to deploy webassembly in production (currently it&#39;s at 93% browser support, only 2 percentage points less than CSS grid), this may change — it doesn&#39;t change the bandwidth part of your concern, but it does mean that the way to get &quot;fast&quot; web apps may shift from doing computation quickly on the server side and then suffering network latency to sending a lot of data to the client and then doing more computation there, enabling really low latency for user interaction. This also makes sense with how compute resources have changed, it&#39;s pretty standard now for a big webapp like gmail to take a few hundred megabytes of RAM. If you&#39;re going to be using that much ram, might as well get a lot of speed out of it by prefetching a bunch of data so you can display it to the user faster. In fact, it seems like apps like this could probably actually use less bandwidth, if they&#39;re written in a way to make caching and saving to localstorage easier (using content-addressable storage more, for instance). As many native apps demonstrate, modern consumer computers do tend to have enough compute capacity to make fast apps, even if javascript can&#39;t necessarily access it :)</p>
+
+<p><strong><a href="https://alliejon.es/">Allie Jones</a>:</strong></p>
+
+<p>I&#39;m getting away from your question here, and I don&#39;t want to derail too much, but at least for my work-work (on a high-traffic, somewhat international e-commerce site) our web applications have to accommodate lower-powered mobile devices and mobile internet connections, and in that environment there&#39;s still a pretty steep cost to having a lot of client JS. But that&#39;s a practical limitation and something that will almost certainly improve over time.</p>
+
+<p>Re: web applications as distributed systems, <a href="https://pouchdb.com/">PouchDB</a> doesn&#39;t address types but it does lean into that idea by keeping all of your data on-client and then syncing with the server when you&#39;re online.</p>
+
+<p><strong><a href="https://donnywinston.com/">Donny Winston</a>:</strong></p>
+
+<p>I used Meteor circa 2014 as a way to harmonize front- and back-end state as one database that stored data exactly as the front-end expected it, which is to say, untyped JSON. The development experience was a pleasure given this constraint. The database was a set of JSON-document collections via MongoDB. Through websockets and an authentication-respecting pub/sub protocol, the subset of your database that the front-end needed at any given time was synced to the client, and I used a built-in “minimongo” browser JS library that quacked like the backend MongoDB server library. So, that was the solution at the time — ditch SQL (or use it as a system of record that syncs with your application’s MongoDB via periodic ETL?) in order to achieve the kind of harmony you articulated.</p>
+
+<p><strong><a href="https://vaibhavsagar.com/">Vaibhav Sagar</a>:</strong></p>
+
+<p>Backend FRP in particular is something my previous company is working on. The approach they are taking involves writing your backend logic in a way that is agnostic to the order of events (i.e. if you receive events out of order it should still do the right thing) over a view of the database (Postgres in their case), and then they parse the write-ahead log and send events accordingly. It&#39;s a really cool problem but much much harder than they expected. My old boss actually <a href="https://zfoh.ch/zurihac2019/#speaker-ryan-trinkle">gave a talk</a> on it when he thought it was ready but then it turned out that it wasn&#39;t anywhere close (sadly the video was lost). I kept trying to get him to look at Frank McSherry&#39;s dataflow stuff because it seemed like it was relevant but he was convinced he already knew everything he needed to know. Maybe <strong>@[NAME REDACTED]</strong> can provide more insight on how that is going.</p>
+
+<p><strong><a href="http://wwn.nebcorp.com/">Joe Ardent</a>:</strong></p>
+
+<p>I wonder if you can square this circle by shifting your frame, and breaking your truth into different components (reading back through the thread I see that I&#39;m about to just restate/formulate what <strong>@Iain McCoy</strong> already said, but I&#39;ll go on anyway). Like Ian said, there are backend types and frontend types, and the frontend state could be less &quot;a source of truth&quot; and more &quot;a correct statement about the current state of things&quot;.</p>
+
+<p>and so the front end state is, again like Ian said with &quot;in memory&quot; or &quot;on the wire&quot; or &quot;committed to the backend truth-source&quot;, information to the user about what&#39;s going on with what they&#39;ve done and how it impacts the future history of your interaction</p>
+
+<p>(this is all in the context of a web application, but I suppose it also applies to other software that is not &quot;local first&quot; primarily)</p>
+
+<p><strong>Wesley Aptekar-Cassels:</strong></p>
+
+<p>Related blog post: <a href="https://macwright.com/2020/05/10/spa-fatigue.html">https://macwright.com/2020/05/10/spa-fatigue.html</a></p>
+
+<blockquote>
+<p>The dream of APIs is that you have generic, flexible endpoints upon which you can build any web application. That idea breaks down pretty fast.</p>
+
+<p>Most interactive web applications start to triangulate on “one query per page.” API calls being generic or reusable never seems to persist as a value in infrastructure. This is because a large portion of web applications are, at their core, query &amp; transformation interfaces on top of databases. The hardest performance problems they tend to have are query problems and transfer problems.</p>
+</blockquote>
+
+<p><hr></p>
+
+<p>This is something that I&#39;ve been thinking about for a while, and I expect I&#39;ll think about for a while longer, but I&#39;m curious to see what other answers people have to these questions.</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

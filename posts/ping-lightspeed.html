@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Ping at the speed of light</title>
+  <meta name="description" content="How fast are those packets moving?">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Ping at the speed of light">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/ping-lightspeed">
+  <meta property="og:description" content="How fast are those packets moving?">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/ping-lightspeed">
+  <meta name="twitter:title" content="Ping at the speed of light">
+  <meta name="twitter:description" content="How fast are those packets moving?">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Ping at the speed of light</h1>
+        <div class="article-list-date">
+          Aug 17, 2017
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>A few weeks ago, someone mentioned to me that when you send a packet over the internet, it travels at a significant fraction (~80%) of the speed of light, just based on the time it takes to get a response and the physical distance travelled. This was surprising to me, but it was believable enough for me to spend some time investigating it.</p>
+
+<p>We can get a pretty good estimate of the speed that the packet is traveling at by pinging a server and doing some math:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">$ ping wesleyac.com
+PING wesleyac.com (192.64.119.124) 56(84) bytes of data.
+64 bytes from 192.64.119.124 (192.64.119.124): icmp_seq=1 ttl=50 time=80.1 ms
+</code></pre></div>
+<p>This server is located in LA, and I&#39;m in NYC, putting the distance at 3965 km (7930 km for a round trip). That gives us a speed of just over 99000 km/second. We can find the speed of light in fiber optic cable<sup id="fnref1"><a href="#fn1">1</a></sup> by dividing the speed of light in a vacuum (299,792,458 m/s) by the refractive index of fiber optic cable (usually ~1.468)<sup id="fnref2"><a href="#fn2">2</a></sup>, getting ~204,218,296 m/s. Thus when I ping my server, I&#39;d estimate that on average the packet is travelling at around 48% of the speed of light in fiber optic cable. This is quite impressive (It&#39;s about 22 million times faster than the Pony Express, for example<sup id="fnref3"><a href="#fn3">3</a></sup>), but it&#39;s not the ~80% figure that I&#39;d heard, so I decided to investigate further.</p>
+
+<p>One thing that might be happening is that my packet isn&#39;t actually going directly from NYC to LA - I can use traceroute to find the exact path that it&#39;s taking:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">$ traceroute wesleyac.com
+traceroute to wesleyac.com (192.64.119.124), 30 hops max, 60 byte packets
+ 1  gateway.net.recurse.com (10.0.0.1)  2.943 ms  2.850 ms  2.866 ms
+ 2  207.251.103.45 (207.251.103.45)  37.430 ms  37.652 ms  37.576 ms
+ 3  te0-7-0-18.ccr21.jfk04.atlas.cogentco.com (38.104.73.241)  3.932 ms  3.794 ms  3.790 ms
+ 4  telia.jfk04.atlas.cogentco.com (154.54.11.110)  4.245 ms  4.241 ms  4.158 ms
+ 5  nyk-bb3-link.telia.net (62.115.140.210)  3.719 ms nyk-bb3-link.telia.net (62.115.140.106)  3.767 ms nyk-bb3-link.telia.net (62.115.123.6)  3.787 ms
+ 6  las-b24-link.telia.net (62.115.116.96)  85.758 ms las-b24-link.telia.net (62.115.138.101)  82.792 ms las-b24-link.telia.net (62.115.116.96)  83.911 ms
+ 7  incapsula-ic-306837-las-b3.c.telia.net (62.115.45.234)  80.535 ms  80.515 ms  80.482 ms
+ 8  172.20.0.198 (172.20.0.198)  80.534 ms  81.517 ms  80.691 ms
+ 9  199.193.7.150 (199.193.7.150)  80.616 ms  81.551 ms  81.491 ms
+10  199.193.7.162 (199.193.7.162)  82.897 ms  82.538 ms  81.855 ms
+11  192.64.119.124 (192.64.119.124)  80.515 ms  81.523 ms  81.671 ms
+</code></pre></div>
+<p>Doing this, I can see that while the majority of the hops are fairly short, most of the time is taken up between hops 5 and 6, which are when it actually goes from the east coast to the west coast. For a while, I toyed with the idea of geolocating each hop, and finding the total distance travelled that way. However, there&#39;s a much easier way to find the latency between two hops - AT&amp;T has <a href="http://ipnetwork.bgtmo.ip.att.net/pws/network_delay.html">a webpage</a> that shows the latency between almost any of it&#39;s nodes. The LA to NY latency as of this writing is 63 ms, which works out to ~62% of the speed of light in fiber.</p>
+
+<p>We can use a <a href="https://github.com/WesleyAC/toybox/blob/42262bf81ac226ca83addea2c340017f8ea0e60f/misc/scrape_network_speeds.py">simple script</a> to calculate the latencies for all of these:</p>
+
+<p><center></p>
+
+<table><thead>
+<tr>
+<th>________________________</th>
+<th>Atl</th>
+<th>Aus</th>
+<th>Cam</th>
+<th>Chi</th>
+<th>Cle</th>
+<th>Dal</th>
+<th>Den</th>
+<th>Det</th>
+<th>Hou</th>
+<th>Ind</th>
+<th>Kan</th>
+<th>LA</th>
+<th>Mad</th>
+<th>Nas</th>
+<th>NO</th>
+<th>NY</th>
+<th>Orl</th>
+<th>Pa</th>
+<th>Phx</th>
+<th>SA</th>
+<th>SD</th>
+<th>SF</th>
+<th>StL</th>
+<th>Sea</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Austin, TX</td>
+<td>105.2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Cambridge, MA</td>
+<td>107.6</td>
+<td>106.8</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Chicago, IL</td>
+<td>81.9</td>
+<td>94.9</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Cleveland, OH</td>
+<td>93.7</td>
+<td></td>
+<td>97.8</td>
+<td>143.5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Dallas, TX</td>
+<td>115.4</td>
+<td>97.1</td>
+<td>103.7</td>
+<td>98.9</td>
+<td>113.5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Denver, CO</td>
+<td>97.0</td>
+<td>102.7</td>
+<td>126.0</td>
+<td>154.5</td>
+<td></td>
+<td>111.8</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Detroit, MI</td>
+<td>87.6</td>
+<td>98.5</td>
+<td>89.7</td>
+<td>95.8</td>
+<td>77.5</td>
+<td>94.4</td>
+<td>142.1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Houston, TX</td>
+<td>125.4</td>
+<td>67.6</td>
+<td>103.2</td>
+<td>91.3</td>
+<td>105.4</td>
+<td>119.6</td>
+<td>117.2</td>
+<td>91.2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Indianapolis, IN</td>
+<td></td>
+<td></td>
+<td></td>
+<td>104.9</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Kansas City, MO</td>
+<td></td>
+<td></td>
+<td>125.3</td>
+<td>109.2</td>
+<td>118.2</td>
+<td></td>
+<td>118.9</td>
+<td>108.6</td>
+<td>138.6</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Los Angeles, CA</td>
+<td>125.2</td>
+<td>113.6</td>
+<td>121.4</td>
+<td>122.6</td>
+<td>127.5</td>
+<td>130.0</td>
+<td>100.9</td>
+<td>123.2</td>
+<td>123.5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Madison, WI</td>
+<td></td>
+<td></td>
+<td></td>
+<td>79.8</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>68.3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Nashville, TN</td>
+<td>114.3</td>
+<td>100.9</td>
+<td>104.4</td>
+<td>74.6</td>
+<td>134.0</td>
+<td>110.0</td>
+<td>102.3</td>
+<td>101.3</td>
+<td>93.1</td>
+<td></td>
+<td>89.4</td>
+<td>122.6</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>New Orleans, LA</td>
+<td>123.5</td>
+<td>106.0</td>
+<td>103.9</td>
+<td>78.5</td>
+<td>89.8</td>
+<td></td>
+<td>111.8</td>
+<td>100.7</td>
+<td>147.1</td>
+<td></td>
+<td>99.6</td>
+<td>125.9</td>
+<td></td>
+<td>75.2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>New York, NY</td>
+<td>100.3</td>
+<td>97.5</td>
+<td>100.9</td>
+<td>122.0</td>
+<td>101.0</td>
+<td>102.8</td>
+<td>138.0</td>
+<td>75.1</td>
+<td>114.3</td>
+<td></td>
+<td>135.9</td>
+<td>123.9</td>
+<td></td>
+<td>106.6</td>
+<td>117.5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Orlando, FL</td>
+<td>129.7</td>
+<td>114.3</td>
+<td>94.4</td>
+<td>90.4</td>
+<td>110.5</td>
+<td>119.0</td>
+<td>110.6</td>
+<td>96.6</td>
+<td>124.5</td>
+<td></td>
+<td>99.4</td>
+<td>129.4</td>
+<td></td>
+<td>123.5</td>
+<td>122.8</td>
+<td>94.2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Philadelphia, PA</td>
+<td>98.0</td>
+<td>102.9</td>
+<td>106.6</td>
+<td>126.5</td>
+<td>104.8</td>
+<td>107.3</td>
+<td>140.7</td>
+<td>102.5</td>
+<td>110.9</td>
+<td></td>
+<td>133.5</td>
+<td>124.9</td>
+<td></td>
+<td>105.3</td>
+<td>106.4</td>
+<td>83.3</td>
+<td>93.0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Phoenix, AZ</td>
+<td>142.2</td>
+<td>127.4</td>
+<td>117.2</td>
+<td>101.2</td>
+<td>117.1</td>
+<td>150.6</td>
+<td>50.9</td>
+<td>104.3</td>
+<td>142.3</td>
+<td></td>
+<td>116.3</td>
+<td>106.8</td>
+<td></td>
+<td>122.4</td>
+<td>136.7</td>
+<td></td>
+<td>132.1</td>
+<td>113.5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>San Antonio, TX</td>
+<td>109.1</td>
+<td>79.1</td>
+<td>103.2</td>
+<td>102.0</td>
+<td>112.3</td>
+<td>101.0</td>
+<td>98.5</td>
+<td>97.1</td>
+<td>122.3</td>
+<td></td>
+<td>133.1</td>
+<td>134.3</td>
+<td></td>
+<td>106.0</td>
+<td>136.8</td>
+<td>106.3</td>
+<td>128.6</td>
+<td>103.4</td>
+<td>143.7</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>San Diego, CA</td>
+<td>135.0</td>
+<td>128.2</td>
+<td>116.8</td>
+<td>115.8</td>
+<td>118.8</td>
+<td>141.1</td>
+<td>89.5</td>
+<td>115.0</td>
+<td>135.1</td>
+<td></td>
+<td>110.1</td>
+<td>89.3</td>
+<td></td>
+<td>124.5</td>
+<td>132.7</td>
+<td>118.6</td>
+<td>129.9</td>
+<td>119.2</td>
+<td>119.5</td>
+<td>139.3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>San Francisco, CA</td>
+<td>120.8</td>
+<td>102.8</td>
+<td>124.1</td>
+<td>132.9</td>
+<td>137.0</td>
+<td>113.9</td>
+<td>102.7</td>
+<td>131.9</td>
+<td>115.0</td>
+<td></td>
+<td></td>
+<td>110.4</td>
+<td></td>
+<td>103.6</td>
+<td>114.9</td>
+<td>129.6</td>
+<td>117.4</td>
+<td>127.0</td>
+<td>104.4</td>
+<td>122.7</td>
+<td>112.4</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>St. Louis, MO</td>
+<td>75.2</td>
+<td>100.2</td>
+<td>123.6</td>
+<td>119.1</td>
+<td>113.6</td>
+<td>87.5</td>
+<td>120.9</td>
+<td>97.8</td>
+<td>94.7</td>
+<td>62.8</td>
+<td>126.1</td>
+<td>107.1</td>
+<td>83.1</td>
+<td>68.4</td>
+<td>60.0</td>
+<td>128.6</td>
+<td>102.9</td>
+<td>131.0</td>
+<td>104.6</td>
+<td>97.7</td>
+<td>119.4</td>
+<td>114.6</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Seattle, WA</td>
+<td>104.8</td>
+<td>98.2</td>
+<td>114.5</td>
+<td>136.4</td>
+<td>123.2</td>
+<td>104.2</td>
+<td>97.1</td>
+<td>129.8</td>
+<td>106.7</td>
+<td></td>
+<td>99.0</td>
+<td>106.7</td>
+<td></td>
+<td>104.2</td>
+<td>105.7</td>
+<td>119.5</td>
+<td>103.9</td>
+<td>119.7</td>
+<td>91.4</td>
+<td>97.3</td>
+<td>106.3</td>
+<td></td>
+<td>104.6</td>
+<td></td>
+</tr>
+<tr>
+<td>Washington DC</td>
+<td>92.2</td>
+<td>103.5</td>
+<td>114.7</td>
+<td>91.7</td>
+<td>75.3</td>
+<td>102.9</td>
+<td>133.0</td>
+<td>75.7</td>
+<td>109.2</td>
+<td></td>
+<td>137.8</td>
+<td>112.7</td>
+<td></td>
+<td>73.1</td>
+<td>110.8</td>
+<td>131.3</td>
+<td>87.0</td>
+<td>101.4</td>
+<td>115.9</td>
+<td>99.3</td>
+<td>112.5</td>
+<td>119.1</td>
+<td>135.2</td>
+<td>113.6</td>
+</tr>
+</tbody></table>
+
+<p></center></p>
+
+<p>Interestingly, the fastest one of these is Denver to Chicago, which goes at 154.5 km/ms, or ~76% the speed of light in fiber! This is approximately the same speed as SF to Hong Kong, which is quite surprising - I would expect SF to Hong Kong to be much faster than Denver to Chicago, since a larger percentage of the time would be spent travelling over fiber.</p>
+
+<p>Overall, the thing that surprised me the most about this was how consistent the timing was:</p>
+
+<p><img src="../img/pingspeed/hist_lightspeed.png" alt="Histogram of ping speeds"></p>
+
+<p>I now have a much better intuition for how fast packets travel, and I hope that this was enlightening for others as well!</p>
+
+<p><em>Thanks to Christian Ternus, Dan Luu, and Laura Lindzey for comments/feedback/discussion.</em></p>
+
+<style>
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+    font-size: 9pt;
+}
+</style>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>As an aside - when I was researching the speed of light in fiber optic cable, I discovered that the speed of <em>manufacture</em> of fiber optic cable is more than <a href="http://rightstuffcomesinblack.com/about-the-author-dr-thomas-mensah">50 meters per second</a>, which is both terrifying and awe inspiring. For context, that&#39;s faster than the world record fastest baseball pitch.&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+<li id="fn2">
+<p>Based <a href="http://www.princetel.com/datasheets/SMF28e.pdf">on</a> <a href="https://www.corning.com/media/worldwide/coc/documents/Fiber/SMF-28%20Ultra.pdf">these</a> <a href="http://ariatech.com/pdf/G.652-Single-Mode-Fiber-Codes.pdf">datasheets</a>&nbsp;<a href="#fnref2">&#8617;</a></p>
+</li>
+
+<li id="fn3">
+<p>This is based on the <a href="https://about.usps.com/publications/pub100.pdf">fastest Pony Express delivery ever</a>, which was a delivery from St. Joseph, MI to Sacramento, CA in 7 days and 17 hours - on average, deliveries were probably much slower.&nbsp;<a href="#fnref3">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

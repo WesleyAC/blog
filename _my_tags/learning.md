@@ -1,4 +1,0 @@
----
-slug: learning
-name: learning
----

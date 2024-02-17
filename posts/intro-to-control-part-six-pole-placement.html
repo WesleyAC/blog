@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Intro to Control Theory Part 6: Pole Placement</title>
+  <meta name="description" content="Designing State-Space controllers">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Intro to Control Theory Part 6: Pole Placement">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/intro-to-control-part-six-pole-placement">
+  <meta property="og:description" content="Designing State-Space controllers">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/intro-to-control-part-six-pole-placement">
+  <meta name="twitter:title" content="Intro to Control Theory Part 6: Pole Placement">
+  <meta name="twitter:description" content="Designing State-Space controllers">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Intro to Control Theory Part 6: Pole Placement</h1>
+        <div class="article-list-date">
+          May 7, 2017
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>In <a href="/posts/intro-to-control-part-four-state-space">Part 4</a>, I covered how to make a state-space model of a system to make running simulations easy. In this post, I&#39;ll talk about how to use that model to make a controller for our system.</p>
+
+<p>For this post, I&#39;m going to use an example system that I haven&#39;t talked about before - A mass on a spring:</p>
+
+<p><img src="../img/control6/massspring.jpg" alt="A simple mass on a spring. Image Credit: University of Southern Queensland"></p>
+
+<p>If we call \(p\) the position of the cart (we use \(p\) instead of \(x\), since \(x\) is the entire state once we&#39;re using a state space representation), then we find that the following equation describes how the cart will move:</p>
+
+<p>\[ \dot{p} = -\frac{k}{m}p \]</p>
+
+<p>Where \(p\) is position, \(k\) is the spring constant of the spring (how strong it is), and \(m\) is the mass of the cart.</p>
+
+<p>You can derive this from <a href="https://en.wikipedia.org/wiki/Hooke%27s_law">Hooke&#39;s Law</a> if you&#39;re interested, but the intuitive explanation is that the spring pulls back against the cart proportionally to how far it is away from the equilibrium state of the spring, but gets slowed down the heavier the cart is.</p>
+
+<p>This describes a ideal spring, but one thing that you&#39;ll notice if you run a simulation of this is that it will keep on oscillating forever! We haven&#39;t taken into account friction. Taking into account friction gets us the following equation:</p>
+
+<p>\[ \dot{p} = -\frac{k}{m}p - \frac{c}{m}\dot{p} \]</p>
+
+<p>Where \(c\) is the &quot;damping coefficient&quot; - essentially the amount of friction acting on the cart.</p>
+
+<p>Now that we have this equation, let&#39;s convert it into state space form!</p>
+
+<p>This system has two states - position, and velocity:</p>
+
+<p>\[ x = \begin{bmatrix} p \\ \dot{p} \end{bmatrix} \]</p>
+
+<p>Since \(x\) is a vector of length 2, \(A\) will be a 2x2 matrix. Remember, a state space representation always takes this form:</p>
+
+<p>\[ \dot{x} = Ax + Bu \]</p>
+
+<p>We&#39;ll find \(A\) first:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} ? &amp; ? \\ ? &amp; ? \end{bmatrix} \begin{bmatrix} p \\ \dot{p} \end{bmatrix} \]</p>
+
+<p>The way that I like to think about this is that each number in the matrix is asking a question - how does X affect Y? So, for example, the upper left number in the A matrix is asking &quot;How does position affect velocity?&quot;. Position has no effect on velocity, so the upper left number is zero. Next, we can look at the upper right number. This is asking &quot;How does velocity affect velocity?&quot; Well, velocity <em>is</em> velocity, so we put a 1 there (since you need to multiply velocity by 1 to get velocity). If we keep doing this process, we get the following equation:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ -\frac{k}{m} &amp; -\frac{c}{m} \end{bmatrix} \begin{bmatrix} p \\ \dot{p} \end{bmatrix} \]</p>
+
+<p>For the sake of this post, I&#39;ll pick some arbitrary values for \(m\), \(k\), and \(c\): \(m = 1 \text{kg}\), \(k = 0.4 \text{N/m}\), \(c = 0.3 \text{N/m/s}\). Running a simulation of this system, starting at a position of 1 meter, we get the following response:</p>
+
+<p><img src="../img/control6/openloopresponse.png" alt="Open loop response of mass on spring system"></p>
+
+<p>Notice that this plot shows two things happening - the position is oscillating, but also decreasing. There&#39;s actually a way to quantify how much the system will oscillate and how quickly it will converge to zero (if it does at all!). In order to see how a system will act, we look at the &quot;poles&quot; of the system. In order to understand what the poles of a system mean, we need to take a quick detour into linear algebra.</p>
+
+<p>Our matrix \(A\) is actually a <a href="https://en.wikipedia.org/wiki/Linear_map">linear transformation</a>. That means that if we multiply a vector by \(A\), we will get out a new, transformed vector. Multiplication and addition are preserved, such that \( A(x \times 5) = (Ax) \times 5 \) and \( A(x_1 + x_2) = Ax_1 + Ax_2 \). When you look at \(A\) as a linear transformation, you&#39;ll see that some vectors don&#39;t change direction when you apply the transform to them:</p>
+
+<p><img src="../img/control6/eigenvectors.gif" alt="Eigenvector animation. Image Credit: Wikipedia"></p>
+
+<p>The vectors that don&#39;t change direction when transformed are called &quot;eigenvectors&quot;. For this transform, the eigenvectors are the blue and pink arrows. Each eigenvector has an &quot;eigenvalue&quot;, which is how much it stretches the vector by. In this example, the eigenvalue of the blue vectors is 3 and the eigenvalue of the pink vectors is 1.</p>
+
+<p>So how does this all relate to state space systems? Well, the eigenvalues of the system (also called the poles of a system) have a direct effect on the response of the system. Let&#39;s look at our eigenvalues for our system above. Plugging the matrix into octave/matlab gives us:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">&gt;&gt; eig([0      1;
+        -0.4/1 -0.3/1])
+ans =
+
+  -0.15000 + 0.61441i
+  -0.15000 - 0.61441i
+</code></pre></div>
+<p>So we can see that we have two eigenvalues, both of which are complex numbers. What does this mean? Well, the real component of the number tells you how fast the system will converge to zero. The more negative it is, the faster it will converge to zero. If it is above zero, the system is unstable, and will trend towards infinity (or negative infinity). If it is exactly zero, the system is &quot;marginally stable&quot; - it won&#39;t get larger or smaller. The imaginary part of the number tells you how much the system will oscillate. For every positive imaginary part, there is a negative one of the same magnitude with the same real part, so it&#39;s just the magnitude of the imaginary part that determines how much the system will oscillate - the higher the magnitude of the imaginary part, the more the system will oscillate.</p>
+
+<p>Why is this the case? Well, as it turns out, the derivative of a specific state is the current value of that state times the eigenvalue associated with that state. So, a negative eigenvalue will result in a derivative that drives the state to zero, whereas a positive eigenvalue will cause the state to increase in magnitude forever. A eigenvalue of zero will cause the derivative to be zero, which obviously results in no change to the state.</p>
+
+<p>That explains real eigenvalues, but what about imaginary eigenvalues? Let&#39;s imagine a system that has two poles, at \(0+0.1i\) and \(0-0.1i\). Since this system has a real component of zero, it will be marginally stable, but since it has an imaginary component, it will oscillate. Here&#39;s a way of visualizing this system:</p>
+
+<p><img src="../img/control6/oscillatingsystem.gif" alt="Oscillating system animation."></p>
+
+<p>The blue vector is the position of the system. The red vectors are the different components of that position (the sum of the red vectors will equal the blue vector). The green vectors are the time derivatives of the red vectors. As you can see, the eigenvalue being imaginary causes each component of the position to be imaginary, but since there is always a pair of imaginary poles of the same magnitude but different signs, the actual position will always be real.</p>
+
+<p>So, how is this useful? Well, it lets us look at a system and see what it&#39;s response will look like. But we don&#39;t just want to be able to see how the system will respond, we want to be able to change how the system will respond. Let&#39;s return to our mass on a spring:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ -\frac{k}{m} &amp; -\frac{c}{m} \end{bmatrix} \begin{bmatrix} p \\ \dot{p} \end{bmatrix} \]</p>
+
+<p>Now let&#39;s say that we can apply an arbitrary force \(u\) to the system. For this, we use our \(B\) matrix:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ -\frac{k}{m} &amp; -\frac{c}{m} \end{bmatrix} \begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix} u \]</p>
+
+<p>Now, let&#39;s design a controller that will stop there from being any oscillation, and drive the system to zero much more quickly. Remember, all &quot;designing a controller&quot; means in this case is finding a matrix \(K\), where setting \( u = Kx \) will cause the system to respond in the way that you want it to. How do we do this? Well, it turns out that it&#39;s actually fairly easy to place the poles of a system wherever you want. Since we want to have no oscillation, we&#39;ll make the imaginary part of the poles zero, and since we want a fast response time, we&#39;ll make the real part of the poles -2.5 (this is pretty arbitrary). We can use matlab/octave to find what our K matrix must be to have the poles of the closed loop system be at -2.5:</p>
+<div class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="n">pkg</span> <span class="nb">load</span> <span class="n">control</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">;</span>
+     <span class="o">-</span><span class="mf">0.4</span><span class="p">/</span><span class="mi">1</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">/</span><span class="mi">1</span><span class="p">];</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span>
+     <span class="mi">1</span><span class="p">/</span><span class="mi">1</span><span class="p">];</span>
+
+<span class="n">place</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">2.5</span> <span class="o">-</span><span class="mf">2.5</span><span class="p">])</span>
+</code></pre></div>
+<p>Which gives us the output:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">K =
+
+   5.8500   4.7000
+</code></pre></div>
+<p>So our K matrix is:</p>
+
+<p>\[ K = \begin{bmatrix} 5.85 \\ 4.7 \end{bmatrix} \]</p>
+
+<p>And running a simulation of the system with that K matrix gives us:</p>
+
+<p><img src="../img/control6/closedloopresponse.png" alt="Closed loop response of mass on spring system"></p>
+
+<p>Much better! It converges in under five seconds with no oscillation, compared with &gt;30 seconds with lots of oscillations for the open-loop response. But wait, if we can place the poles <em>anywhere</em> we want, and the more negative they are the faster the response, why not just place them as far negative as possible? Why not place them at -100 or -1000 or -100000? For that matter, why do we ever <em>want</em> our system to oscillate, if we can just make the imaginary part of the poles zero? Well, the answer is that you can make the system converge as fast as you want, so long as you have enough energy that you can actually apply to the system. In real life, the motors and actuators that are limited in the amount of force that they can apply. We ignore this in the state-space model, since it makes the system non-linear, but it&#39;s something that you need to keep in mind when designing a controller. This is also the reason that you might want some oscillation - oscillation will make you reach your target faster than you would otherwise. Sometimes, getting to the target fast is more important than not oscillating much.</p>
+
+<p>So, that&#39;s how you design a state space controller with pole placement! There are also a ton of other ways to design controllers (most notably LQR) which I&#39;ll go into later, but understanding how poles determine the response of a system is important for any kind of controller.</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

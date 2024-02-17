@@ -1,4 +1,0 @@
----
-slug: math 
-name: Math 
----

@@ -1,4 +1,0 @@
----
-slug: hiring
-name: Hiring
----

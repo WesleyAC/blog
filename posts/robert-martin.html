@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | A Quick Primer on Robert "Uncle Bob" Martin</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="A Quick Primer on Robert &quot;Uncle Bob&quot; Martin">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/robert-martin">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/robert-martin">
+  <meta name="twitter:title" content="A Quick Primer on Robert &quot;Uncle Bob&quot; Martin">
+  <meta name="twitter:description" content="">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>A Quick Primer on Robert "Uncle Bob" Martin</h1>
+        <div class="article-list-date">
+          Sep 14, 2020
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>Robert &quot;Uncle Bob&quot; Martin is in the discourse again, this time for <a href="http://web.archive.org/web/20200913095211/http://blog.cleancoder.com/uncle-bob/2020/09/12/TheDisinvitation.html">planning to sue conference organizers and speakers</a> if he is offered a slot to speak at a conference and later has it rescinded. Martin is widely respected and followed in the software industry, having coauthored the Agile Manifesto, written several books, and given many talks. However, I&#39;ve personally found his technical ideas to be consistently dogmatic and sloppy, he repeatedly makes sexist remarks and made many people feel uncomfortable and unwelcome at conferences and communities he&#39;s in, and I find his views on race and politics extremely harmful. This post is a primer on why I think Martin&#39;s views on software are frequently unhelpful and incorrect, as well as an overview of some of his comments on race, gender, and politics.</p>
+
+<h1>The Technical</h1>
+
+<p>First, let&#39;s examine Martin&#39;s advice on its own merits. What does he believe about code, and how does he justify that?</p>
+
+<h3>Clean Code</h3>
+
+<p>As an intro to how Martin thinks about writing code, let&#39;s take a look at his 2009 book, <em>Clean Code</em><sup id="fnref1"><a href="#fn1">1</a></sup>. Sam Hughes has a <a href="https://qntm.org/clean">detailed blog post</a> about this book if you want a full dissection of it, but let&#39;s just pull out a few quotes:</p>
+
+<blockquote>
+<p>Martin says that functions should not be large enough to hold <em>nested</em> control structures (conditionals and loops); equivalently, they should not be indented to more than two levels. He says blocks should be one line long, consisting probably of a single function call. He says that an ideal function has <em>zero arguments</em> (but still no side effects??), and that a function with just three arguments is confusing and difficult to test. Most bizarrely, Martin asserts that an ideal function is <em>two to four lines of code long</em>. This piece of advice is actually placed at the start of the chapter. It&#39;s the first and most important rule</p>
+</blockquote>
+
+<p>Hughes goes on to discuss Martin&#39;s example refactoring of some code from <a href="http://www.fitnesse.org/">FitNesse</a>:</p>
+
+<blockquote>
+<p>I&#39;ll say again: this is Martin&#39;s own code, written to his personal standards. This is the ideal, presented to us as a learning example.
+<br><br>
+I will confess at this stage that my Java skills are dated and rusty, almost as dated and rusty as this book, which is from 2008. But surely, even in 2008, this code was illegible trash?
+<br><br>
+Let&#39;s ignore the wildcard <code>import</code>.
+<br><br>
+We have two public, static methods, one private constructor and fifteen private methods. Of the fifteen private methods, fully thirteen of them either have side effects (they modify variables which were not passed into them as arguments, such as <code>buildIncludeDirective</code>, which has side effects on <code>newPageContent</code>) or call out to other methods which have side effects (such as <code>include</code>, which calls <code>buildIncludeDirective</code>). Only <code>isTestPage</code> and <code>findInheritedPage</code> look to be side-effect-free. They still make use of variables which aren&#39;t passed into them (<code>pageData</code> and <code>testPage</code> respectively) but they <em>appear</em> to do so in side-effect-free ways.</p>
+</blockquote>
+
+<p>I recommend the <a href="https://qntm.org/clean">original post</a> for more examples, but the gist of it is that pretty much the whole book is filled with bad advice like this. Now that we&#39;ve taken a look at <em>Clean Code</em>, let&#39;s turn our attention to some of his more recent opinions.</p>
+
+<h3>Tools and Discipline</h3>
+
+<p>In his 2017 blog post &quot;<a href="https://blog.cleancoder.com/uncle-bob/2017/01/11/TheDarkPath.html">The Dark Path</a>,&quot; Martin discusses programming languages that make some classes of errors impossible (looking at the examples of Swift and Kotlin). On the topic of defects in software, he writes:</p>
+
+<blockquote>
+<p>Ask yourself why we are trying to plug defects with language features.  The answer ought to be obvious.  We are trying to plug these defects because these defects happen too often.
+<br><br>
+Now, ask yourself why these defects happen too often.  If your answer is that our languages don’t prevent them, then I strongly suggest that you quit your job and never think about being a programmer again; because defects are <em>never</em> the fault of our languages.  Defects are the fault of <em>programmers</em>.   It is <em>programmers</em> who create defects – not languages.</p>
+</blockquote>
+
+<p>Leaving aside the gatekeeping of telling people to &quot;quit your job and never think about being a programmer again,&quot; this opinion is obviously ridiculous. He says earlier in the very same blog post:</p>
+
+<blockquote>
+<p>[Swift and Kotlin] have integrated some functional characteristics. For example, they both have lambdas. This is a good thing, in general. The more we learn about functional programming, the better.</p>
+</blockquote>
+
+<p>Why is functional programming different from static typing? He provides essentially no justification for this — by his logic, isn&#39;t functional programming just a band-aid over programmers making mistakes? For that matter, why use a high-level language at all, if languages aren&#39;t the correct place to prevent errors? If only programmers were more careful, we could all just write machine code directly!</p>
+
+<p>This is a consistent part of Martin&#39;s ideology — in &quot;<a href="http://blog.cleancoder.com/uncle-bob/2017/10/04/CodeIsNotTheAnswer.html">Tools are not the Answer</a>&quot;, he writes:</p>
+
+<blockquote>
+<p>[T]he solution to the software apocalypse is not more tools. The solution is better programming discipline.
+<br>
+[...]
+<br>
+And right there, ladies and gentlemen, you can see both the cause of the apocalypse, and the obvious solution.
+<br><br>
+The cause:
+<br>
+<ol>
+<li>Too many programmer take sloppy short-cuts under schedule pressure.</li>
+<li>Too many other programmers think it’s fine, and provide cover.</li>
+</ol>
+<br>
+The obvious solution:
+<ol>
+<li>Raise the level of software discipline and professionalism.</li>
+<li>Never make excuses for sloppy work.</li>
+</ol></p>
+</blockquote>
+
+<p>This sort of thinking is pervasive in Martin&#39;s writing — he consistently sells TDD and &quot;discipline&quot; as dogmatic solutions to all programming problems, ignoring that better tools help you write better code, even if they are not a wholesale replacement for &quot;discipline&quot;. It&#39;s easy and comforting to blame individual programmers for bad code. But if you&#39;re actually interested in making software better, then you should realize that being careful and using tools that prevent mistakes are not mutually exclusive — using tools that prevent mistakes frees up your mental energy to focus on preventing higher level errors, rather than worrying about null pointer exceptions and double-frees.</p>
+
+<h3>Types</h3>
+
+<p>Given that Martin talks so much about why tests are superior to types, he doesn&#39;t seem to have a good understanding of what type systems actually do. For instance, he writes:</p>
+
+<blockquote>
+<p><a href="https://twitter.com/unclebobmartin/status/1135894377329508355">Thus, the testing burden is independent of typing.  The number of tests you write and execute is unaffected by the type system of your language.</a></p>
+</blockquote>
+
+<p>Which Shriram Krishnamurthi provides an <a href="https://twitter.com/ShriramKMurthi/status/1136411753590472707">excellent response to</a>, explaining why this is factually incorrect:</p>
+
+<blockquote>
+<p>A sound type system literally precludes certain behaviors, so the set of tests you write when they are precluded not only can be different, in the extreme, it must be (e.g., you can&#39;t write that ill-typed test).
+<br><br>[...]<br><br>
+As others have also pointed, parametricity is a case in point. If I have a language with relational parametricity, a parametric type (e.g., forall T . <something involving type T>) is a universal quantifier with a strong guarantee about ALL T. I don&#39;t need to test them all. 
+<br>
+Curiously, there&#39;s <em>value</em> to doing so at multiple types for T, because it provides explanatory power to the reader reading the tests to understand the function (e.g., in docs). In fact, @PyretLang&#39;s test-based type inference infers quantifiers from such polymorphic uses!
+<br><br>[...]<br><br>
+Let me move on to a more interesting case. Suppose you&#39;re writing a device driver, packet filter, etc. One thing you care about deeply is termination. So one of the things you&#39;d like to test for is termination.
+<br>
+Termination is fun: runs exactly into proof-vs-testability, as in the original thread. You can&#39;t prove it always terminates. You can only run several tests and make sure they all did. You need a timeout. That only says &quot;didn&#39;t terminate quickly&quot;. May have done so a bit later.
+<br>
+Except, of course, that I&#39;m lying and set you up. The HP is undecidable <em>for a certain language</em>. You can easily solve the HP if you change the language. One of my fun puzzles in a model checking class is to encode the HP and show that it appears trivially decidable. WAT.
+<br>
+So let&#39;s bring this back to types. One of the canonical languages of study in PL is the Simply-Typed Lambda Calculus (STLC). And the STLC has this glorious property that every program in it is guaranteed to terminate. It enjoys that property <em>because of the type system</em>.
+<br>
+This is a rather awesome result. You can have a pretty powerful language, EVEN with full-fledged lambdas, and no matter what you do, you can&#39;t make it go into an infinite loop.
+<br><br>[...]<br><br>
+At any rate, I believe this constitutes a definitive refutation: &quot;The number of tests you write and execute is [most certainly affected] by the type system of your language.</p>
+</blockquote>
+
+<p>This, of course, doesn&#39;t stop Martin from <a href="https://twitter.com/unclebobmartin/status/1204089346141216768">making the same claim later</a>.</p>
+
+<p>This sort of sloppiness is extremely common for Martin — in <a href="https://twitter.com/hillelogram/status/1137126800914550785">another tweet thread</a>, he fundamentally misunderstands what the halting problem is, and how it relates to provability.</p>
+
+<h3>Testing</h3>
+
+<p>Since Martin appears to believe that testing and discipline are the primary ways that we should seek to improve software quality, let&#39;s look at his thoughts on testing:</p>
+
+<blockquote>
+<p><a href="https://twitter.com/unclebobmartin/status/1135508568323629057">If you can write production code that covers all cases then you can write tests that cover all cases.</a></p>
+</blockquote>
+
+<p>This is trivially incorrect: if you write code that can generate an infinite output, then you will not be able to test all of the outputs. Martin <a href="https://twitter.com/unclebobmartin/status/1135592854171082752">responds</a> to this by saying that it doesn&#39;t matter, since we work on finite state machines, not infinite state machines, completely ignoring the real-world impractically of testing large input sets. If you want to test multiplying two 64-bit numbers<sup id="fnref2"><a href="#fn2">2</a></sup>, and each test takes 1 nanosecond, you&#39;ll be waiting 10²² years for an answer (that&#39;s around 1 sextillion years). Personally, most of the programs that I write tests for are more complicated than multiplying two 64 bit numbers, so I need some more powerful tools than just testing every case that my code will ever see. If you&#39;re interested in actually learning tools that will help you test large and complicated systems, consider using property-based testing and generative testing in addition to unit testing.</p>
+
+<h1>The Politics</h1>
+
+<p>While Martin advocates for a small, dogmatic, and incorrect set of technical ideas for making code better, that&#39;s not why most people are upset with him — it&#39;s far more common for people to be upset about his views on race and gender, and particularly the way that someone in a position of power expressing those views hurts people in the communities that he&#39;s a part of. Let&#39;s take a quick tour of some of these views.</p>
+
+<h3>Presidential Politics</h3>
+
+<p>Martin <a href="https://twitter.com/unclebobmartin/status/1279392044163780609">tweeted a quote from Trump</a>, <a href="https://twitter.com/unclebobmartin/status/1008689152878108674">voted for Trump</a>, and has said that there&#39;s &quot;<a href="https://twitter.com/unclebobmartin/status/1037672852294721536">plenty to agree with</a>&quot; in Trump&#39;s policies.</p>
+
+<h3>Gender</h3>
+
+<p>Martin has a long, well known history of making sexist remarks in talks at conferences and in blog posts. He made sexist remarks during his <a href="https://twitter.com/sarahmei/status/895327923346984960">2009 RailsConf keynote</a>. He later <a href="https://twitter.com/sarahmei/status/895335200854384641">said that he &quot;misspoke&quot;</a>, but <a href="https://twitter.com/sarahmei/status/895335422821228544">didn&#39;t remove the bit from his talk</a>. in 2012, he <a href="https://gist.github.com/unclebob/2508746">apologized</a> for making more sexist comments, but his apology for those remarks didn&#39;t stop him from writing <a href="https://meaganwaller.com/framework-whipped/">a blog post</a> with multiple sexist metaphors about female secretaries, harems, and concubines. He <a href="https://gist.github.com/unclebob/2abcce451bafeab421f2">apologized</a>, but that hasn&#39;t stopped him from <a href="http://blog.cleancoder.com/uncle-bob/2017/08/09/ThoughtPolice.html">defending James Damore</a>. He has a long history of making sexist comments, apologizing for them, then doing the exact same things again and again.</p>
+
+<h3>Race</h3>
+
+<p>Martin says that he&#39;s &quot;<a href="https://twitter.com/Grady_Booch/status/1282116356381437952/photo/2">disgusted</a>&quot; by the NFL players who didn&#39;t stand during the national anthem and that they should be fired (he&#39;s <a href="https://twitter.com/unclebobmartin/status/1279771445963321345">against cancel culture</a> though, and thinks that it&#39;s &quot;evil&quot; to get people fired for debate). He also writes that police <a href="https://twitter.com/Grady_Booch/status/1282116356381437952/photo/1">do not target people of color</a>, and that the United States was not founded on slavery.</p>
+
+<h1>Conclusion</h1>
+
+<p>I continue to be baffled as to why so many people follow and respect Robert Martin. His technical opinions are dogmatic and frequently incorrect, and he has been consistently sexist and an apologist for racism and authoritarianism. If you respect and follow Martin&#39;s work, I think it&#39;s worth evaluating why that is, and I hope that this post will help you in doing so.</p>
+
+<p>I trust that Martin will be <a href="https://blog.cleancoder.com/uncle-bob/2018/12/16/unoffended.html">unoffended</a> by this post.</p>
+
+<hr>
+
+<p><br></p>
+
+<p><em>Thanks to Hillel Wayne, Dan Luu, and one or more people who would prefer to remain anonymous for sources/comments/feedback/discussion about this post</em></p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>I have not read <em>Clean Code</em>, but based on excerpts and reviews from people I trust, I don&#39;t really feel that I need to. I&#39;ve read enough clearly bad advice from direct quotes from it that I don&#39;t particularly want to spend my time reading the whole thing.&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+<li id="fn2">
+<p>If you think that this sort of test is impractical and the sort of thing no one would do, consider that CPU manufacturers regularly write tests for this sort of behaviour, and <a href="https://en.wikipedia.org/wiki/Pentium_FDIV_bug">pay significantly when they get it wrong</a>.&nbsp;<a href="#fnref2">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

@@ -1,4 +1,0 @@
----
-slug: meta
-name: Meta
----

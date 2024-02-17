@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | How I run my servers</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="How I run my servers">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/how-i-run-my-servers">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/how-i-run-my-servers">
+  <meta name="twitter:title" content="How I run my servers">
+  <meta name="twitter:description" content="">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>How I run my servers</h1>
+        <div class="article-list-date">
+          Jan 21, 2022
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>I&#39;ve been writing recently about servers and internet infrastructure<sup id="fnref1"><a href="#fn1">1</a></sup>. A lot of this writing is predicated on running server software on a VM or physical machine, rather than using a more cloudy solution, which is somewhat unpopular these days. However, I think it&#39;s a pretty reasonable way to do things, and it&#39;s not as difficult as many people make it out to be. This post is a simple description of how I run most of the servers I operate. It mostly describes running server software that I&#39;ve written myself, since that allows me to make it much more robust and easy to deploy than the vast majority of off-the-shelf software is.</p>
+
+<p>This describes roughly the setup for <a href="https://thoughts.page">thoughts.page</a>, <a href="https://hanabi.site">hanabi.site</a>, <a href="https://github.com/WesleyAC/cgmserver">cgmserver</a>, <a href="https://github.com/WesleyAC/phonebridge">phonebridge</a>, and a few other services.</p>
+
+<p>These apps run on DigitalOcean VMs — the $5/month tier. (Some of them are on the same VM, some on different VMs — more on that later). The VMs run Debian 10.</p>
+
+<p>The server software is written in Rust. It&#39;s statically linked, and all of the html, css, config, secrets, etc are compiled into the binary. I accomplish this with <a href="https://github.com/emk/rust-musl-builder">rust-musl-builder</a> and <a href="https://github.com/pyros2097/rust-embed">rust-embed</a>. This means that deployment only requires copying a single file to the server. You can do similar things in languages like Go, C++, etc, and probably others, although I don&#39;t know the details of how exactly to accomplish it in those languages. If you&#39;re using a language that doesn&#39;t let you do this easily, a good alternative would be building a Docker container as your build artifact, which similarly will give you a single file to deploy.</p>
+
+<p>I use systemd to ensure that the binary starts when the server is started. Most of my systemd unit files are <a href="https://gist.github.com/WesleyAC/b3aaa0292579158ad566c140415c875d#file-example-service">9 lines long and extremely simple</a>. systemd itself is quite complicated, but just starting a server on boot does not expose you to most of that complexity.</p>
+
+<p>I use a <a href="/posts/simple-deploy-script">simple deploy script</a> that copies the binary to the server and restarts the server, taking a little bit of care to allow rollbacks and ensure that there will always be a valid version running, even if my connection drops while I&#39;m deploying.</p>
+
+<p>Programs that require a database use <a href="/posts/consider-sqlite">SQLite</a>, which means that the entire state of the app is kept in a single file. I have two redundant backup solutions: On a daily basis, a backup is taken via the <a href="https://sqlite.org/cli.html">SQLite <code>.backup</code> command</a>, and saved to <a href="https://www.tarsnap.com/">Tarsnap</a>. The script to do so is run via <a href="https://en.wikipedia.org/wiki/Cron">cron</a>. I also use <a href="https://litestream.io/">Litestream</a> to stream a copy of the database to DigitalOcean Spaces storage on a secondly basis, with snapshots taken every 6 hours. This gives me quite a lot of confidence that even in the most disastrous of cases, I&#39;m unlikely to lose a significant amount of data, and if I wanted to be more sure, I could crank up the frequency of the Tarsnap backups.</p>
+
+<p>All of my servers run behind <a href="https://nginx.org/">nginx</a> running as a reverse proxy. The main advantage to this is that nginx can do TLS termination, which means my apps don&#39;t need to think about HTTPS at all. I get my HTTPS certs from <a href="https://letsencrypt.org/">Let&#39;s Encrypt</a> via <a href="https://certbot.eff.org/">certbot</a> — this handles automatic renewal so I don&#39;t have to do anything to keep it working. <a href="https://gist.github.com/WesleyAC/a9b4d6079854a6617f9fe6be96beddfa">Here&#39;s</a> what my nginx config for <a href="https://hanabi.site">hanabi.site</a> looks like. Nginx also works great for serving static files — you can just <code>scp</code> or <code>rsync</code> them from your computer to the server.</p>
+
+<p>This is a simple and extremely robust setup. All of the software on the serving path (except for the apps themselves) has been around for decades and is extremely battle-tested. There is essentially no maintenance involved in keeping a site like this running — as long as I keep paying my DigitalOcean bills, they&#39;ll keep going. The only times my monitoring has detected problems with these sites have been transient DigitalOcean networking issues. I do need to update things occasionally — Debian releases have 5 years of support, so I&#39;ll need to upgrade to Debian 11 in around two and a half years, and if (when) something like <a href="https://en.wikipedia.org/wiki/Heartbleed">heartbleed</a> happens again, I&#39;ll need to go patch it. However, events like that are quite rare.</p>
+
+<p>One complaint about this setup is that paying $5/month for every service you want to run is a lot. This is indeed annoying, but it&#39;s quite doable to run multiple services on the same VM. In order to provide isolation, I run each service as its own unix user account. This form of isolation has been around since the dawn of unix, and thus seems quite robust. If you want more isolation, you can also use <a href="https://www.freedesktop.org/software/systemd/man/systemd-nspawn.html">systemd-nspawn</a> or <a href="https://firejail.wordpress.com/">firejail</a>. I usually don&#39;t bother, though — if something is really important to keep secure, I&#39;ll just pay the extra $5/month to run it on its own VM.</p>
+
+<p>So, the process for setting up a new project looks like:</p>
+
+<ul>
+<li>Create a new user</li>
+<li>Add a new nginx virtual host (and run certbot to get a HTTPS cert)</li>
+<li>Add a systemd unit</li>
+<li>Commit a <a href="/posts/simple-deploy-script">deploy script</a> to the repository and run it</li>
+</ul>
+
+<p>This can be a lot to figure out if you haven&#39;t done it before! However, one of the advantages to running things this way is that this infrastructure changes much, much more slowly than cloud infrastructure does. You only need to learn how to set up nginx once, since the config format has stayed essentially the same for the past decade<sup id="fnref2"><a href="#fn2">2</a></sup>, and is likely to remain the same in the future. The last major change to Debian system administration was the switch to systemd, nearly a decade ago. One of the comforts of running things this way is that you know that no one is going to pull the rug out from under you — no cloud provider is going to deprecate the service you&#39;re using, or silently change how it works. The only dependency is your VPS provider, and if you&#39;re unhappy with them — well, servers are a commodity, and there are a thousand other providers out there.</p>
+
+<p><strong>Thanks to Julia Evans for prodding me to finally write this, and for early feedback.</strong></p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>See: <a href="/posts/consider-sqlite">Consider SQLite</a>, <a href="/posts/no-static-websites">There is no such thing as a static website</a>, <a href="https://notebook.wesleyac.com/servers-and-desire/">Servers and Desire</a>.&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+<li id="fn2">
+<p>Seriously — try <a href="https://gist.github.com/WesleyAC/fedf41c6e257acf4f3bc67f144204c52">diffing <code>nginx-0.5.38/conf/nginx.conf</code> and <code>nginx-1.21.5/conf/nginx.conf</code></a>, from more than 12 years apart — there are a couple changes to how SSL is configured, some changes to the directory structure, and the logline format, and that&#39;s basically it.&nbsp;<a href="#fnref2">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

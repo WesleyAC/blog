@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Realtime Scheduling and Priority Inversion</title>
+  <meta name="description" content="Learning about what realtime scheduling is and how it can result in priority inversion">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Realtime Scheduling and Priority Inversion">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/realtime-scheduling-and-priority-inversion">
+  <meta property="og:description" content="Learning about what realtime scheduling is and how it can result in priority inversion">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/realtime-scheduling-and-priority-inversion">
+  <meta name="twitter:title" content="Realtime Scheduling and Priority Inversion">
+  <meta name="twitter:description" content="Learning about what realtime scheduling is and how it can result in priority inversion">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Realtime Scheduling and Priority Inversion</h1>
+        <div class="article-list-date">
+          Dec 30, 2016
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>When I&#39;m <a href="http://www.citruscircuits.org/">programming robots</a>, something that often comes up is &quot;realtime&quot; code. What does code being realtime mean? Simply put, realtime code has a known upper bound on the amount of time that it can take to execute. That rules out quite a few things:</p>
+
+<ul>
+<li>Any operation involving the network</li>
+<li>Any operation involving reading or writing files</li>
+<li>Any operation that allocates memory</li>
+</ul>
+
+<p>And those are just a few of the things that will make code non realtime.</p>
+
+<p>We use Linux for our code, so we end up using what&#39;s called the <a href="https://rt.wiki.kernel.org/index.php/Main_Page">RT-PREEMPT</a> patch. This makes it possible for userspace programs to be realtime in Linux. The main thing that this changes is Linux&#39;s <em>schedluer</em>. The scheduler&#39;s job is to choose when to run which thread, and which program. In order to figure out why RT-PREEMPT changes the scheduler, let&#39;s look at how Linux&#39;s default scheduler compares to the RT-PREEMPT scheduler:</p>
+
+<p>Default (<a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">CFS</a>):</p>
+
+<ul>
+<li>Prioritizes giving all tasks equal run time</li>
+<li>Runs in O(log N) time, where N is the number of tasks</li>
+<li>No task is higher priority than another</li>
+</ul>
+
+<p>RT-PREEMPT:</p>
+
+<ul>
+<li>Prioritizes running higher-priority tasks first</li>
+<li>All realtime tasks have a priority</li>
+<li>High-priority tasks can &quot;pre-empt&quot; lower priority tasks and run instead of them</li>
+</ul>
+
+<p>As you can tell, CFS focuses on more general systems, while RT-PREEMPT focuses on letting specific tasks meet strict timing requirements. This is important, for example, when we have a thread that runs a controller for a robot, which we need to run at <em>exactly</em> 200Hz.</p>
+
+<p>However, there are a few problems that can come with this scheduling system. The main problem is priority inversion. To give an example of priority inversion, let&#39;s consider a simple pre-emptive scheduler:</p>
+
+<ul>
+<li>Every task has a priority</li>
+<li>A high priority task can choose to &quot;pre-empt&quot; a lower priority task, and run instead of it</li>
+<li>If a task needs a resource that only one task can access at a time, it will lock it with a mutex, so no other task can use it</li>
+</ul>
+
+<p>Now, let&#39;s imagine how a system that uses this scheduler could go wrong.</p>
+
+<p>We&#39;ll have three tasks: one high priority task, one medium priority task, and one low priority task. We also have one shared resource, which can only be used by one task at a time:</p>
+
+<p><img src="../img/priority_inversion/1.jpg" alt="Priority inversion 1"></p>
+
+<p>Next, Task 3, which is low priority, will start to run and will acquire a lock on Resource 1, meaning that no other tasks can use it:</p>
+
+<p><img src="../img/priority_inversion/3.jpg" alt="Priority inversion 3"></p>
+
+<p>Next, Task 2, which is medium priority enters a section of the code that needs to be realtime (called a <em>critical section</em>). This pre-empts Task 1, but Task 1 <strong>still has a lock on the resource</strong>.</p>
+
+<p><img src="../img/priority_inversion/4.jpg" alt="Priority inversion 4"></p>
+
+<p>Now, Task 1 - the highest priority task in the system - enters a critical section which needs to use the resource. It can&#39;t use the resource, because Task 1 has a lock on the resource, and it can&#39;t pre-empt other tasks, because it needs the resource to run it&#39;s code! Task 3, the task that has the lock, can&#39;t do anything about this though, because it&#39;s being pre-empted by Task 2 😢</p>
+
+<p><img src="../img/priority_inversion/5.jpg" alt="Priority inversion 5"></p>
+
+<p>Finally, once Task 2 is done doing it&#39;s thing, Task 1 can resume running and finish with the resource:</p>
+
+<p><img src="../img/priority_inversion/6.jpg" alt="Priority inversion 6"></p>
+
+<p>And Task 1 can finally have the resource and run:</p>
+
+<p><img src="../img/priority_inversion/7.jpg" alt="Priority inversion 7"></p>
+
+<p>So that&#39;s how a high priority task can be blocked by a lower priority task that doesn&#39;t need a resource. This is one of the main problems with the scheduler that I&#39;ve described (called &quot;Fixed priority pre-emptive scheduling&quot;).</p>
+
+<p>So how do you fix this problem?</p>
+
+<p>As it turns out, it&#39;s fairly simple - in order to release the lock, our low priority task has to have at least the same priority as the medium priority task that&#39;s pre-empting it. The way that the RT-PREEMPT Linux patch does this is by setting the priority of a task that has a lock on a resource to the priority of the highest-priority task that&#39;s waiting for that resource. In our example, that would mean that as soon as Task 1 wanted the resource, Task 3 would be set to high priority, and pre-empt Task 2, allowing it to finish with the resource and allow Task 1 to run as soon as possible.</p>
+
+<p>This is a easy solution that will fix the priority inversion issue!</p>
+
+<p>I hope that this has been a good intro to what priority inversion is, why it&#39;s a problem, and how to it&#39;s fixed. It definitely gave me some ideas as to things that I could research in the future:</p>
+
+<ul>
+<li>How does CFS work?</li>
+<li>How does the RT-PREEMPT scheduler work (in more detail)?</li>
+<li>Are there other ways to fix priority inversion?</li>
+</ul>
+
+<p>All could be good topics for a future post.</p>
+
+<p>Anyway, that&#39;s all for now!</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

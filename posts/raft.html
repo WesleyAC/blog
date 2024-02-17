@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | How Raft Works</title>
+  <meta name="description" content="An explanation of Raft and some of its flaws">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="How Raft Works">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/raft">
+  <meta property="og:description" content="An explanation of Raft and some of its flaws">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/raft">
+  <meta name="twitter:title" content="How Raft Works">
+  <meta name="twitter:description" content="An explanation of Raft and some of its flaws">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>How Raft Works</h1>
+        <div class="article-list-date">
+          Oct 16, 2017
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p><a href="https://raft.github.io/">Raft</a> is a distributed consensus protocol. It is designed to allow a network of computers (&quot;nodes&quot;) to agree on a log of events, even in the face of network partitions, packet loss, and nodes going down. Raft is also designed with the goal of being easier to understand than other distributed consensus protocols, such as <a href="https://en.wikipedia.org/wiki/Paxos_algorithm">Paxos</a> - because of this, the <a href="https://raft.github.io/raft.pdf">Raft paper</a> is quite readable, and I highly recommend it if you&#39;re interested in learning more.</p>
+
+<p>This blog post will explain the basics of how Raft works, as well as some problems that can arise in real-world implementations.</p>
+
+<h1>Raft basics</h1>
+
+<p>Raft is designed to allow a small number of nodes to agree on a log of events. There are a few problems that it doesn&#39;t attempt to solve:</p>
+
+<ul>
+<li>Malicious nodes</li>
+<li>Larger datasets than fit on one machine</li>
+</ul>
+
+<p>The main reason that you would want to run a Raft cluster is for redundancy - so that if one node goes down, the cluster will still operate normally.</p>
+
+<p>Raft operates with a &quot;strong leader&quot; model - this means that all updates come from a &quot;leader&quot; node. This simplifies the algorithm, because as much complexity as possible is managed by the leader.</p>
+
+<p>There are two main components of raft - leader election, and log replication. The leader election phase determines which node is the leader. After a leader is elected, the log replication phase begins, where the leader sends new log entries to the followers.</p>
+
+<h2>Leader election</h2>
+
+<p>In Raft, time is divided into different &quot;terms&quot;. Each term begins with an election, and the leader that is elected remains leader for the duration of the term.</p>
+
+<p>At any given time, a node can be in one of three states: Follower, Candidate, or Leader. All nodes start in the follower state. When a node is a leader, it sends out a heartbeat message periodically to make sure all of the nodes know that it is still a leader. Follower nodes have a randomized &quot;election timeout&quot; (the paper suggests using <code>rand(150ms, 300ms)</code>). If the election timeout elapses without the follower receiving a heartbeat from a leader, the follower will convert into a candidate. When it converts into a candidate, it will vote for itself and send a &quot;request vote&quot; message to all other nodes in the network.</p>
+
+<p>Each node can vote once per term, and votes as follows:</p>
+
+<ul>
+<li>If the voter has seen a message with a higher term than the vote request is for, deny vote</li>
+<li>If the voter has already voted for this term, deny vote</li>
+<li>Otherwise, grant vote</li>
+</ul>
+
+<p>When a candidate has received votes from a majority of nodes in the network, it becomes a leader.</p>
+
+<p>These rules ensure that there is at most one leader per term.</p>
+
+<p><img src="../img/raft/statemachine.svg" alt="Raft state machine">
+<center><em>A graph showing the state machine of a single node in a Raft cluster</em></center></p>
+
+<p>In the ideal case, the node with the lowest timeout value will convert into a candidate, and all the other nodes in the network will receive the vote request before their timeout runs out. If this is the case, everything works as expected.</p>
+
+<p>However, there is a failure mode that can occur: If the request vote message takes a long time to be delivered, multiple nodes could convert into candidates. If there is an even number of nodes in the network, the vote can be split between them. If the vote is split, then one of the nodes will time out and start a new election. For this reason, networks are usually designed to have an odd number of nodes (three and five are both common sizes). However, a split vote can still occur if one of the nodes goes down.</p>
+
+<p><img src="../img/raft/splitvote.svg" width="50%" alt="Split vote" />
+<center><em>A Lamport diagram showing how a split vote could occur. Both B and C become candidates, and each one gets a single vote from another node.</em></center></p>
+
+<h2>Log replication</h2>
+
+<p>Once a leader has been elected, it&#39;s time to start the log replication process. In order to replicate an entry to all nodes, the leader sends out an &quot;append entries&quot; message containing the log entry(s) to be appended. When a node receives an append entries message, it adds the entries to its log, and responds to the leader saying that it has done so. However, the node doesn&#39;t &quot;commit&quot; the entry to the log. This is to ensure that once we commit an entry, there is no chance that it will be lost due to a machine going down/etc. Once the leader receives a response from a majority of the nodes stating that they have the log, it sends out a second message informing them that they should commit the log.</p>
+
+<p>It&#39;s important that the leader always have the most up-to-date information, so we add the requirement that for a node to vote for another node during the leader election, the candidate&#39;s log must be at least as up-to-date as the voter&#39;s log. This ensures that once an entry is committed to a majority of nodes, a less up-to-date node cannot become leader, since it will not be able to get the majority of votes.</p>
+
+<h2>Client interaction</h2>
+
+<p>In Raft, interaction with clients is very simple - Clients only interact with the leader, and if a client tries to talk to a follower, the follower will inform the client which node is currently the leader.</p>
+
+<p>One complication around client interaction arises from wanting to make sure that client requests are only processed once: If a leader goes down before it tells the client that the message was written to the log, but after it was received by the other nodes in the cluster, the client will try to resend to the new leader. To prevent this, each client command is given a unique serial number, which is kept in the log along with the real data. This way, if a leader gets a command with a serial number that has already been processed, the leader can simply respond affirming the success of the command without taking any action.</p>
+
+<p>The Raft paper seems to suggest only keeping the most recent command for each client, presumably to avoid the O(n) lookup for the serial number. However, this does have the downside of disallowing concurrent requests from a client, which could be undesirable in some situations (When using Raft with commutative log entries, specifically).</p>
+
+<h1>Raft problems</h1>
+
+<p>This section will talk about some potential problems when implementing and deploying Raft in the real world. Note that I have no experience actually deploying Raft, so the things that I say here should be taken with a grain of salt. If you have experience deploying Raft in production, I&#39;d love to hear about the sorts of issues that you have, and would be happy to link back to any relevant blog posts :)</p>
+
+<h2>Latency</h2>
+
+<p>One problem that Raft can have is the behaviour when a single node has very high latency. One can imagine a scenario where one of the nodes has a latency higher than it&#39;s election timeout, causing it to continuously start elections. This would stop the network from functioning, since the real leader would see the higher term from the high-latency node and step down. This can continue indefinitely, since the high latency node may not be able to see the votes that it does get, causing it to kick off another election.</p>
+
+<p>While this is briefly mentioned in the paper (in the form of the requirement \(broadcastTime \ll electionTimeout \ll MTBF\)), it&#39;s really important to think about this when selecting timeout values. The latency that will cause failures is also probably lower than you&#39;d expect, for a couple reasons. One is that high latency on <em>any node</em> can cause this issue, so you need to look at the expected latency of all nodes in the network. The second reason is that most response RPCs are disk bound as well as network bound (see next point), so you need to be thinking about both tail network latency and tail disk latency when selecting timeout values.</p>
+
+<h2>Sync to disk</h2>
+
+<p>In order to guarantee correctness, a node must sync some changes to disk before responding to an RPC (specifically, it must sync <code>currentTerm</code>, <code>votedFor</code>, and <code>log</code>). This causes two problems:</p>
+
+<ol>
+<li>Performance is significantly decreased from what one would expect, since writes are both network and disk bound.</li>
+<li>It often isn&#39;t actually possible to tell if a change has been synced to disk (even when calling <code>fsync</code>), due to on disk caching.</li>
+<li>In the real world, disk failures happen, and it&#39;s important for a distributed system to be able to deal with them.</li>
+</ol>
+
+<p>The reason that a sync to disk is required is to avoid breaking any of the guarantees that we made earlier. Specifically:</p>
+
+<ul>
+<li>We need to sync <code>currentTerm</code> and <code>votedFor</code> to avoid voting multiple times in the same election after a reboot.</li>
+<li>We need to sync <code>log</code> so that we can guarantee that a candidate that does not have the most up to date log cannot get a majority.</li>
+</ul>
+
+<p>I don&#39;t think that there&#39;s a good way around this - you just need to think about it when designing a system using Raft.</p>
+
+<h1>Conclusion</h1>
+
+<p>Raft is a really interesting algorithm for providing distributed consensus. If you want to learn more about it, I highly recommend reading <a href="https://raft.github.io/raft.pdf">the paper</a>, looking at <a href="http://thesecretlivesofdata.com/raft/">this visualization</a>, or implementing it yourself!</p>
+
+<p><em>Thanks to Dan Luu, Brennan Holt Chesley, Jinny Cho, Christian Ternus, and David Turner for comments/feedback/discussion.</em></p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

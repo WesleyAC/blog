@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Notes on Parsing in Rust</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Notes on Parsing in Rust">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/rust-parsing">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/rust-parsing">
+  <meta name="twitter:title" content="Notes on Parsing in Rust">
+  <meta name="twitter:description" content="">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Notes on Parsing in Rust</h1>
+        <div class="article-list-date">
+          Apr 29, 2020
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>I&#39;ve recently been writing a bit of parsing code in Rust, and I&#39;ve been jumping back and forth between a few different parsing libraries - they all have different advantages and disadvantages, so I wanted to write up some notes here to help folks who are undecided choose what libraries and techniques to consider, and also to offer some suggestions for the future of the Rust parsing ecosystem.</p>
+
+<p>I&#39;m writing this after writing parsers for two fairly different usecases:</p>
+
+<ul>
+<li>a fairly simple binary format (mostly just serializing structs, but it also has varints, fixed-point numbers, various types of containers)</li>
+<li>a very simple templating language (<a href="https://shopify.github.io/liquid/">liquid-template</a>-esque)</li>
+</ul>
+
+<p>Some of these libraries are only/mostly applicable to one or the other - I will note when that is the case.</p>
+
+<p><strong>Last updated: April 2020</strong> - the Rust ecosystem is evolving quickly, things may have changed since this was written.</p>
+
+<h2><a href="https://github.com/Geal/nom/">nom</a> (v5.1.1)</h2>
+
+<p>nom is probably the most famous Rust parsing library - it&#39;s a <a href="http://theorangeduck.com/page/you-could-have-invented-parser-combinators">parser-combinator</a> library, which means that you write functions to parse little bits of your inputs, then you use the &quot;combinators&quot; that nom provides to combine them together into larger parsers. nom is good for both binary and textual formats, and can handle streaming data (where you start parsing before you have all of the data), which is nice if you want that.</p>
+
+<p>I like nom a lot - I really enjoy using parser combinators, and nom is definitely my goto for lots of things, but it does come with a few caveats:</p>
+
+<ul>
+<li>The documentation isn&#39;t great, and figuring out how you&#39;re supposed to use it can be difficult. It&#39;s gotten <em>a lot</em> better now that it&#39;s no longer macro-based, but it can still be pretty frustrating to figure out.</li>
+<li>The documentation being lacking exacerbates the fact that the selection of combinators and helper functions isn&#39;t as large as I&#39;d like - for instance, I spent quite a while looking for something that operated like <a href="https://github.com/Geal/nom/issues/1147"><code>take_until1</code></a>, just to find out that it doesn&#39;t exist in the current version of nom, and I&#39;d have to implement it myself.</li>
+<li>The error handling story is not good. It&#39;s possible that I&#39;m just holding it wrong, since apparently error handling was improved in 5.0, but after reading all of the available docs and some of the source code, I wasn&#39;t able to figure out how to return custom error types in a way that&#39;s not extremely verbose. And that&#39;s just to get <em>any</em> information out - if you want to get spans and human-friendly error messages, that&#39;s probably even harder.</li>
+</ul>
+
+<p>Overall, I liked using nom, and will probably continue to use it, especially for small to medium sized parsers where I care about performance<sup id="fnref1"><a href="#fn1">1</a></sup>. Hopefully the error handling will get better soon, and it can be my goto for more things.</p>
+
+<h2><a href="https://github.com/lalrpop/lalrpop/">LALRPOP</a> (v0.18.1)</h2>
+
+<p>LALRPOP is a parser-generator, meaning that it takes in a file that describes the grammar you want to parse, and generates code that implements a parser for that grammar. You can check out some examples of what the grammar files look like <a href="https://github.com/lalrpop/lalrpop/tree/5ba76e258747753e5ddcc1ace386d4d56a598924/doc/calculator/src">here</a>. It&#39;s designed primarily for textual formats.</p>
+
+<p>It&#39;s primary goal is usability, and that really shows - since the grammar is designed specifically to work with Rust, it can directly generate the Rust structs that describe your AST, which is really really nice - you don&#39;t need to write any repetitive code at all, you can just describe your grammar and get an AST out. However, there&#39;s a big caveat here - LALRPOP splits out the parsing and lexing phases, and the built-in lexer is described by the author as being <a href="https://github.com/lalrpop/lalrpop/issues/193#issuecomment-286704517">&quot;intended to be a toy&quot;</a>, and it seems pretty annoying to write your own. So, if you have a grammar that requires a non-trivial lexer, you still will need to write Rust code.</p>
+
+<p>The particular issue that bit me is if you have two &quot;terminals&quot; that are ambiguous, even if the grammar isn&#39;t ambiguous overall (because only one of the terminals will be able to be parsed at any given time), LALRPOP will not be able to parse the grammar. For instance, a silly example:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">grammar;
+
+pub Main: () = {
+  "foo: " &lt;foo: Foo&gt; =&gt; foo,
+  "bar: " &lt;bar: Bar&gt; =&gt; bar,
+};
+
+Foo: String = {
+  &lt;value: r"[A-Za-z0-9]+"&gt; =&gt; value,
+};
+
+Bar: String = {
+  &lt;value: r"[A-Z]+"&gt; =&gt; value,
+};
+</code></pre></div>
+<p>This grammar parses either the string &quot;foo: &quot; followed by any number of alphanumeric characters, or the string &quot;bar: &quot; followed by any number of uppercase latin letters. This is non-ambiguous, but LALRPOP does not accept it, because &quot;any alphanumeric character&quot; is ambiguous with &quot;any uppercase latin letter&quot;.</p>
+
+<p>I ran into this issue and stopped using LALRPOP (since I was too lazy to figure out how to write my lexer the way LALRPOP wanted me to). Which is a shame, since LALRPOP is extremely nice otherwise! Being able to just write the grammar file and get structs out is amazing, and the grammar language seems quite nice. There&#39;s an <a href="https://github.com/lalrpop/lalrpop/issues/195">open issue</a> for fixing this, but unfortunately it seems pretty fundamental to LALRPOP&#39;s current design.</p>
+
+<h2><a href="https://github.com/pest-parser/pest">pest</a> (v2.1.3)</h2>
+
+<p>pest is a parser-generator using <a href="https://en.wikipedia.org/wiki/Parsing_expression_grammar">PEG</a> as an input, making it more powerful than LALRPOP (presumably at the cost of being slower, but I haven&#39;t tried to benchmark either of them). This makes it very easy to write a grammar and get a tree back, but unfortunately the tree that you get has no types associated with it (unlike LALRPOP), so you need to manually write the code to take the output of pest and write it into an AST that you&#39;d actually want to use. This code tends to be pretty rote and easy to write, but you still do have to write it, which is a bit annoying, and keeping it in sync with a changing grammar seems extremely annoying and bug-prone.</p>
+
+<p>pest also has a pretty nice error handling story, given that it gives you spans to work with so you can report errors fairly easily. I haven&#39;t used it enough to see how that really scales up for more complicated things, but superficially, it seems pretty nice.</p>
+
+<h1>What I went with</h1>
+
+<p>For the template parser, I went with pest, since it allowed me to get a prototype of the ground as quickly as possible, which is what I was optimizing for for that project. I don&#39;t think I&#39;d be happy with it in the long term (keeping the untyped pest output to AST code in sync with the grammar long-term seems really frustrating and error prone), but I was very happy with it as a prototype.</p>
+
+<p>For the binary protocol, I originally wrote a parser with nom, which I was quite happy with. However, once I wanted to implement serialization as well as parsing, after a quick detour trying to use serde<sup id="fnref2"><a href="#fn2">2</a></sup>, I decided to implement both parsing and serializing using a custom procmacro which I wrote myself (with the help of <a href="https://github.com/BurntSushi/byteorder">byteorder</a>), and I ended up happier with that solution than I was with the original nom parser - it ended up being fewer lines of code, as well as seeming simpler overall.</p>
+
+<h1>What I want in the future</h1>
+
+<p>I&#39;d love to see a crate that combines the usability of LALRPOP&#39;s format with the expressivity of PEG parsers, for when I want to quickly hack together a prototype of something involving a parser, or for cases where optimization is not as important.<sup id="fnref3"><a href="#fn3">3</a></sup></p>
+
+<p>I&#39;d also love to see nom get better error handling support and docs, as well as more combinators in its library.</p>
+
+<p>And implementing all of this was also definitely a good reminder that writing a parser by hand can be a good choice a lot of the time as well! You don&#39;t always have to turn to a library to solve your problems.</p>
+
+<p>I&#39;ll also close this out with the caveat that basically all of the parsing I&#39;ve done has been for extremely small &quot;toy&quot; problems, and so this post ignores a lot of concerns that I&#39;d have writing something more &quot;real&quot; - particularly, I think it&#39;s quite a bit harder to get good error messages out of a parser-generator than a parser-combinator or a handwritten parser, and error messages are generally a really important and underappreciated part of parser design.</p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>I have not performed benchmarking on any of these libraries, but I would expect, and anecdotally hear that nom is faster than most parser-generators (and, for instance, pest&#39;s own benchmarks show that nom is faster than pest). YMMV, run benchmarks if you care about performance, etc.&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+<li id="fn2">
+<p>This is a whole other blog post, but an important thing to realize with serde is that, while it&#39;s great at writing serializers and deserializers for very generic data formats, for more specialized formats where you need a lot of control over fiddly details, it can be really frustrating/impossible to specify what you want. For instance, treating some <code>i32</code>s as varints and others as fixed-width is extremely annoying in serde, but trivial in my custom procmacro solution. Similarly, dealing with different <code>Vec</code>s being length-prefixed in different ways is really not something serde is designed to handle.&nbsp;<a href="#fnref2">&#8617;</a></p>
+</li>
+
+<li id="fn3">
+<p>EDIT: I&#39;m informed that <a href="https://github.com/kevinmehall/rust-peg">rust-peg</a> may be what I&#39;m looking for, and indeed it looks quite nice. So if you too want this, consider trying rust-peg :)&nbsp;<a href="#fnref3">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

@@ -1,4 +1,0 @@
----
-slug: rust
-name: Rust
----

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | A bogus study on code review</title>
+  <meta name="description" content="Why oft-cited data is often wrong">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="A bogus study on code review">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/bogus-code-review-data">
+  <meta property="og:description" content="Why oft-cited data is often wrong">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/bogus-code-review-data">
+  <meta name="twitter:title" content="A bogus study on code review">
+  <meta name="twitter:description" content="Why oft-cited data is often wrong">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>A bogus study on code review</h1>
+        <div class="article-list-date">
+          Dec 19, 2017
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>I saw an <a href="https://medium.com/@9len/on-code-review-16ea85f7c585">article</a> today about code review. Included in it were a couple graphs purportedly coming from a study on code review. The author didn&#39;t refer to the graphs at all in the article, instead interleaving them with unrelated text as a sort of eye-candy.</p>
+
+<p>These are the graphs in question:</p>
+
+<p><img src="../img/codereviewdata/graph1.gif"></p>
+
+<p><img src="../img/codereviewdata/graph2.gif"></p>
+
+<p>I found these implausible, for several reasons:</p>
+
+<ol>
+<li>The &quot;Defects per kLOC&quot; metric goes up to 800 in some cases - it strikes me as quite implausible that a code review would find 80% of the code in a PR to be wrong. And even if you look at 800 defects/kLOC as an outlier, the fact that most of the datapoints are &gt; 200 defects/kLOC strikes me as surprising.</li>
+<li>If you look at the two graphs provided, they&#39;re clearly from different datasets - many of the datapoints that exist on the first graph do not exist on the second one.</li>
+<li>The lines that are drawn on the graph seem completely arbitrary - I&#39;m used to seeing lines of best fit, but the red line on the &quot;Defect Density vs. LOC&quot; graph is clearly not showing a line of best fit - I&#39;m not sure what I&#39;m supposed to take away from this line.</li>
+<li>If you look at the <a href="https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/">blog post that these graphs are taken from</a>, it uses the &quot;Defect Density vs. LOC&quot; graph to make the claim that you should keep all of your reviews under 400 lines of code. However, there are only <em>two data points on the entire graph that are &gt;400 LOC</em>, so it&#39;s impossible to make any sort of statistically significant claim about this.</li>
+<li>Additionally, the datapoints that are at a defect density of zero are all under 200 LOC (With most of them clustered in the &lt;100 LOC range). Given the way &quot;defect density&quot; is used in this study, a &quot;defect density&quot; of zero would indicate a complete failure of the reviewers to find issues<sup id="fnref1"><a href="#fn1">1</a></sup>, and their analysis of the data says nothing about these points.</li>
+</ol>
+
+<p>I found the claims being made off of this graph so unbelievable that I tracked down the initial study<sup id="fnref2"><a href="#fn2">2</a></sup> and decided to look into it.</p>
+
+<p>There&#39;s a few things that immediately popped out at me - the first one is that the graph &quot;Defect Density vs. LOC&quot; graph is actually completely false - the reason that the 800 defects per kLOC figure popped out at me as being suspicious was because the scale is incorrect. Here&#39;s the real graph<sup id="fnref3"><a href="#fn3">3</a></sup>:</p>
+
+<p><img src="../img/codereviewdata/realgraph.png"></p>
+
+<p>This shows about the amount of care that&#39;s put into these articles that cite this study, but let&#39;s carry on.</p>
+
+<p>The next thing that popped out at me was the number of samples in the study. The <a href="https://smartbear.com/resources/case-studies/cisco-systems-collaborator/">marketing page</a> for it claims that 2500 reviews were considered, but I definitely don&#39;t see 2500 datapoints on that graph - what happened? Reading the study, I found that since &quot;defects&quot; were a manually counted statistic, they took a SRS of 300 reviews, to reduce the amount of manual labour required. This is more reasonable, but it doesn&#39;t look to me like there are 300 datapoints in that graph - what gives? Luckily, they embedded the graph in the pdf in such a way that it&#39;s somewhat possible to recover the datapoints<sup id="fnref4"><a href="#fn4">4</a></sup>. In inkscape, I get a count of 213 points. I&#39;m still curious where the other 87 went, but let&#39;s look at the ones that we have. Of the 213 points, 147 of them appear to have a defect density of zero (69%). Of these 147 points, 138 of them appear to have been changes that were ≤100 LOC (93%). This is interesting, because it appears to be directly in contradiction to the main claim of the paper and blog post<sup id="fnref5"><a href="#fn5">5</a></sup>.</p>
+
+<p>So in conclusion, we have a graph that&#39;s being passed around that:</p>
+
+<ol>
+<li>Has its scale off by a factor of 4 from the actual data</li>
+<li>Is not statistically significant to prove the claims that are being made about it</li>
+<li>Even if it were significant, actually shows the exact opposite of what is being claimed</li>
+</ol>
+
+<p>But, none of that matters, because it looks convincing enough at first glance, so it gets passed around and spread all over the internet. I am quite certain that the author of the blog post that I initially found using these images hadn&#39;t read the study that the graphs were pulled from. I don&#39;t think that this is unique to these images - I find that when I look at the actual studies that claims are pulled from, they are almost always <a href="https://danluu.com/dunning-kruger/">contradictory to the claims that are being made</a>, or have significant statistical issues. As a reader of these articles, I encourage you to think critically about the data being presented, find original sources to determine the methodology being used to collect data, and at the very least <em>double check that the graph that you&#39;re being show actually supports the claim that&#39;s being made</em>.</p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>In order for any of this data to be meaningful, you need to make the assumption that the actual number of defects/LOC is constant across different sizes of PRs.&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+<li id="fn2">
+<p>It&#39;s in a free ebook that can be found <a href="http://www2.smartbear.com/Best_Kept_Secrets_eBook_2012.html">here</a> - you need to put in an email address to download it, but it&#39;s not checked - I used a disposable email service. The study starts on page 63 of the PDF.&nbsp;<a href="#fnref2">&#8617;</a></p>
+</li>
+
+<li id="fn3">
+<p>Interestingly, even with the correct scale, the two graphs still show different datasets - the &quot;Defect Density vs. Inspection Rate&quot; graph only has points with a defect rate of up to 150, but the &quot;Defect Density vs LOC&quot; graph has several datapoints near 200. I have not figured out why this is.&nbsp;<a href="#fnref3">&#8617;</a></p>
+</li>
+
+<li id="fn4">
+<p>I did this by importing the page into inkscape - each dot is a separate circle object&nbsp;<a href="#fnref4">&#8617;</a></p>
+</li>
+
+<li id="fn5">
+<p>To make this claim, I should really export the data properly and get a r² number for it. I&#39;m too lazy to do this, but if someone else does, I&#39;d be happy to link to it. It&#39;s worth noting that I actually think that the claims made by the study are true, for the most part - it&#39;s just that the data provided does not prove this.&nbsp;<a href="#fnref5">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

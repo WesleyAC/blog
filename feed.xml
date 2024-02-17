@@ -1,22 +1,535 @@
----
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>{{ site.name | xml_escape }}</title>
+    <title>Wesley Aptekar-Cassels</title>
     <description></description>
     <link>https://blog.wesleyac.com</link>
-    <atom:link href="https://blog.wesleyac.com/{{ page.path }}" rel="self" type="application/rss+xml" />
-    {% for post in site.posts limit:10 %}
-    {% if post.hide != true %}
+    <atom:link href="https://blog.wesleyac.com/feed.xml" rel="self" type="application/rss+xml" />
+    
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
-        <description>{{ post.content | xml_escape }}</description>
-        <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
-        <link>https://blog.wesleyac.com{{ post.url }}</link>
-        <guid isPermaLink="true">https://blog.wesleyac.com{{ post.url }}</guid>
+        <title>End-to-end testing emails</title>
+        <description>&lt;p&gt;I came up with a really slick trick to write E2E tests that deal with sending/receiving emails recently. This is the sort of thing that seems like it&amp;#39;s probably usually sort of a nightmare — I wanted to write a test for registering a account on a website, where part of the flow was clicking on a validation link in a email.&lt;/p&gt;
+
+&lt;p&gt;The slick trick is a test SMTP server which is also a HTTP server. It&amp;#39;s 39 lines of Javascript and extraordinarily simple:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SMTPServer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;smtp-server&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SMTPServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SMTPServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;authOptional&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;onData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chunks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chunks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)));&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;concat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;chunks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;utf8&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;envelope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rcptTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;address&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2525&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;req&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;writeHead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;text/plain&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;initial_num_emails&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;initial_num_emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;initial_num_emails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;listen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2424&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This allows you to make a request to &lt;code&gt;http://localhost:2424/test@example.com&lt;/code&gt;, which will block until the SMTP server on port 2525 receives a email to &lt;code&gt;test@example.com&lt;/code&gt;, at which point it&amp;#39;ll return the full text of the email.&lt;/p&gt;
+
+&lt;p&gt;This allows for writing a super simple E2E tests — here&amp;#39;s my helper function to register a new user:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;registerAndLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;goto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;/register&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;randomUUID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;@example.com`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;randomUUID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getByPlaceholder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Email&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getByPlaceholder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Password&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;verification_email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`http://localhost:2424/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getByRole&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;button&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Sign Up&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;press&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;Enter&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;verification_email_response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;verification_email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;verification_email_text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;verification_email_response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;verification_link&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\/\/[^\s]&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/gm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;verification_email_text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;goto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;verification_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note the nice use of async/await to make the fetch request before pressing the &amp;quot;Sign Up&amp;quot; button.&lt;/p&gt;
+
+&lt;p&gt;As soon as I came up with this I immediately started showing it to everyone — my friend said &amp;quot;I feel like I just learned a new skateboard trick&amp;quot; — excellent praise, in my book.&lt;/p&gt;
+
+&lt;p&gt;As a sidenote, if you haven&amp;#39;t used &lt;a href=&quot;https://playwright.dev&quot;&gt;Playwright&lt;/a&gt; for E2E tests, you&amp;#39;re missing out. It&amp;#39;s my opinion that the existence of Playwright moves E2E testing of webapps from being something that&amp;#39;s usually tedious and flaky but sometimes worth the costs to something that&amp;#39;s viable as a primary testing strategy.&lt;/p&gt;
+
+&lt;p&gt;Unit tests are best when code is decoupled and complex, but web code tends to be simple but tightly connected. This makes E2E testing a extremely useful strategy, and Playwright makes it simple to write non-flaky E2E tests with a small amount of effort — check out the &lt;a href=&quot;https://playwright.dev/docs/codegen&quot;&gt;codegen tool&lt;/a&gt; and the &lt;a href=&quot;https://playwright.dev/docs/trace-viewer&quot;&gt;trace viewer&lt;/a&gt; if you haven&amp;#39;t.&lt;/p&gt;
+
+&lt;p&gt;If you want E2E tests to be your main tests, it does require some somewhat careful planning — since I &lt;a href=&quot;/posts/consider-sqlite&quot;&gt;use SQLite&lt;/a&gt; and don&amp;#39;t rely on any cloud tools, I can have tests that run extremely quickly (and even in parallel), without relying on any external resources, which is key for this kind of strategy. If you can swing it, though, it&amp;#39;s pretty nice.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 16 Feb 2024 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/e2e-testing-email</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/e2e-testing-email</guid>
       </item>
-    {% endif %}
-    {% endfor %}
+    
+    
+    
+      <item>
+        <title>Motivating X3DH</title>
+        <description>&lt;p&gt;&lt;a href=&quot;https://signal.org/&quot;&gt;Signal&lt;/a&gt; uses a protocol called &amp;quot;&lt;a href=&quot;https://signal.org/docs/specifications/x3dh/&quot;&gt;Extended Triple Diffie-Hellman&lt;/a&gt;&amp;quot; (X3DH) for key agreement&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. This essentially takes standard &lt;a href=&quot;https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange&quot;&gt;Diffie-Hellman key exchange&lt;/a&gt;, and enables it to be used where one party may be offline while they&amp;#39;re receiving a message, while providing forward secrecy.&lt;/p&gt;
+
+&lt;p&gt;While the paper clearly explains how to implement X3DH, the &lt;em&gt;why&lt;/em&gt; is slightly less clear. In this post, I&amp;#39;ll briefly explain how X3DH works, then investigate what security property each of the steps involved is aimed at providing, and why particular choices were made around the signature algorithm.&lt;/p&gt;
+
+&lt;h2&gt;A quick summary of X3DH&lt;/h2&gt;
+
+&lt;p&gt;(This summary requires a understanding of Diffie-Hellman key exchange — if you are unfamiliar or need a refresher, take a look at this footnote&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;)&lt;/p&gt;
+
+&lt;p&gt;In X3DH, the receiving party (who may be offline when they receive a message) uploads the following &lt;a href=&quot;https://en.wikipedia.org/wiki/Curve25519&quot;&gt;Curve2519&lt;/a&gt; public keys to a server:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A identity key (&lt;code&gt;IK_r&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;A &amp;quot;signed prekey&amp;quot; (&lt;code&gt;SPK&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;A signature for &lt;code&gt;SPK&lt;/code&gt; with &lt;code&gt;IK_r&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;A number of &amp;quot;one-time prekeys&amp;quot; (&lt;code&gt;OPK1&lt;/code&gt;, &lt;code&gt;OPK2&lt;/code&gt;, …)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When the sending party wants to send a message, they download from the server &lt;code&gt;IK&lt;/code&gt;, &lt;code&gt;SPK&lt;/code&gt;, the signature for &lt;code&gt;SPK&lt;/code&gt;, and one of the one-time prekeys (which the server deletes and does not use for future runs).&lt;/p&gt;
+
+&lt;p&gt;The sender has two keys:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A long-term identity key (&lt;code&gt;IK_s&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;A ephemeral key used only for a single X3DH handshake (&lt;code&gt;EK&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After validating the &lt;code&gt;SPK&lt;/code&gt; signature is correct, the sender can generate a shared secret by invoking the Diffie-Hellman function four times:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;DH(IK_s, SPK)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DH(EK,   IK_r)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DH(EK,   SPK)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;DH(EK,   OPKn)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The outputs of these functions are concatenated and run through a key derivation function to generate a shared secret. If the server has run out of &lt;code&gt;OPK&lt;/code&gt;s, only the first three functions are performed, to the slight detriment of the forward-secrecy properties. This image summarizes the Diffie-Hellman functions that are preformed:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../img/motivating-x3dh/all.svg&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Why, though?&lt;/h2&gt;
+
+&lt;p&gt;This is a lot of stuff, and it&amp;#39;s understandable to ask what it&amp;#39;s all doing. There are two basic properties that we want our key exchange to provide:&lt;/p&gt;
+
+&lt;p&gt;The first is &amp;quot;forward secrecy&amp;quot; — that is, if the private keys are compromised after the X3DH handshake has been completed, a attacker will not be able to decrypt the message. This is why we need the ephemeral key, and why we don&amp;#39;t just do standard Diffie-Hellman with the identity keys and call it a day.&lt;/p&gt;
+
+&lt;p&gt;The second is &amp;quot;mutual authentication&amp;quot; — that is, both of the parties know the identity of the other party that they&amp;#39;re talking to, and know that they are not being impersonated. This is why we want long-term identity keys — it&amp;#39;s much simpler to prove ownership of a single long-term key than it is one of many ephemeral keys.&lt;/p&gt;
+
+&lt;p&gt;So, we want to use long-term keys for mutual authentication, and ephemeral keys for forward secrecy, and we can understand the one-time prekey as the ephemeral key for the receiving side. What&amp;#39;s the signed prekey doing, then? It primarily serves as a backup, in case the server runs out of one-time prekeys. The signed prekey is replaced every time the client uploads new one-time prekeys, and thus is is more ephemeral than the identity key (which hangs around indefinitely), but not so ephemeral that we might run out.&lt;/p&gt;
+
+&lt;p&gt;So, that&amp;#39;s the explanation for &lt;em&gt;why&lt;/em&gt; we have each of these keys. Once we have that, it&amp;#39;s actually pretty clear why we do the set of Diffie-Hellman operations we do. If we look at the case without a one-time prekey, it&amp;#39;s very clear:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We need to do a exchange between the ephemeral keys (&lt;code&gt;EK&lt;/code&gt; and &lt;code&gt;SPK&lt;/code&gt;), in order to get forward secrecy.&lt;/li&gt;
+&lt;li&gt;We need to involve &lt;code&gt;IK_s&lt;/code&gt; and &lt;code&gt;IK_r&lt;/code&gt;, to provide mutual authentication.&lt;/li&gt;
+&lt;li&gt;We don&amp;#39;t want to use &lt;code&gt;DH(IK_s, IK_r)&lt;/code&gt;, because doing so does not provide any forward secrecy, and not doing so provides better deniability (since anyone could forge a convincing looking transcript of a X3DH session without knowing either of the identity private keys, by generating all the ephemeral keys themselves)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With those constraints, we end up with the only thing we can have:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../img/motivating-x3dh/no_opk.svg&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;However, the case where we do have a one-time prekey offers us more options. In particular, we could swap the roles of &lt;code&gt;SPK&lt;/code&gt; and &lt;code&gt;OPK&lt;/code&gt;, giving use either of these:&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;
+&lt;img src=&quot;../img/motivating-x3dh/all.svg&quot; style=&quot;display: inline-block;&quot;&gt;
+&lt;img src=&quot;../img/motivating-x3dh/spk_opk_swap.svg&quot; style=&quot;display: inline-block;&quot;&gt;
+&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;Signal chooses to take the somewhat simpler approach of keeping the role of &lt;code&gt;SPK&lt;/code&gt; the same regardless of whether we have a &lt;code&gt;OPK&lt;/code&gt;, just adding in &lt;code&gt;DH(EK, OPK)&lt;/code&gt; in the case where &lt;code&gt;OPK&lt;/code&gt; is available. While this has slightly worse forward secrecy properties on its own (the attacker can crack more of the DH outputs if they capture the &lt;code&gt;SPK&lt;/code&gt; private key), this doesn&amp;#39;t really matter, because the DH outputs are fed through a KDF anyways, which necessitates cracking all the DH outputs to capture the key&lt;sup id=&quot;fnref3&quot;&gt;&lt;a href=&quot;#fn3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h2&gt;On signatures&lt;/h2&gt;
+
+&lt;p&gt;One thing we haven&amp;#39;t talked about is the reason that the signature of &lt;code&gt;SPK&lt;/code&gt; is needed. Here&amp;#39;s the attack that&amp;#39;s intended to prevent:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Alice tries to send a message to Bob.&lt;/li&gt;
+&lt;li&gt;The server replies with Bob&amp;#39;s &lt;code&gt;IK&lt;/code&gt;, but values of &lt;code&gt;SPK&lt;/code&gt; and &lt;code&gt;OPK&lt;/code&gt; that it generated for itself, and thus knows the private keys for.&lt;/li&gt;
+&lt;li&gt;Alice sends a message. The server doesn&amp;#39;t relay this to Bob (since he wouldn&amp;#39;t be able to decrypt it), but instead holds on to it.&lt;/li&gt;
+&lt;li&gt;Later, the attacker compromises Bob&amp;#39;s &lt;code&gt;IK&lt;/code&gt; private key. Now they can calculate the shared secret, and read the initial message.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Signing the &lt;code&gt;SPK&lt;/code&gt; is a sensible way to prevent this. However, there are a few questions to ask about the particular way in which it&amp;#39;s implemented in X3DH. Firstly: is it safe? Reusing keys for multiple purposes is can lead to disastrous results, and it&amp;#39;s important to rigorously prove that any such construction is safe. My understanding is that most cryptographers believed this construction to be safe, but it was only &lt;a href=&quot;https://eprint.iacr.org/2021/509.pdf&quot;&gt;relatively recently that a actual proof for these specific algorithms was provided&lt;/a&gt; (and even then, I&amp;#39;m not entirely sure that the construction in that paper applies to X3DH, although I&amp;#39;d be quite surprised if it didn&amp;#39;t).&lt;/p&gt;
+
+&lt;p&gt;The second question relates to how one even goes about using the same keypair for Diffie-Hellman and EdDSA signing. The &lt;a href=&quot;https://github.com/netfoundry/libsodium-doc/tree/master/quickstart#how-can-i-sign-and-encrypt-using-the-same-key-pair&quot;&gt;standard approach&lt;/a&gt; (other than &amp;quot;don&amp;#39;t do that&amp;quot;, which is generally recommended) is to take a EdDSA key (which is a point on a &lt;a href=&quot;https://en.wikipedia.org/wiki/Twisted_Edwards_curve&quot;&gt;Twisted Edwards curve&lt;/a&gt;) and convert it into X25519 key (which is a point on a &lt;a href=&quot;https://en.wikipedia.org/wiki/Montgomery_curve&quot;&gt;Montgomery curve&lt;/a&gt;). This is convenient, since a point on a Twisted Edwards curve maps to a single point on Montgomery curve, but notably, a point on a Montgomery curve maps to &lt;strong&gt;two&lt;/strong&gt; points on a Twisted Edwards curve&lt;sup id=&quot;fnref4&quot;&gt;&lt;a href=&quot;#fn4&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;Signal chooses to solve this by &lt;a href=&quot;https://signal.org/docs/specifications/xeddsa/&quot;&gt;defining a scheme called XEdDSA&lt;/a&gt;, which specifies which of the two possible points to use.&lt;/p&gt;
+
+&lt;p&gt;One has to ask, though, why go through the effort, when you could just start with a Twisted Edwards curve? My guess is that the signature step wasn&amp;#39;t added until Signal was already being deployed, so using Montgomery curves for identity would be a backwards incompatible change. My understanding it that Matrix uses Twisted Edwards curves from the start in their implementation of X3DH, which I think is quite sensible, given that they had the luxury of designing their protocol with Signal&amp;#39;s hindsight.&lt;/p&gt;
+
+&lt;p&gt;This still raises the question of why they chose to use the same key at all — it&amp;#39;s easy to imagine a system where the identity key is exclusively used for signing, and a separate (signed) key-exchange key is used. Given recent proofs of the security of composing EdDSA and X25519, I don&amp;#39;t think there&amp;#39;s any advantage to doing so at this point, and Signal probably didn&amp;#39;t go down this path for the same reason that they needed to invent XEdDSA in the first place — they already had a bunch of Montgomery keys deployed, and didn&amp;#39;t want to switch them out for Twisted Edwards keys.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;Well, they now use a &lt;a href=&quot;https://signal.org/docs/specifications/pqxdh/&quot;&gt;post-quantum secure version&lt;/a&gt;, but it&amp;#39;s a similar idea.&amp;nbsp;&lt;a href=&quot;#fnref1&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;Diffie-Hellman gives us a function &lt;code&gt;DH(private, public)&lt;/code&gt; that takes a private key and a public key, and generates a secret value from them. Notably, two parties can each run the function with their own private key and the other party&amp;#39;s public key, and they will both get the same value.&amp;nbsp;&lt;a href=&quot;#fnref2&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn3&quot;&gt;
+&lt;p&gt;Ideally don&amp;#39;t be like &lt;a href=&quot;https://github.com/trailofbits/publications/blob/master/reviews/SimpleXChat.pdf&quot;&gt;SimpleX&lt;/a&gt; and accidentally forget to apply the KDF.&amp;nbsp;&lt;a href=&quot;#fnref3&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn4&quot;&gt;
+&lt;p&gt;This is what lead to &lt;a href=&quot;https://monocypher.org/quality-assurance/disclosures&quot;&gt;a fun vulnerability&lt;/a&gt; in the Monocypher library, where giving a all-zero signature would be considered valid for 50% of messages due to a incorrect internal conversion between the two forms.&amp;nbsp;&lt;a href=&quot;#fnref4&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sat, 13 Jan 2024 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/motivating-x3dh</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/motivating-x3dh</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>If you think Bluesky is decentralized, you’ve been conned</title>
+        <description>&lt;p&gt;&lt;a href=&quot;https://blueskyweb.xyz/&quot;&gt;Bluesky&lt;/a&gt; is a purportedly-decentralized social media company that spun out of Twitter, beginning in 2019. It makes sense that people are hunting for new social media platforms right now — Elon Musk&amp;#39;s disastrous takeover of Twitter has demonstrated how fragile relying on private VC-funded companies is for something so critical as communication infrastructure. BlueSky&amp;#39;s answer to this is that they are decentralized — thanks to the &lt;a href=&quot;https://atproto.com&quot;&gt;AT Protocol&lt;/a&gt;, anyone can run a server. Unfortunately, it&amp;#39;s decentralized in name only:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The AT Protocol is entirely controlled by Bluesky the company, with no community governance structure or plans for a governance structure. Want to change how it works? Tough luck, buddy.&lt;/li&gt;
+&lt;li&gt;&lt;s&gt;Want to run a server yourself? Well, the server is closed-source, so you&amp;#39;d better enjoy reimplementing it all yourself&lt;/s&gt;.&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt; (Edit: I&amp;#39;m told that this is not true, and that the &lt;a href=&quot;https://github.com/bluesky-social/atproto&quot;&gt;atproto&lt;/a&gt; has the server code. However, it&amp;#39;s unclear to me how much of what&amp;#39;s running on bsky.social is public — the identity parts appear to be, but not the web frontend, that I can find.)&lt;/li&gt;
+&lt;li&gt;The apps? Also closed source, you don&amp;#39;t have any control over them.&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This isn&amp;#39;t how you build a decentralized ecosystem, it&amp;#39;s how you build a system that you can claim is decentralized while still holding all the power yourself.&lt;/p&gt;
+
+&lt;p&gt;There&amp;#39;s a lot more that&amp;#39;s wrong with Bluesky that I&amp;#39;m not going to get into, since I honestly don&amp;#39;t really care. But if you care about not giving more power in your life to a VC-funded company started by a guy who said that &amp;quot;&lt;a href=&quot;https://twitter.com/jack/status/1518772756069773313&quot;&gt;Elon is the singular solution I trust&lt;/a&gt;&amp;quot; to running Twitter, you probably want to stay away from Bluesky.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;You might reasonably be fooled into thinking that &lt;a href=&quot;https://github.com/bluesky-social/indigo&quot;&gt;indigo&lt;/a&gt; is the server, but a closer look reveals that this does not seem to be the case.&amp;nbsp;&lt;a href=&quot;#fnref1&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;There does appear to be one open-source Android app from a third-party, but there doesn&amp;#39;t seem to be any plan to open-source the official apps.&amp;nbsp;&lt;a href=&quot;#fnref2&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 28 Apr 2023 00:00:00 -0400</pubDate>
+        <link>https://blog.wesleyac.com/posts/bluesky</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/bluesky</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>Storage Space PSA for Mastodon Admins</title>
+        <description>&lt;p&gt;Do you administer a Mastodon instance? Is it falling over all the time now because it&amp;#39;s running out of disk space because everyone is joining the network? Here is a quick PSA: &lt;code&gt;tootctl media remove&lt;/code&gt; &lt;strong&gt;does not remove all the remote media&lt;/strong&gt;. It removes all remote media more than 7 days old. It used to be that, on the server that I run, &lt;a href=&quot;https://recurse.social&quot;&gt;recurse.social&lt;/a&gt;, that would leave a handful of GB of media. Now it&amp;#39;s more like 25GB of media. If you don&amp;#39;t want to have to resize your server to deal with the peak of the influx of new users, consider changing your cronjob to something like &lt;code&gt;tootctl media remove --days=1&lt;/code&gt;, to more aggressively delete remote media that&amp;#39;s unlikely to be needed.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 12 Nov 2022 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/mastodon-storage-psa</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/mastodon-storage-psa</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>Subdomains as identity</title>
+        <description>&lt;p&gt;A common identity scheme for websites is to give users pages like &lt;code&gt;example.com/username&lt;/code&gt;. Twitter, Instagram, Twitch, Pinterest, and many other websites use this model. Reddit, TikTok, Mastodon, Lobsters, and several others use a slightly more conservative version of this, with a prefix (either &lt;code&gt;@&lt;/code&gt; or &lt;code&gt;u/&lt;/code&gt;) before the username.&lt;/p&gt;
+
+&lt;p&gt;I think that in many cases, this is a mistake, and using subdomains, like &lt;code&gt;username.example.com&lt;/code&gt; is better. Particularly, I think that the subdomain-based model is best for websites where there is minimal interaction between users (blogging, publishing, etc), or where that interaction happens via an open protocol.&lt;/p&gt;
+
+&lt;p&gt;Using subdomains for identity offers a few advantages:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It makes it easier for users to own their own identities, since you can very easily support using custom domains&lt;/li&gt;
+&lt;li&gt;It makes it easy to securely allow users full control over the CSS/HTML on their page, without worrying about XSS&lt;/li&gt;
+&lt;li&gt;It lets you cleanly have information about your website on the top-level domain, without adding the noise of a &lt;code&gt;u/&lt;/code&gt; or &lt;code&gt;@&lt;/code&gt; prefix to usernames&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This would be most advantageous for systems like Mastodon — one of the most fundamental mistakes that mastodon made was tying your identity to whoever happens to sysadmin the server you use, and using domains as identity would have almost entirely solved that&lt;sup id=&quot;fnref1&quot;&gt;&lt;a href=&quot;#fn1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. However, I think that there are notable advantages even for less explicitly federated systems as well.&lt;/p&gt;
+
+&lt;p&gt;I personally think that these advantages are quite significant, and software that gives users control over their identity and expression is inherently worth building, but this blog post isn&amp;#39;t about that. I figure if you&amp;#39;re making this decision, you&amp;#39;re capable of thinking through the tradeoffs yourself. This blog post is about concretely, how to implement a system that uses subdomains as identity, and how to extend that system to allow arbitrary custom domains. This is what I do for &lt;a href=&quot;https://thoughts.page&quot;&gt;thoughts.page&lt;/a&gt;, which has been running successfully like this for a year now.&lt;/p&gt;
+
+&lt;p&gt;The first question is how to integrate subdomain information into whatever routing system you use. thoughts.page uses &lt;a href=&quot;https://github.com/seanmonstar/warp&quot;&gt;warp&lt;/a&gt;, which has out-of-the-box support for routing based on domain name, but you might not be so lucky in your framework of choice — searching &amp;quot;[framework] wildcard subdomain routing&amp;quot; should point you to relevant documentation. If you don&amp;#39;t find a easy way to do this, a common alternative is to rewrite URLs internally, so that &lt;code&gt;username.example.com/foo&lt;/code&gt; gets rewritten to &lt;code&gt;example.com/user/username/foo&lt;/code&gt; before it&amp;#39;s handed to your routing library. If your framework doesn&amp;#39;t provide a way to do it, nginx can do the same thing with a &lt;code&gt;rewrite&lt;/code&gt; command. However, I&amp;#39;d recommend doing it in your app if possible, since that will make development significantly easier.&lt;/p&gt;
+
+&lt;p&gt;Speaking of development, you won&amp;#39;t be able to just use &lt;code&gt;localhost&lt;/code&gt; to see your server anymore, since it will require subdomains for routing. Some systems will allow URLs like &lt;code&gt;username.whatever.localhost&lt;/code&gt; to work, but if not, you can use &lt;code&gt;lvh.me&lt;/code&gt; or &lt;code&gt;vcap.me&lt;/code&gt;, which both return &lt;code&gt;127.0.0.1&lt;/code&gt; for all requests.&lt;/p&gt;
+
+&lt;p&gt;When you deploy your app, you&amp;#39;ll need to get a wildcard HTTPS certificate, instead of one that&amp;#39;s restricted to a particular subdomain. If you use Let&amp;#39;s Encrypt, this makes the process &lt;a href=&quot;https://letsencrypt.org/docs/faq/#does-let-s-encrypt-issue-wildcard-certificates&quot;&gt;slightly more complicated&lt;/a&gt;, but there are &lt;a href=&quot;https://www.digitalocean.com/community/tutorials/how-to-create-let-s-encrypt-wildcard-certificates-with-certbot&quot;&gt;good instructions online&lt;/a&gt; for doing so.&lt;/p&gt;
+
+&lt;p&gt;That&amp;#39;s all you need to use subdomains for identity. If you want to go the whole hog and allow users to use custom domains, though, you need to do a little bit more. The main problem here is HTTPS: you need to have a certificate for whatever domain they choose to use, and your web server needs to be able to dynamically pick which HTTPS cert to use based on the domain name. Nginx added support for this in 1.15.9, which is relatively recent — it&amp;#39;s in the most recent Debian version as of this writing (bullseye), but not in the previous version (buster). You can set this up by using the &lt;code&gt;$ssl_server_name&lt;/code&gt; variable in your &lt;code&gt;ssl_certificate&lt;/code&gt; and &lt;code&gt;ssl_certificate_key&lt;/code&gt; variables, like so (assuming the default certbot setup):&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;ssl_certificate /etc/letsencrypt/live/$ssl_server_name/fullchain.pem; 
+ssl_certificate_key /etc/letsencrypt/live/$ssl_server_name/privkey.pem;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That&amp;#39;s not enough, though, since you also need to actually get the keys. I do this by having a small script&lt;sup id=&quot;fnref2&quot;&gt;&lt;a href=&quot;#fn2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; that reads the database to look for users with custom domains, and attempts to renew their certificates:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;dirname&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+
+certbot certonly &lt;span class=&quot;nt&quot;&gt;--noninteractive&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--keep-until-expiring&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--dns-digitalocean&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--dns-digitalocean-credentials&lt;/span&gt; /root/digitalocean-secret.ini &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; thoughts.page &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;*.thoughts.page&apos;&lt;/span&gt;
+
+sqlite3 thoughts.sqlite3 &lt;span class=&quot;s2&quot;&gt;&quot;SELECT domain FROM domains&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;.thoughts.page$&quot;&lt;/span&gt; | &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;read &lt;/span&gt;DOMAIN
+&lt;span class=&quot;k&quot;&gt;do
+    &lt;/span&gt;certbot certonly &lt;span class=&quot;nt&quot;&gt;--noninteractive&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--keep-until-expiring&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--webroot&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--webroot-path&lt;/span&gt; /var/cert-webroot/ &lt;span class=&quot;nt&quot;&gt;--domain&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DOMAIN&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Needed because nginx SNI doesn&apos;t run as root&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; 755 /etc/letsencrypt/live/
+&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; 755 /etc/letsencrypt/archive/
+
+&lt;span class=&quot;c&quot;&gt;# Nginx needs a reload to pick up new certs&lt;/span&gt;
+systemctl reload nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is run every five minutes by a cron job. I could have the user adding a new custom domain trigger this, but so far, I haven&amp;#39;t felt the need to do that.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;/var/cert-webroot/&lt;/code&gt; directory referenced in that script is served by nginx, using the following snippet:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;location /.well-known/acme-challenge/ {
+    root /var/cert-webroot/;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This allows the app server to keep on running while the certs are being renewed, free of any interference from certbot.&lt;/p&gt;
+
+&lt;p&gt;This relatively simple change makes it easy for people to own their own identities if that&amp;#39;s important to them, without imposing any sort of burden on less technically-inclined users to think about it. It also creates a softer gradient towards self-hosting, allowing people who are comfortable setting up a DNS record but not administering a server to own their own identities. Next time you&amp;#39;re making a website with users, I hope you&amp;#39;ll consider using subdomains as identity.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+
+&lt;li id=&quot;fn1&quot;&gt;
+&lt;p&gt;I say &amp;quot;almost entirely&amp;quot;, since there should still ideally be some way for clients to have cryptographic proof of their identity, which they can use to delegate the ability to manage their account to a particular server. Implementing this well is quite complex, but I think doable and important, as well. If you&amp;#39;re working on this kind of thing and want to chat about it, please do drop me a line :)&amp;nbsp;&lt;a href=&quot;#fnref1&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id=&quot;fn2&quot;&gt;
+&lt;p&gt;One of the &lt;a href=&quot;/posts/consider-sqlite&quot;&gt;many advantages&lt;/a&gt; to using SQLite is that it makes writing small scripts like this really easy&amp;nbsp;&lt;a href=&quot;#fnref2&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Thu, 07 Apr 2022 00:00:00 -0400</pubDate>
+        <link>https://blog.wesleyac.com/posts/subdomains-as-identity</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/subdomains-as-identity</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>Minify and Gzip</title>
+        <description>&lt;p&gt;I&amp;#39;ve been doing a bit of work cleaning up the CSS on this blog in the past couple days — the CSS is from a template that I copied more than five years ago at this point, and it was pretty crufty even when I first got it.&lt;/p&gt;
+
+&lt;p&gt;When I was poking around, I noticed that I had two separate media queries to check if the browser width was something that looked like a mobile device. This makes the CSS nicer to read, since the overrides can be right next to the things they&amp;#39;re overriding, but it also makes the resulting CSS slightly larger. I minify my CSS using &lt;a href=&quot;https://github.com/tdewolff/minify&quot;&gt;tdewolff/minify&lt;/a&gt; during the build, so I checked to see if it would collapse the two media query blocks into one. Doing so would be a somewhat complicated optimization, since the order that CSS rules are defined in can sometimes matter, but it wouldn&amp;#39;t be too tricky. I made a quick test file:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-css&quot; data-lang=&quot;css&quot;&gt;&lt;span class=&quot;nc&quot;&gt;.foo&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;red&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@media&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;767px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;.foo&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;blue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;.bar&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;green&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@media&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;767px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;.bar&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;blue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And checked what it minified to on the latest release:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-css&quot; data-lang=&quot;css&quot;&gt;&lt;span class=&quot;nc&quot;&gt;.foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;red&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;@media&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;767px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;.foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;blue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;.bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;green&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;@media&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;767px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;.bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;blue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Two media queries — how inefficient!&lt;/p&gt;
+
+&lt;p&gt;But then I thought to check — my website is served using gzip compression, so I shouldn&amp;#39;t be checking the size of the minified file, I should instead be checking the size of the minified &lt;em&gt;and gzipped&lt;/em&gt; file. The gzipped file that minify generated was 107 bytes, and when I applied my &amp;quot;optimization&amp;quot;, it grew to 115 bytes. Huh.&lt;/p&gt;
+
+&lt;p&gt;However, compression is an area where the efficiency can vary wildly depending on filesize. I figured it might just be that the sample file wasn&amp;#39;t large enough to have much structure for gzip to exploit in the first place. As a second test, I grabbed the CSS file for my blog, which weighed in at 1858 bytes gzipped, applied the optimization to it, and got… 1864 bytes.&lt;/p&gt;
+
+&lt;p&gt;This is a pretty common thing if you try to do a lot of filesize micro-optimization on the web — there are built-in ways to make code smaller that are designed for humans to use to make code more understandable, but those tools are often less efficient that letting gzip (or brotli, or whatever other compression you use) operate directly on the larger version. If you care about reducing the size of the network transfer, you need to &lt;em&gt;actually measure the network transfer&lt;/em&gt;, and not anything else.&lt;/p&gt;
+
+&lt;p&gt;This same principle holds true for any sort of optimization work — if you measure a proxy for what you want to optimize, you need to be sure that the proxy actually correctly correlates with the thing you&amp;#39;re trying to optimize! And once you&amp;#39;ve been bitten by this problem enough times, you end up realizing that it&amp;#39;s often less work and pain to just measure the thing you care about directly.&lt;/p&gt;
+
+&lt;p&gt;To my knowledge there aren&amp;#39;t any minifiers that operate with awareness of what compression algorithm the final file will be served with — I think that&amp;#39;d be a interesting area to explore. It&amp;#39;s unlikely to actually be &amp;quot;worth it&amp;quot; in any reasonable cost/benefit analysis, but hey, I don&amp;#39;t micro-optimize my personal websites because there&amp;#39;s any benefit to it, I really just do it for the principle of the thing.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 22 Feb 2022 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/minify-and-gzip</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/minify-and-gzip</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>How to reset the USB stack on Linux</title>
+        <description>&lt;p&gt;I&amp;#39;ve recently started having issues with the USB stack on my Linux laptop getting itself wedged. Rebooting fixes the problem, but I&amp;#39;d rather not have to reboot, so I looked into ways to reset the USB stack without needing a reboot. Almost all of the answers on the internet about how to do so either do not work on modern Linux systems, or did not reset at low enough of a level to fix the specific problem I was having.&lt;/p&gt;
+
+&lt;p&gt;The solution is to unbind and rebind the USB controller to the xHCI driver. First, find the PCI bus number of the misbehaving USB controller, using &lt;code&gt;lspci -D&lt;/code&gt;. Then, write that bus number to &lt;code&gt;/sys/bus/pci/drivers/xhci_hcd/unbind&lt;/code&gt;, for instance, by running &lt;code&gt;echo 0000:00:14.0 | sudo tee /sys/bus/pci/drivers/xhci_hcd/unbind&lt;/code&gt; (replacing &lt;code&gt;0000:00:14.0&lt;/code&gt; with whatever the PCI bus number you found in the previous step was). This will disable the USB controller. Once you&amp;#39;ve done that, reenable it by writing the same bus number to &lt;code&gt;/sys/bus/pci/drivers/xhci_hcd/bind&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;#39;s a script that will do that all for you, in case it&amp;#39;s useful:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eo&lt;/span&gt; pipefail
+
+&lt;span class=&quot;nv&quot;&gt;DEVICE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;lspci &lt;span class=&quot;nt&quot;&gt;-Dm&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;USB controller&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos; &apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n1&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DEVICE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /sys/bus/pci/drivers/xhci_hcd/unbind
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DEVICE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /sys/bus/pci/drivers/xhci_hcd/bind
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You may need to modify the grep for &amp;quot;USB controller&amp;quot;, depending on how your USB controller identifies itself.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 18 Feb 2022 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/linux-reset-usb</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/linux-reset-usb</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>SNES Development Part 6: Sprites</title>
+        <description>&lt;p&gt;&lt;em&gt;This is part six of my series on SNES development. You may want to start with the &lt;a href=&quot;/posts/snes-dev-1-getting-started&quot;&gt;first post&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;In the sixth, and likely final segment of this SNES tutorial, we&amp;#39;re going to draw a sprite (or rather, an &amp;quot;object&amp;quot;) on the screen! Once we&amp;#39;re through with this, you should have basically everything you need to go off into the world and make SNES games all on your own :)&lt;/p&gt;
+
+&lt;p&gt;As usual, I recommend the Retro Game Mechanics Explained video on &lt;a href=&quot;https://www.youtube.com/watch?v=sheOZ-Dlleo&quot;&gt;Objects&lt;/a&gt; as prerequisite background material.&lt;/p&gt;
+
+&lt;p&gt;We&amp;#39;re going to allocate some space to save a copy of our OAM, which we&amp;#39;ll DMA to the actual OAM memory every frame. We&amp;#39;ll need to add a new palette for the sprites, and some new tiles. Then, we&amp;#39;ll set sprite zero to use our tile and palette, and set its X and Y position. We&amp;#39;ll make it a 16x16 sprite, because that&amp;#39;s more interesting :)&lt;/p&gt;
+
+&lt;p&gt;You can find the &lt;a href=&quot;https://github.com/WesleyAC/snes-dev/tree/main/part6&quot;&gt;code&lt;/a&gt; and &lt;a href=&quot;https://github.com/WesleyAC/snes-dev/compare/part6-base..part6&quot;&gt;diff&lt;/a&gt; in the usual places.&lt;/p&gt;
+
+&lt;p&gt;The code for this isn&amp;#39;t too tricky. The first step is to allocate some space for a copy of our OAM table in the &lt;a href=&quot;https://en.wikipedia.org/wiki/.bss&quot;&gt;BSS segment&lt;/a&gt;. The BSS segment is just a place to put variables, similar to the zero page that we used previously. (We can&amp;#39;t use the zero page for our copy of the OAM, since it&amp;#39;s not large enough). Unlike code that&amp;#39;s running in an operating system, our BSS isn&amp;#39;t going to be set to zero before we get out hands on it, we need to add a loop to zero it out ourselves.&lt;/p&gt;
+
+&lt;p&gt;We need to add some new palettes, since sprites use a separate set of palettes from tiles. The sprite palettes start at CGRAM index 128. I add a black, which is unusable (since the 0th palette color on sprites is treated as transparent) and a red for the foreground color. You should already have some system of your own that&amp;#39;s nice than this for setting up palettes, so feel free to use that instead. Mesen-S comes with a nice palette viewer tool if you want to check your work.&lt;/p&gt;
+
+&lt;p&gt;We also set the &lt;code&gt;OBSEL&lt;/code&gt; register, which controls the object size options (we choose 8x8 for small sprites and 16x16 for large sprites) and some offsets for selection which tiles to use, which we leave at zero for simplicity. Leaving the offsets at zero means that the backgrounds and the sprites will use the same set of tiles. One thing to note is that if you&amp;#39;re using a background mode that has a number of colors other than 4bpp, this&amp;#39;ll get a little bit messy. I recommend using Mode 1 to start with, which sets BG1 and BG2 to 4bpp, but the demo code is running in Mode 0, which is 2bpp. It&amp;#39;s not a big problem to mix them, it&amp;#39;s just something you&amp;#39;ll need to be thinking about when indexing into the tiles.&lt;/p&gt;
+
+&lt;p&gt;After that, the only remaining setup is setting the bit on the &lt;code&gt;TM&lt;/code&gt; register that enables sprite rendering.&lt;/p&gt;
+
+&lt;p&gt;With the setup out of the way, we can write our sprite data into the OAM on each frame, and use DMA to copy our OAM data to the OAM. You can find documentation for the OAM format &lt;a href=&quot;https://problemkaputt.de/fullsnes.htm#snesppuspritesobjs&quot;&gt;here&lt;/a&gt;, although the bits that you need to know to immediately start hacking are commented in the code.&lt;/p&gt;
+
+&lt;p&gt;Once you have the OAM integrated into your code, you basically have enough to start making a game! You can hook up the sprite so you can move it with the controller, start adding some sprites for enemies, making maps with tiles, and really doing whatever you want!&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 Feb 2022 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/snes-dev-6-sprites</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/snes-dev-6-sprites</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>SNES Development Part 5: DMA</title>
+        <description>&lt;p&gt;&lt;em&gt;This is part five of my series on SNES development. You may want to start with the &lt;a href=&quot;/posts/snes-dev-1-getting-started&quot;&gt;first post&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;In &lt;a href=&quot;/posts/snes-dev-3-background-graphics&quot;&gt;part three&lt;/a&gt;, I mentioned that in the future, we&amp;#39;d switch from using a loop to copy data into VRAM to using DMA. Well, the future is now!&lt;/p&gt;
+
+&lt;p&gt;Using DMA is much faster than using a loop, which makes it easier to load large amounts of data from ROM to memory, whether that&amp;#39;s graphics, sprite data, palettes, levels, or anything else your heart desires. It&amp;#39;ll be useful in the next part, where we&amp;#39;ll want to quickly send the sprite data to the SNES.&lt;/p&gt;
+
+&lt;p&gt;As usual, I recommend watching the Retro Game Mechanics Explained video on &lt;a href=&quot;https://www.youtube.com/watch?v=K7gWmdgXPgk&quot;&gt;DMA &amp;amp; HDMA&lt;/a&gt; first. You can stop watching once you get to the HDMA part if you&amp;#39;d like — only the DMA section is needed to understand this part.&lt;/p&gt;
+
+&lt;p&gt;The code for this part might seem a little scary, but once you have a solid understanding of what DMA is and how it works, it&amp;#39;s not too bad. You can find the &lt;a href=&quot;https://github.com/WesleyAC/snes-dev/tree/main/part5&quot;&gt;code&lt;/a&gt; and &lt;a href=&quot;https://github.com/WesleyAC/snes-dev/compare/part5-base..part5&quot;&gt;diff&lt;/a&gt; on GitHub as usual. This time, we&amp;#39;ll walk through each step of the diff, since it&amp;#39;s small but dense.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;lda #%00000001
+sta DMAP0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This sets the DMA flags. The first bit is a zero, to indicate that we&amp;#39;re transferring from the CPU memory to the PPU memory. The next two bits are unused. The next two bits are zero to indicate that we want the address we&amp;#39;re writing to to auto-increment (we could instead choose to auto decrement, or use a fixed address). The final three bits, &lt;code&gt;001&lt;/code&gt;, indicate that we want to transfer two bytes at a time.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;lda #&amp;lt;VMDATAL
+sta BBAD0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This tells the SNES that we want this DMA to write to the &lt;code&gt;VMDATAL&lt;/code&gt; register, and since we set the mode to &lt;code&gt;001&lt;/code&gt;, it&amp;#39;ll also write to &lt;code&gt;VMDATAL + 1&lt;/code&gt;, which is &lt;code&gt;VMDATAH&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;ldx #.loword(charset)
+stx A1T0L
+lda #^charset
+sta A1B0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;These lines set the starting address to &lt;code&gt;charset&lt;/code&gt;, which is our label for the location of the charset data. The &lt;code&gt;.loword&lt;/code&gt; and &lt;code&gt;^&lt;/code&gt; are our way of telling the assembler to just pull the bits that we want — you can read more about them in the &lt;a href=&quot;https://cc65.github.io/doc/ca65.html&quot;&gt;ca65 manual&lt;/a&gt; if you&amp;#39;d like. Note that we write to &lt;code&gt;A1T0L&lt;/code&gt; with the X register since it&amp;#39;s in 16 bit mode — this lets us write to the &lt;code&gt;A1T0L&lt;/code&gt; and &lt;code&gt;A1T0H&lt;/code&gt; registers at the same time.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;ldx #(charset_end - charset)
+stx DAS0L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here, we set the amount of data we want to transfer.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot; data-lang=&quot;&quot;&gt;lda #1
+sta MDMAEN
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And finally, we kick off the DMA!&lt;/p&gt;
+
+&lt;p&gt;This has been some more anticlimactic infrastructure work — as with the previous time we did this, everything will look exactly the same when you run it, but if you look in the Mesen-S event viewer, you should be able to see the change :)&lt;/p&gt;
+
+&lt;p&gt;This time, though, there&amp;#39;s some stuff you can do on your own:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Write a macro to set up and run a DMA transfer&lt;/li&gt;
+&lt;li&gt;Use your shiny new DMA transfer to write some tiles to &lt;code&gt;VRAM_BG1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Replace your manual palette setting code with DMA&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once you&amp;#39;ve done all that, it&amp;#39;s time to move on to making some sprites in &lt;a href=&quot;/posts/snes-dev-6-sprites&quot;&gt;part six&lt;/a&gt;!&lt;/p&gt;
+
+&lt;!--
+next posts:
+
+* sprites
+* scrolling
+--&gt;
+</description>
+        <pubDate>Thu, 10 Feb 2022 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/snes-dev-5-dma</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/snes-dev-5-dma</guid>
+      </item>
+    
+    
+    
+      <item>
+        <title>SNES Development Part 4: NMIs and vblank</title>
+        <description>&lt;p&gt;&lt;em&gt;This is part four of my series on SNES development. You may want to start with the &lt;a href=&quot;/posts/snes-dev-1-getting-started&quot;&gt;first post&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/posts/snes-dev-3-input&quot;&gt;Last time&lt;/a&gt;, we started reading controller inputs! However, we weren&amp;#39;t able to get a tile to move around on the screen in response to the controller, because our code was running too fast. In this part, we&amp;#39;ll look at how to slow down our main code so that it runs once per frame. We&amp;#39;ll do this by modifying our NMI handler, which is called whenever the &amp;quot;vblank&amp;quot; period starts, once per frame. For context on what vblank is and how it works on the SNES, I recommend &lt;a href=&quot;https://www.youtube.com/watch?v=Q8ph2OVqZeM&quot;&gt;this video&lt;/a&gt;. This post will assume that you&amp;#39;ve watched it, or found the information in it from some other source.&lt;/p&gt;
+
+&lt;p&gt;We already have a NMI routine, which we set up in the very first part of this series. What we want to do is to make sure our code runs once per NMI. The most obvious way to do this is to just take the code we have and stick it in the NMI routine, but this isn&amp;#39;t a good idea — doing so can lead to strange behaviour if your NMI handler takes to long, and a second NMI gets fired while you&amp;#39;re inside it, among other problems.&lt;/p&gt;
+
+&lt;p&gt;Instead, we can use the &lt;code&gt;wai&lt;/code&gt; instruction, which pauses execution until a interrupt is fired. However, there are more types of interrupts than just NMIs, so what we&amp;#39;ll do is keep a count of the number of NMIs, which we increment in the NMI handler, and then have our main code check to see if the NMI count changed whenever it wakes up from the &lt;code&gt;wai&lt;/code&gt; instruction.&lt;/p&gt;
+
+&lt;p&gt;We implement this NMI count variable by reserving some space in the &lt;a href=&quot;https://en.wikipedia.org/wiki/Zero_page&quot;&gt;zero page&lt;/a&gt; — a small, 256-byte section of memory that&amp;#39;s fast to access an can be accessed from anywhere. In the future, you&amp;#39;ll likely want to keep a few other global variables in the zero page, like the player&amp;#39;s position, etc.&lt;/p&gt;
+
+&lt;p&gt;With that in mind, the &lt;a href=&quot;https://github.com/WesleyAC/snes-dev/tree/main/part4&quot;&gt;code&lt;/a&gt; and &lt;a href=&quot;https://github.com/WesleyAC/snes-dev/compare/part4-base..part4&quot;&gt;diff&lt;/a&gt; should be pretty self explanatory! The only extra bit is that we need to tell the SNES to send us NMIs by flipping a bit in the &lt;code&gt;NMITIMEN&lt;/code&gt; register.&lt;/p&gt;
+
+&lt;p&gt;...how do we know that did anything, though? Everything looks exactly the same!&lt;/p&gt;
+
+&lt;p&gt;This is a great time to introduce another useful tool in Mesen-S: the event viewer. It provides a visualization of what type of code is running, and where in the frame it&amp;#39;s running. Open up &amp;quot;Debug → Event Viewer&amp;quot;, and compare what it looks like before and after the change. It should be pretty obvious what the difference is :)&lt;/p&gt;
+
+&lt;p&gt;This wasn&amp;#39;t that exciting of a section, but it unlocks a bunch of exciting things! On your own, try making a tile that you can move around with the controller — at this point, you should have all the tools you need!&lt;/p&gt;
+
+&lt;p&gt;Once you get that working, we&amp;#39;ll return to some boring infrastructure by replacing our slow loop to copy data into VRAM with some fast, sexy DMA in &lt;a href=&quot;/posts/snes-dev-5-dma&quot;&gt;part five&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 Feb 2022 00:00:00 -0500</pubDate>
+        <link>https://blog.wesleyac.com/posts/snes-dev-4-nmi-and-vblank</link>
+        <guid isPermaLink="true">https://blog.wesleyac.com/posts/snes-dev-4-nmi-and-vblank</guid>
+      </item>
+    
+    
   </channel>
 </rss>

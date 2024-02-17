@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Reasons to avoid Javascript CDNs</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Reasons to avoid Javascript CDNs">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/why-not-javascript-cdn">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/why-not-javascript-cdn">
+  <meta name="twitter:title" content="Reasons to avoid Javascript CDNs">
+  <meta name="twitter:description" content="">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Reasons to avoid Javascript CDNs</h1>
+        <div class="article-list-date">
+          Dec 10, 2021
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>Many javascript projects have install instructions recommending that people use a CDN like <a href="https://www.jsdelivr.com/">jsdelivr</a> or <a href="https://unpkg.com/">unpkg</a> to include the code on their website. This has the advantage that it&#39;s quicker to get started with, and it&#39;s often claimed to load faster. However, it also has downsides when it comes to privacy, security, and systemic risk, and it may actually be slower in some common cases. Here are some reasons not to use a javascript CDN, and some alternatives to consider instead.</p>
+
+<h2>Systemic Risk</h2>
+
+<p>The big javascript CDNs are used by huge numbers of people — <a href="https://cdnjs.com/about">cdnjs brags that it&#39;s on 12.5% of websites on the internet, and serves more that 200 billion requests per month</a>, <a href="https://www.jsdelivr.com/blog/jsdelivr-keeps-growing-and-expanding/">jsdelivr serves nearly 100 billion requests per month</a>, and <a href="https://twitter.com/mjackson/status/1296147192411955200">unpkg serves ~2.4 billion unique IP addresses per month</a>. This means that one of these CDNs going down, or an attacker hacking one of them would have a huge impact all over society — we already see this category of problem with large swaths of the internet going down every time <a href="https://techcrunch.com/2020/07/17/cloudflare-dns-goes-down-taking-a-large-piece-of-the-internet-with-it/">cloudflare</a> or <a href="https://www.theverge.com/2021/12/7/22822332/amazon-server-aws-down-disney-plus-ring-outage">AWS</a> has an outage.</p>
+
+<p>There&#39;s a <a href="https://notebook.wesleyac.com/efficiency-resiliency/#288jCJ_U1E:1W:2k">fundamental tradeoff</a> here between efficiency and resiliency, and when 12.5% of the internet can have an outage because of one provider going down, I think we&#39;ve swung way too far away from resiliency, as a society.</p>
+
+<h2>Privacy</h2>
+
+<p>The most major concern that stems from this centralization is that of privacy — in the normal case, the only people who know when you visit a website are the people running that website, and the operators of the internet infrastructure between your computer and the server (which is <em>also</em> shockingly centralized, but that&#39;s a story for another day). When a website includes a javascript file with a CDN, that CDN is then able to tell that you&#39;ve visited that website. Most people realize that companies like Google keep a profile of nearly everywhere you go on the web, but normal people haven&#39;t even heard of Cloudflare, and despite that, they have a similarly complete picture of where you go on the internet. They <a href="https://www.cloudflare.com/privacypolicy/">pinky promise</a> that they won&#39;t sell logs (privacy policy subject to unilateral change by them at any point, of course), and you just have to hope that they won&#39;t get hacked.</p>
+
+<p><em>(If you want to avoid getting tracked this way, <a href="https://decentraleyes.org/">Decentraleyes</a> is a useful browser extension)</em></p>
+
+<h2>Speed</h2>
+
+<p>One of the significant benefits touted by CDNs is speed, but this doesn&#39;t make as much sense as it once did.</p>
+
+<p>First off, modern browsers <a href="https://www.stefanjudis.com/notes/say-goodbye-to-resource-caching-across-sites-and-domains/">don&#39;t cache requests to CDNs across multiple domains</a>, since that can be used to track users — this means that even if someone has already downloaded the library you&#39;re including from the CDN on one website, they&#39;ll have to download it again when they visit your website. Note that this re-downloading doesn&#39;t actually protect against any of the privacy concerns mentioned above (and in fact makes them much worse), it&#39;s <em>only</em> to stop random websites from being able to tell what other websites you&#39;ve visited via cache timing attacks.</p>
+
+<p>Secondly, if you&#39;re using HTTP/2 or HTTP/3 and including javascript files that aren&#39;t huge, it&#39;s likely going to be faster to download the javascript file from the same place the website is hosted due to <a href="https://http2.github.io/faq/#why-is-http2-multiplexed">multiplexing</a> — particularly, DNS resolution and TLS setup often dominate the time taken to load the first connection to a new domain. Hosting the javascript files on the same server as the HTML allows you to avoid all of that, and thus will typically actually be faster for small files, since a single connection can be used. You can test this yourself pretty easily — look at the &quot;DNS Resolution&quot;, &quot;Connecting&quot;, and &quot;TLS Setup&quot; sections in the &quot;Network&quot; tab of the browser devtools — this is often more than half of the time for the first request! This is also something that is likely to be worse on slower connections than on faster ones.</p>
+
+<h2>Security</h2>
+
+<p>Beyond just privacy, it&#39;s reasonable to be concerned that an attacker might be able to compromise end-users by hacking a CDN. Luckily, there is a way to protect against this — modern web browsers have a feature called <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity">Subresource Integrity</a>, which allows you to specify a hash of the expected contents of a script tag (if you&#39;re using libraries via a CDN, you should be doing this! It&#39;s pretty simple, and has nothing but upside in terms of security).</p>
+
+<p>Unfortunately, this doesn&#39;t yet work in all cases — if a library is split into multiple files (to reduce initial load time/size), browsers currently only allow the main file to have a SRI hash specified. I&#39;m <a href="https://github.com/WICG/import-maps/issues/221#issuecomment-988337894">hopeful</a> that this can be fixed in the future, but it&#39;s not there yet. (To be clear, using SRI on the initial bundle still provides a meaningful increase in security — the fact that it doesn&#39;t work in some, frankly somewhat niche cases isn&#39;t a reason not to use it in general!)</p>
+
+<h2>What to do instead</h2>
+
+<p>The takeaway here is that if you&#39;re using a CDN for any reason other than laziness, it&#39;s likely not a good reason.</p>
+
+<p>What I do is just download the library that I want and include the files in my repo, just like any other source file. I usually do this in a directory called <code>vendored</code> or <code>3p</code>, and be sure to include the version number of the package that I downloaded in the filename. This takes maybe 60 seconds more work than including the CDN version, which seems worth it to me for the privacy, robustness, and speed benefits.</p>
+
+<p>If you are going to use a CDN, at the very least, include a SRI hash — they&#39;re super easy to generate with <a href="https://www.srihash.org/">this tool</a>. And if you&#39;re a library author who writes install instructions recommending the use of a CDN, <em>definitely</em> include a SRI hash — that way people don&#39;t need to know to do it themselves, they can just copy and paste it.</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

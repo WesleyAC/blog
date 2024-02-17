@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | The joy of brainfuck</title>
+  <meta name="description" content="Lessons learned from programming FizzBuzz in brainfuck">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="The joy of brainfuck">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/the-joy-of-brainfuck">
+  <meta property="og:description" content="Lessons learned from programming FizzBuzz in brainfuck">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/the-joy-of-brainfuck">
+  <meta name="twitter:title" content="The joy of brainfuck">
+  <meta name="twitter:description" content="Lessons learned from programming FizzBuzz in brainfuck">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>The joy of brainfuck</h1>
+        <div class="article-list-date">
+          Dec 29, 2016
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>My favorite esoteric programming language is <a href="http://esolangs.org/wiki/brainfuck">brainfuck</a> - A <a href="https://en.wikipedia.org/wiki/Turing_complete">turing-complete</a> language implemented in just 8 simple commands. So when I needed to make a <a href="https://blog.codinghorror.com/why-cant-programmers-program/">FizzBuzz</a>-like program for my application to the <a href="https://www.recurse.com/">Recurse Center</a>, I knew what I had to do.</p>
+
+<blockquote>
+<p>Beware of the Turing tar-pit in which everything is possible but nothing of interest is easy.</p>
+
+<p>-- Alan Perlis</p>
+</blockquote>
+
+<p>The exact problem that I was trying to solve comes from the Recurse Center&#39;s application:</p>
+
+<blockquote>
+<p>Write a program that prints out the numbers 1 to 100 (inclusive). If the number is divisible by 3, print Crackle instead of the number. If it&#39;s divisible by 5, print Pop. If it&#39;s divisible by both 3 and 5, print CracklePop. You can use any language.</p>
+</blockquote>
+
+<p>This is my solution:</p>
+<div class="highlight"><pre><code class="language-" data-lang="">++++++++++&gt;&gt;++++++++++[&lt;+++++++++++&gt;-]&lt;++&gt;&gt;++++++++++[&lt;+++++++++++&gt;-]&lt;+&gt;&gt;++++++++++[&lt;++++++++&gt;-]&gt;++++++++++[&lt;++++++++++&gt;-]&lt;+&gt;&gt;++++++++++[&lt;++++++++++&gt;-]&lt;++++++++&gt;&gt;++++++++++[&lt;++++++++++&gt;-]&lt;+++++++&gt;&gt;++++++++++[&lt;++++++++++&gt;-]&lt;-&gt;&gt;++++++++++[&lt;++++++++++&gt;-]&lt;---&gt;&gt;++++++++++[&lt;+++++++++++&gt;-]&lt;++++&gt;&gt;++++++++++[&lt;+++++++&gt;-]&lt;---&gt;--&gt;----------&gt;---------&gt;&gt;++++++[&lt;++++++++&gt;-]&gt;++++++[&lt;++++++++&gt;-]&gt;++++++[&lt;++++++++&gt;-]&lt;&lt;&lt;&lt;&lt;&lt;[&gt;[&gt;[&gt;+&gt;&gt;&gt;&gt;+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;[-]+&gt;[-]&lt;&lt;[&gt;-]&gt;[&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;[-]&gt;&gt;[-]&gt;[-]+++&gt;[-]&gt;&gt;[-]&gt;[-]&lt;&lt;&lt;&lt;&lt;&lt;[&gt;+&gt;-&gt;+&lt;[&gt;]&gt;[&lt;+&gt;-]&lt;&lt;[&lt;]&gt;-]&gt;[-&lt;+&gt;]&gt;&gt;&gt;[-]+&gt;[-]&lt;&lt;[&gt;-]&gt;[&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;.&lt;.&lt;.&lt;.&lt;.&lt;.&lt;.&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;+&lt;&lt;-&gt;]&lt;&lt;&lt;&lt;&lt;&lt;[-]&gt;&gt;[-]&gt;[-]+++++&gt;[-]&gt;&gt;[-]&lt;&lt;&lt;&lt;&lt;[&gt;+&gt;-&gt;+&lt;[&gt;]&gt;[&lt;+&gt;-]&lt;&lt;[&lt;]&gt;-]&gt;[-&lt;+&gt;]&gt;&gt;&gt;[-]+&gt;[-]&lt;&lt;[&gt;-]&gt;[&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;.&lt;.&lt;.&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;+&lt;&lt;-&gt;]&gt;&gt;[-]+&gt;[-]&lt;&lt;[&gt;-]&gt;[&gt;&gt;&gt;[-]+&gt;[-]&lt;&lt;[&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;-]&gt;[-&gt;]&gt;&gt;[-]+&gt;[-]&lt;&lt;[&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;-]&gt;[-&gt;]&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;-&gt;]&gt;&gt;[-]+&gt;[-]&lt;&lt;[&gt;&gt;&gt;&gt;&gt;&gt;+&lt;&lt;&lt;&lt;&lt;-]&gt;[-&gt;]&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;-&gt;]&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;+]&gt;----------&lt;----------&gt;&gt;+&lt;&lt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;+]&gt;&gt;&gt;----------&lt;&lt;&lt;----------&gt;&gt;&gt;&gt;+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;+]
+</code></pre></div>
+<p>Here it is in it&#39;s <a href="https://gist.github.com/WesleyAC/fce000f65c7acc9b7b6b7bb4dc04c2b8">unminified glory</a></p>
+
+<p>Actually breaking this down is only interesting if you&#39;re into brainfuck programming, so instead of doing that, I&#39;m just going to focus on the lessons that I learned from programming this:</p>
+
+<h2>Planning</h2>
+
+<p>Brainfuck forces you to think <strong>a lot</strong> about how you structure your code - for example, an if statement will need you to allocate at least two temporary cells, which need to be planned out in the memory layout. I tried several times to just start writing, but never got far. I ended up needing to write down the memory layout, and requirements for all of the constructs that I wanted to use (each if statement, loop, modulus, etc). Once I did that, however, implementing it was easy.</p>
+
+<p>This is interesting, because this effect exists in high-level languages as well, it just requires much larger programs to see it. Brainfuck shows you the importance of planning at tiny scales.</p>
+
+<h2>Contracts</h2>
+
+<p>One of the concepts in programming that I find interesting is a &quot;contract&quot;. A contract is a (often non-enforced) set of requirements that a piece of code will follow - what variables it will access, how long it will take to run, what variables or registers it needs to write to.</p>
+
+<p>It&#39;s easy to write in many languages without planning out contracts for your code - they&#39;re often enforced automatically with scoping or namespaces. In brainfuck, however, I found it very useful to define a &quot;contract&quot; for each line of code - it will return the data pointer to the same place as where it started, it will write <em>these</em> values to <em>those</em> cells, etc. It&#39;s really helpful to do this, because you can see what code affects what parts of the memory or code.</p>
+
+<h2>Tools</h2>
+
+<p>I sometimes say that all problems are easy if you have the right tools - it&#39;s just that often the right tool hasn&#39;t been invented yet.</p>
+
+<p>For brainfuck, I couldn&#39;t find a good debugger, so I <a href="https://github.com/WesleyAC/toybox/tree/master/bfdbg">made my own</a>. This let me fairly easily see the memory and set breakpoints. It could be a lot better, but it got me through CracklePop!</p>
+
+<h2>Comments</h2>
+
+<p>Having comments was really really helpful. There were times when I&#39;d take a 15 minute break, come back, and have no idea what my code was doing, since I hadn&#39;t written comments.</p>
+
+<h2>Conclusion</h2>
+
+<p>The main theme here is that Brainfuck helped me see why good software architecture is important at small scales - because it&#39;s almost impossible to write code in brainfuck without it.</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

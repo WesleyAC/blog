@@ -1,4 +1,0 @@
----
-slug: ui
-name: UI
----

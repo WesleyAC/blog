@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Writing an OS in Rust</title>
+  <meta name="description" content="In which I embark on a journey to learn how the heck operating systems work">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Writing an OS in Rust">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/writing-an-os-in-rust">
+  <meta property="og:description" content="In which I embark on a journey to learn how the heck operating systems work">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/writing-an-os-in-rust">
+  <meta name="twitter:title" content="Writing an OS in Rust">
+  <meta name="twitter:description" content="In which I embark on a journey to learn how the heck operating systems work">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Writing an OS in Rust</h1>
+        <div class="article-list-date">
+          Jan 4, 2017
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>Writing an OS is one of those projects that I&#39;ve always kinda wanted to do, but never felt like I had enough experience or knowledge to actually follow through on. Every few years though, I end up opening the <a href="http://wiki.osdev.org/Main_Page">OSDev Wiki</a>, and thinking &quot;What if...&quot;</p>
+
+<p>Well, now that I&#39;m trying to learn <a href="https://www.rust-lang.org/en-US/">Rust</a>, I have a perfect excuse to write my own toy operating system. After around a day of programming, this post is about what I learned, and what I&#39;m learning in the process.</p>
+
+<p><img src="../img/subatomic1/screenshot.png" alt="My operating system"></p>
+
+<p>First, why Rust for a toy operating system? There are a few reasons:</p>
+
+<ul>
+<li>Safety
+
+<ul>
+<li>Many things that are runtime errors in other low level languages are compile time errors in rust, allowing you to catch errors faster and more easily.</li>
+</ul></li>
+<li>Performance
+
+<ul>
+<li>Rust is designed for systems programming, so it&#39;s really fast :)</li>
+</ul></li>
+<li>Community
+
+<ul>
+<li>The Rust community is really great, so I&#39;m sure that I&#39;ll be able to find support if I&#39;m confused.</li>
+</ul></li>
+<li>Other OSes and tutorials
+
+<ul>
+<li>Not only is there a <a href="https://redox-os.org/">&quot;real&quot; OS being written in Rust</a>, but there are also <a href="http://intermezzos.github.io/book/">many</a> <a href="http://os.phil-opp.com/">good</a> <a href="http://www.randomhacks.net/bare-metal-rust/">OS Development</a> <a href="http://jvns.ca/blog/2013/12/04/day-37-how-a-keyboard-works/">tutorials</a>.</li>
+<li>Also, it seems like everyone and their dog has written an OS in Rust, so there are plenty of reference implementations.</li>
+</ul></li>
+</ul>
+
+<p>The most surprising thing about this was how easy it was! I started out by following the <a href="http://intermezzos.github.io/book/">intermezzOS</a> tutorial, which got me set up with the x86 ASM, bootloader, and emulator. The intermezzOS tutorial was by far the best one that I came across, but it&#39;s incomplete at the moment. That was alright though, because you can pretty easily pick up where intermezzOS leaves off with <a href="http://os.phil-opp.com/">Philipp Oppermann&#39;s &quot;Writing an OS in Rust&quot;</a> series. That doesn&#39;t go into keyboard input though (or input of any kind!), so I went to <a href="http://www.randomhacks.net/bare-metal-rust/">Bare Metal Rust</a>. That&#39;s not complete yet either, but it was enough to set up a polling keyboard driver! (interrupts are another battle for another day...)</p>
+
+<p>Here are my notes from the process:</p>
+
+<ul>
+<li>Starting was super easy! Copy a bit of ASM, link it together, add a bootloader, and you&#39;re done!</li>
+<li>Rust makes cross compiling amazingly easy. <a href="https://github.com/WesleyAC/subatomic/blob/e6c554cf97ed58ab4b10fd2ef13da529c2414678/x86_64-unknown-subatomic-gnu.json">A bit of JSON</a> and it&#39;s compiling without the Linux libc! The OSDev people make it sound like this is a nightmare, but apparently clang makes it really nice.</li>
+<li>QEMU was way faster than I expected - it boots within a couple seconds.</li>
+<li>The quality of tutorials is great. Even for a niche topic like OS development, there were really good tutorials. And what&#39;s more, the Rust-specific tutorials seemed better than the ones in other languages!</li>
+<li>Interrupts are like a pain - I just have my keyboard driver polling for now, since I&#39;m too lazy to get interrupts working. If I come back to this though, I&#39;ll make sure to document it, since that&#39;s badly needed!</li>
+<li>I&#39;m excited to be doing &quot;actual&quot; OS development stuff next - virtual memory, etc. When I was starting, I expected to still be fighting with my toolchain at this point!</li>
+<li>I like how many options there are with where to go - if I get tired of working on memory, I can just switch over to the keyboard driver, or to making the printing API nicer.</li>
+<li>Good tutorials take OS development for &quot;wow, only wizards must be able to do that&quot; to &quot;wow, os development is so much fun!&quot;. I can&#39;t stress enough how good intermezzOS is. Philipp Oppermann&#39;s tutorial goes more in depth but there&#39;s less explanation on the why. Still, both great tutorials.</li>
+</ul>
+
+<p>If you&#39;d like to check out what I have so far, <a href="https://github.com/WesleyAC/subatomic/">here</a> it is! The code&#39;s pretty bad, since it&#39;s my first major Rust project, and it doesn&#39;t do much, but I&#39;m proud of it nonetheless 😊.</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Linux Kernel: Learning about the OOM killer</title>
+  <meta name="description" content="Diving into Linux's Out-Of-Memory killer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Linux Kernel: Learning about the OOM killer">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/linux-kernel-oom-killer">
+  <meta property="og:description" content="Diving into Linux's Out-Of-Memory killer">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/linux-kernel-oom-killer">
+  <meta name="twitter:title" content="Linux Kernel: Learning about the OOM killer">
+  <meta name="twitter:description" content="Diving into Linux's Out-Of-Memory killer">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Linux Kernel: Learning about the OOM killer</h1>
+        <div class="article-list-date">
+          Dec 21, 2016
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>One of the things that I&#39;m interested in, but don&#39;t really understand at this point, is the Linux kernel&#39;s out-of-memory killer. In this post, I&#39;ll try to fix that!</p>
+
+<p>The out of memory killer is a part of the Linux kernel is used when the system is almost completely out of memory (RAM), and needs to free some up. It does this by killing programs, thus reclaiming the memory that they were using. Having spent a lot of time working on a machine with 512MB of RAM, I&#39;m pretty familiar with the OOM killer getting activated, but I don&#39;t really understand <em>how</em> it works. In this post, I&#39;m going to go through the source code for the OOM killer to try to figure out how it works!</p>
+
+<p>First, we need to actually get the source for the linux kernel. This is located at <a href="https://git.kernel.org/cgit/">git.kernel.org</a>. Specifically, we want <a href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/">kernel/git/torvalds/linux.git</a>. The file that contains the OOM killer code is <a href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/mm/oom_kill.c"><code>mm/oom_kill.c</code></a>. I think that <code>mm</code> stands for &quot;memory management&quot;. While I&#39;m writing this, the git commit that I&#39;m looking at is <code>ba6d973f78</code>. Since the file is more than 1000 lines long, we&#39;ll just look at a few functions:</p>
+
+<p>I see from scrolling through it that <a href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/mm/oom_kill.c?id=ba6d973f78eb62ffebb32f6ef3334fc9a3b33d22#n160"><code>oom_badness</code></a> looks interesting - according to the comment this determines what process to kill!</p>
+
+<p>Let&#39;s look at the function signature:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">oom_badness</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mem_cgroup</span> <span class="o">*</span><span class="n">memcg</span><span class="p">,</span>
+              <span class="k">const</span> <span class="n">nodemask_t</span> <span class="o">*</span><span class="n">nodemask</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">totalpages</span><span class="p">)</span>
+</code></pre></div>
+<p>Here&#39;s what I get from this:</p>
+
+<ul>
+<li>The score that it returns is a unsigned long - I wonder what it&#39;s max value is, or if it even has a maximum.</li>
+<li>It takes four arguments:
+
+<ol>
+<li>A <code>task_struct</code> called <code>p</code>, presumably standing for &quot;process&quot;. <code>task_struct</code> is defined in <a href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/include/linux/sched.h?id=ba6d973f78eb62ffebb32f6ef3334fc9a3b33d22#n1501"><code>includes/linux/sched.h:1501</code></a>. This contains a ton of stuff! But the important part is that it represents a process.</li>
+<li>A <code>mem_cgroup</code> variable. <a href="https://en.wikipedia.org/wiki/Cgroups">CGroups</a> in Linux are a way to sandbox different resources - in the case of a memory cgroup, you could limit a specific process or set of processes to, say, only taking up 512MB of RAM. Presumably the memory cgroup that the process is is is taken into account somewhere.</li>
+<li>nodemask: I&#39;m not quite sure what this is.</li>
+<li>totalpages: This is the total amount of RAM that the system has.</li>
+</ol></li>
+</ul>
+
+<p>Next we, create a couple of variables:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="p">{</span>
+    <span class="kt">long</span> <span class="n">points</span><span class="p">;</span>
+    <span class="kt">long</span> <span class="n">adj</span><span class="p">;</span>
+</code></pre></div>
+<p><code>points</code> keeps track of the number of &#39;badness points&#39; that this task has - this value is what we will end up returning</p>
+
+<p><code>adj</code> is more complicated - but it seems like it has to do with the <code>oom_score_adj</code> value. I know that this value exists in <code>/proc/&lt;PID&gt;/oom_score_adj</code>, so let&#39;s look at <code>man procfs</code> to figure this out!</p>
+<div class="highlight"><pre><code class="language-" data-lang="">/proc/[pid]/oom_score_adj (since Linux 2.6.36)
+This file can be used to adjust the  badness  heuristic  used  to  select  which
+process gets killed in out-of-memory conditions.
+
+The  badness  heuristic  assigns  a  value to each candidate task ranging from 0
+(never kill) to 1000 (always kill) to determine which process is targeted.   The
+units  are  roughly  a proportion along that range of allowed memory the process
+may allocate from, based on an estimation of its current memory  and  swap  use.
+For  example,  if  a task is using all allowed memory, its badness score will be
+1000.  If it is using half of its allowed memory, its score will be 500.
+
+...
+
+The value of oom_score_adj is added to the badness score before it  is  used  to
+determine   which   task   to   kill.    Acceptable   values  range  from  -1000
+(OOM_SCORE_ADJ_MIN) to +1000 (OOM_SCORE_ADJ_MAX).  This  allows  user  space  to
+control the preference for OOM-killing, ranging from always preferring a certain
+task or completely disabling it from OOM killing.  The  lowest  possible  value,
+-1000,  is  equivalent to disabling OOM-killing entirely for that task, since it
+will always report a badness score of 0.
+
+Consequently, it is very simple for user space to define the amount of memory to
+consider  for each task.  Setting a oom_score_adj value of +500, for example, is
+roughly equivalent to allowing the remainder of tasks sharing the  same  system,
+cpuset,  mempolicy, or memory controller resources to use at least 50% more mem‐
+ory.  A value of -500, on the other hand, would be roughly  equivalent  to  dis‐
+counting  50%  of  the  task's  allowed  memory from being considered as scoring
+against the task.
+</code></pre></div>
+<p>So presumably this value will contain something relating the adjustment value!</p>
+
+<p>Let&#39;s continue:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="k">if</span> <span class="p">(</span><span class="n">oom_unkillable_task</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">memcg</span><span class="p">,</span> <span class="n">nodemask</span><span class="p">))</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div>
+<p>Pretty simple - if it&#39;s unkillable, return zero (which makes sure that it won&#39;t be killed)</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="n">p</span> <span class="o">=</span> <span class="n">find_lock_task_mm</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</code></pre></div>
+<p><code>find_lock_task_mm</code> will make sure that the task p has a <code>-&gt;mm</code> member, returning <code>NULL</code> if it can find any subthread with a valid <code>-&gt;mm</code>.</p>
+
+<p>Returning null causes us to mark the task not to be killed:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</code></pre></div>
+<p>If we can find a subthread that has a valid <code>mm</code> member, we continue on:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cm">/*
+     * Do not even consider tasks which are explicitly marked oom
+     * unkillable or have been already oom reaped or the are in
+     * the middle of vfork
+     */</span>
+</code></pre></div>
+<p>A few things to note here:</p>
+
+<ul>
+<li>It&#39;s interesting that being &quot;explicitly marked oom unkillable&quot; Isn&#39;t checked in <code>oom_unkilable_task()</code>. I wonder why that is.</li>
+<li>I&#39;m not quite sure the reason for not oom-killing tasks that are <code>vfork</code>ing. My guess would be that it&#39;s because the task that should actually be killed is the parent, but I&#39;m not sure about that.</li>
+</ul>
+
+<p>Let&#39;s go on:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="n">adj</span> <span class="o">=</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">signal</span><span class="o">-&gt;</span><span class="n">oom_score_adj</span><span class="p">;</span>
+</code></pre></div>
+<p>And here we figure out exactly what <code>adj</code> represents! It is in fact the oom adjustment value that the man page talks about.</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="k">if</span> <span class="p">(</span><span class="n">adj</span> <span class="o">==</span> <span class="n">OOM_SCORE_ADJ_MIN</span> <span class="o">||</span>
+            <span class="n">test_bit</span><span class="p">(</span><span class="n">MMF_OOM_SKIP</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">mm</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">)</span> <span class="o">||</span>
+            <span class="n">in_vfork</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">task_unlock</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
+<p>This if statement implements what the comment says it does - pretty simple. I&#39;m not sure why <code>task_unlock()</code> is called in this case - it doesn&#39;t seem to have to do with anything in this if statement, but there it is!</p>
+
+<p>Moving on to the meat of the &#39;badness function&#39;, we have:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cm">/*
+     * The baseline for the badness score is the proportion of RAM that each
+     * task's rss, pagetable and swap space use.
+     */</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">get_mm_rss</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">mm</span><span class="p">)</span> <span class="o">+</span> <span class="n">get_mm_counter</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">mm</span><span class="p">,</span> <span class="n">MM_SWAPENTS</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">atomic_long_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">mm</span><span class="o">-&gt;</span><span class="n">nr_ptes</span><span class="p">)</span> <span class="o">+</span> <span class="n">mm_nr_pmds</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">mm</span><span class="p">);</span>
+    <span class="n">task_unlock</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</code></pre></div>
+<p>The line that sets <code>points</code> is pretty simple - the number of &#39;badness points&#39; a process starts with is equal to the sum of three things:</p>
+
+<ol>
+<li>It&#39;s RSS (Resident Set Size). This is a measure of memory that a process is using. This includes shared libraries, stack, and heap, but <em>not</em> swap.</li>
+<li>It&#39;s pagetable use - The <a href="https://en.wikipedia.org/wiki/Page_table">page table</a> is how Linux allows every program that is running to have it&#39;s own block of memory that appears to be continuous. Each page in the pagetable takes up some RAM, which is why we&#39;re taking it into account.</li>
+<li>It&#39;s swap usage. Swap is hard drive space that is used like RAM once the system runs out of RAM. We add this because it isn&#39;t included in the RSS.</li>
+</ol>
+
+<p>If you&#39;re reading closely, you&#39;ll notice that the comment states that we&#39;re summing three things, but the statement actually sums four! This is because the page table entries are separated into two things - PTE table pages and PMD table pages. The reason that this distinction exists is because different architectures handle memory management differently, and linux chooses to abstract it in this way. In any case, we need to add together both the PTE pages and the PMD pages to get the total number of pages.</p>
+
+<p>Next, there&#39;s the <code>task_unlock()</code> line. This explains why there was a <code>task_unlock()</code> in the if statement above - it looks like the task must be unlocked in this function, so because the function returned in that if statement, it had to <code>task_unlock()</code> then. I&#39;m still not sure why the task needs to be unlocked, but that&#39;s a question for another day!</p>
+
+<p>Let&#39;s look at the next part of the code:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cm">/*
+     * Root processes get 3% bonus, just like the __vm_enough_memory()
+     * implementation used by LSMs.
+     */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">has_capability_noaudit</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">CAP_SYS_ADMIN</span><span class="p">))</span>
+        <span class="n">points</span> <span class="o">-=</span> <span class="p">(</span><span class="n">points</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+</code></pre></div>
+<p>The &quot;LSMs&quot; that they refer to are, I think, <a href="https://en.wikipedia.org/wiki/Linux_Security_Modules">Linux Security Modules</a>.</p>
+
+<p>This code simply makes processes run by root slightly less likely to be oom-killed.</p>
+
+<p>Moving on, we apply the adjustment from <code>oom_score_adj</code>:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cm">/* Normalize to oom_score_adj units */</span>
+    <span class="n">adj</span> <span class="o">*=</span> <span class="n">totalpages</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="n">points</span> <span class="o">+=</span> <span class="n">adj</span><span class="p">;</span>
+
+    <span class="cm">/*
+     * Never return 0 for an eligible task regardless of the root bonus and
+     * oom_score_adj (oom_score_adj can't be OOM_SCORE_ADJ_MIN here).
+     */</span>
+    <span class="k">return</span> <span class="n">points</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">points</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+<span class="err">}</span>
+</code></pre></div>
+<p>The most complicated part of this is the <code>adj *= totalpages / 1000</code>. I think that the reason for the <code>totalpages</code> in this is that the values that we assigned to <code>points</code> previously were measured in actual memory usage, while the value of <code>oom_score_adj</code> is a static ±1000. This equation converts the value in adj to something that takes into consideration the total amount of RAM available.</p>
+
+<p>The checking in the return statement just makes sure that the return value is always 1 or greater. This is interesting, because on my system, there are quite a few processes that shouldbe eligible, but have a <code>oom_score</code> of 0 (You can find the oom score of a running process with <code>cat /proc/&lt;PID&gt;/oom_score</code>). My system may be running a different version of this function, but I&#39;m not sure. A mystery for another day!</p>
+
+<p>Anyway, that&#39;s it for now! I like this format for looking at parts of the kernel, since it gives me a lot of jumping off points and other questions to ask! Here&#39;s a few questions that I have now:</p>
+
+<ul>
+<li>What actually calls the oom killer code?</li>
+<li>What <em>exactly</em> is the page table? How is it different on x86 vs ARM?</li>
+<li>How does LSM work? What hooks does it provide? How do those hooks work?</li>
+<li>How does PaX work?</li>
+<li>How does memory management work on a <code>RT_PREEMPT</code> system? Does anything about the oom killer change?</li>
+<li>How does RSS compare to other ways of measuring memory taken, like VSZ or USS?</li>
+<li>Why are there <code>goto</code>s in the kernel source? Is it just bad practice, or is it faster/better?</li>
+<li>How do spinlocks work? Does the kernel use any other types of locks?</li>
+<li>How does RCU work?</li>
+<li>What happens if pid 1 is the only process, but the oom killer gets called?</li>
+</ul>
+
+<p>All interesting things to learn about!</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

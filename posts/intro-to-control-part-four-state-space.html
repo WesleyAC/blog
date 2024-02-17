@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | Intro to Control Theory Part 4: State Space</title>
+  <meta name="description" content="State space representations of systems">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="Intro to Control Theory Part 4: State Space">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/intro-to-control-part-four-state-space">
+  <meta property="og:description" content="State space representations of systems">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/intro-to-control-part-four-state-space">
+  <meta name="twitter:title" content="Intro to Control Theory Part 4: State Space">
+  <meta name="twitter:description" content="State space representations of systems">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>Intro to Control Theory Part 4: State Space</h1>
+        <div class="article-list-date">
+          Dec 30, 2016
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p><em>Note: This post will use matrix math pretty extensivly. If you haven&#39;t taken a linear algebra class, I&#39;d recommend watching these three videos first: <a href="https://www.youtube.com/watch?v=xyAuNHPsq-g">1</a> <a href="https://www.youtube.com/watch?v=aKhhYguY0DQ">2</a> <a href="https://www.youtube.com/watch?v=OAh573i_qn8">3</a></em></p>
+
+<p>In <a href="/posts/intro-to-control-part-three-simulation">Part 3</a>, we covered creating a mathematical model of our system. This is very useful, since it allows us to simulate our system on a computer before we run our controller on a real system. As you find models for more and more systems, you&#39;ll realize that they all are basically the same sorts of things - you&#39;ll have your differential equation (or equations) which describe how the variables change. It doesn&#39;t matter if you&#39;re controlling a elevator, a robot, a helicopter, or a self driving car, you can describe them all with a series of differential equations. As a reminder, here&#39;s the equation that we got from Part 3:</p>
+
+<p>\[ \ddot{x} = \frac{u}{m} - \frac{d}{m} \times \dot{x} - A_{g} \]</p>
+
+<p>Where \(u\) is the input force, \(m\) is the mass, \(d\) is the friction, and \(A_{g}\) is the acceleration due to gravity.</p>
+
+<p>Since we commonly use these differential equations when we&#39;re writing code to control a system, it makes sense to represent them in ways that let us use the same tools to design any system. As it turns out, people have already made many tools to help design control systems! They don&#39;t use differential equations though, instead they use what&#39;s called a <em>State Space</em> representation of the system.</p>
+
+<p>So how does a state space representation work? First, you have the &quot;state&quot;. The state is the set of variables that can be used to represent the system completely. In our elevator example, that&#39;s the position and velocity of the elevator. The state is usually written as a vector called \(x\):</p>
+
+<p>\[ x = \begin{bmatrix} p \\ \dot{p} \end{bmatrix} \]</p>
+
+<p>I&#39;m using \(p\) to describe the position now, since we&#39;re using \(x\) for the state. Again, \(\dot{p}\) is the time derivative of \(p\), or the velocity.</p>
+
+<p>We also represent \(u\), our input as a vector. In this case, it&#39;s a 1x1 vector, because we only have one input!</p>
+
+<p>\[ u = \begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>I use \(f\) to represent the force that we&#39;re applying.</p>
+
+<p>Now that we have our state and input out of the way, we want to describe how our systems responds to inputs. This is written like this:</p>
+
+<p>\[ \dot{x} = \mathbf{A}x + \mathbf{B}u \]</p>
+
+<p>What does that mean?</p>
+
+<p>Well, we&#39;ve defined two new matrices - \(\mathbf{A}\) and \(\mathbf{B}\). A describes how our system&#39;s state will change if we don&#39;t do anything to it - given the previous state, \(\mathbf{A}\) describes how the state will change. \(\mathbf{B}\) describes how our input will change the state.</p>
+
+<p>Let&#39;s find our \(\mathbf{A}\) and \(\mathbf{B}\) matrices for our example elevator system!</p>
+
+<p>First, we&#39;ll substitute in \(\dot{x}\), \(x\) and \(u\):</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \mathbf{A}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \mathbf{B}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>We know that we&#39;ll need \(\mathbf{A}\) to be a 2x2 matrix, and \(\mathbf{B}\) to be a 1x2 matrix:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} ? &amp; ? \\ ? &amp; ? \end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \begin{bmatrix} ? \\ ? \end{bmatrix}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>First, let&#39;s find the top row of our \(\mathbf{A}\) matrix. This is essentially asking what we need to multiply \(\begin{bmatrix} p \\ \dot{p} \end{bmatrix}\) by to get \(\dot{p}\). Well, that&#39;s easy - we don&#39;t care about \(p\), so we multiply it by zero, and \(\dot{p} = \dot{p}\), so we multiply \(\dot{p}\) by 1:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ ? &amp; ? \end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \begin{bmatrix} ? \\ ? \end{bmatrix}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>Let&#39;s focus on the second line of our \(\mathbf{A}\) matrix now. This line will determine what the second derivative of our position is. Recall that this is also what our differential equation described! Here&#39;s our equation again, using \(p\) for position instead of \(x\):</p>
+
+<p>\[ \ddot{p} = \frac{u}{m} - \frac{d}{m} \times \dot{p} - A_{g} \]</p>
+
+<p>The \(\mathbf{A}\) matrix doesn&#39;t deal with how the input affects the system, just how the system will act if no force is applied. Because of this, we can drop the \(\frac{u}{m}\) term - we are assuming that \(u = 0\):</p>
+
+<p>\[ \ddot{p} = -\frac{d}{m} \times \dot{p} - A_{g} \]</p>
+
+<p>Now let&#39;s put the first part of that equation into our \(\mathbf{A}\) matrix. We want to say that \(\ddot{p} = -\frac{d}{m} \times \dot{p}\), so we put \(-\frac{d}{m}\) into our matrix:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ ? &amp; -\frac{d}{m} \end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \begin{bmatrix} ? \\ ? \end{bmatrix}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>But what do we do with the term for gravity? \(A_{g}\) isn&#39;t proportional to either \(p\) <em>or</em> \(\dot{p}\)! Where do we put it? This brings us to the first limitation of a state space representation - It only works on &quot;<em>Linear Time-Invariant</em>&quot; (often abbreviated &quot;LTI&quot;) systems. But what does it mean for a system to be LTI? Well there are two parts to it:</p>
+
+<ol>
+<li>Linear
+
+<ul>
+<li>If we apply an input \(a\) and then an input \(b\), it&#39;s the same as applying the input \(b\) and then the input \(a\).</li>
+<li>If we apply an input \(a\) and get a response \(r\), applying an input \(2 \times a\) will give the response \(2 \times r\).</li>
+</ul></li>
+<li>Time Invariant
+
+<ul>
+<li>This means that applying an input \(a\) right now has the same effect as applying an input 5 seconds from now.</li>
+</ul></li>
+</ol>
+
+<p>So why isn&#39;t our elevator LTI? Well, let&#39;s imagine applying an input of 3000 Newtons upwards for 1 second - this moves the elevator by a distance that we&#39;ll call \(\Delta p\). Now, say we apply a force of -3000 Newtons for on second - that is, apply the same magnitude of force, but downwards. If the system is linear, we should get a response of \(-\Delta p\). However, we won&#39;t! This is because gravity is helping the elevator when it&#39;s going down, but hurting it when it&#39;s going up.</p>
+
+<p>Ok, so we can&#39;t have gravity in a LTI system. What do we do? Well, we simply ignore gravity! This is a simple solution, but we will need to compensate for our removal of gravity in our model elsewhere in our code. I&#39;ll explain how to do this in a future post, but for now, we&#39;ll just remove gravity.</p>
+
+<p>Next, we&#39;ll finish up the \(\mathbf{A}\) matrix:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ 0 &amp; -\frac{d}{m} \end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \begin{bmatrix} ? \\ ? \end{bmatrix}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>At this point, you should make sure that you see how we got that matrix from this equation:</p>
+
+<p>\[ \ddot{p} = -\frac{d}{m} \times \dot{p} \]</p>
+
+<p>Now that we&#39;ve done that, it&#39;s time to find our \(\mathbf{B}\) matrix!</p>
+
+<p>Recall that we previously dropped the term that involved \(u\) from our equation - let&#39;s bring it back! (Our \(\mathbf{B}\) matrix describes how the system will respond to inputs, so when finding it we <em>only</em> care about terms of our equation that involve \(u\))</p>
+
+<p>\[ \ddot{p} = \frac{u}{m}\]</p>
+
+<p>We do the same thing for our \(\mathbf{B}\) matrix as we did for our \(\mathbf{A}\) matrix, which gets us the following equation:</p>
+
+<p>\[ \begin{bmatrix} \dot{p} \\ \ddot{p} \end{bmatrix} = \begin{bmatrix} 0 &amp; 1 \\ 0 &amp; -\frac{d}{m} \end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>Thus we can say that:</p>
+
+<p>\[ \mathbf{A} = \begin{bmatrix} 0 &amp; 1 \\ 0 &amp; -\frac{d}{m} \end{bmatrix} \]
+\[ \mathbf{B} = \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix} \]</p>
+
+<p>There&#39;s one more thing that we need to have though! Just like our first equation was \(\dot{x} = \mathbf{A}x + \mathbf{B}u\), we&#39;re going to define a second equation!</p>
+
+<p>\[ y = \mathbf{C}x + \mathbf{D}u \]</p>
+
+<p>What&#39;s this all mean? Well, \(y\) is a vector that represents what sensors we have on our system. On our elevator, we&#39;ll just have a sensor that measures position. Only measuring position means that \(y = \begin{bmatrix} p \end{bmatrix}\). Thus we have this equation:</p>
+
+<p>\[ \begin{bmatrix} p \end{bmatrix} = \mathbf{C}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \mathbf{D}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>We find the \(\mathbf{C}\) matrix the same way that we found the \(\mathbf{A}\) and \(\mathbf{B}\) matrices - this is just algebra, but can look confusing if you aren&#39;t used to matrix math:</p>
+
+<p>\[ \begin{bmatrix} p \end{bmatrix} = \begin{bmatrix} 1 &amp; 0\end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} + \mathbf{D}\begin{bmatrix} f \end{bmatrix} \]</p>
+
+<p>The \(\mathbf{D}\) matrix is almost always set to zero, since our input doesn&#39;t have a direct effect on our sensors:</p>
+
+<p>\[ \begin{bmatrix} p \end{bmatrix} = \begin{bmatrix} 1 &amp; 0\end{bmatrix}\begin{bmatrix} p \\ \dot{p} \end{bmatrix} \]</p>
+
+<p>This gives us all that we need for our state space model! All that a state space model is is four matrices that describe how the system works. Here are our matrices:</p>
+
+<p>\[ \mathbf{A} = \begin{bmatrix} 0 &amp; 1 \\ 0 &amp; -\frac{d}{m} \end{bmatrix} \]
+\[ \mathbf{B} = \begin{bmatrix} 0 \\ \frac{1}{m} \end{bmatrix} \]
+\[ \mathbf{C} = \begin{bmatrix} 1 &amp; 0 \end{bmatrix} \]
+\[ \mathbf{D} = 0 \]</p>
+
+<p>We can replace the constatns \(m\) and \(d\) with their actual values:</p>
+
+<p>\[ \mathbf{A} = \begin{bmatrix} 0 &amp; 1 \\ 0 &amp; -\frac{10}{100} \end{bmatrix} \]
+\[ \mathbf{B} = \begin{bmatrix} 0 \\ \frac{1}{100} \end{bmatrix} \]
+\[ \mathbf{C} = \begin{bmatrix} 1 &amp; 0 \end{bmatrix} \]
+\[ \mathbf{D} = 0 \]</p>
+
+<p>To get our final state space model! Using these matrices, we can describe how our system will operate!</p>
+
+<p>At the beginning of this, I said that we use state space models because there are a lot of tools that use them - let&#39;s take a look at a way that we can use our state space model!</p>
+
+<p>We&#39;re going to simulate running a Proportional-Derivative controller on our elevator using <a href="https://www.gnu.org/software/octave/">GNU Octave</a> (A free and open-source MATLAB clone). You&#39;ll need to have octave installed in order to run this demo. You&#39;ll also need to install the &quot;control&quot; package for Octave - you can do this by opening Octave and typing <code>pkg install -forge control</code>. Once you&#39;ve done that, click on the &quot;editor&quot; tab and paste in the following file:</p>
+<div class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">% Setup for simulation</span>
+<span class="n">pkg</span> <span class="nb">load</span> <span class="n">control</span>
+<span class="nb">times</span> <span class="o">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">20</span><span class="p">;</span>
+
+<span class="c1">% Our state space matrices in matlab/octave format</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">;</span>
+     <span class="mi">0</span> <span class="o">-</span><span class="mi">10</span><span class="p">/</span><span class="mi">100</span><span class="p">];</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span>
+     <span class="mi">1</span><span class="p">/</span><span class="mi">100</span><span class="p">];</span>
+<span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">D</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+
+<span class="c1">% We'll start at a position of 10 meters with at velocity of 0 m/s</span>
+<span class="n">startingPosition</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+
+<span class="c1">% You can think of this as the PID gains - the first value is the proportional</span>
+<span class="c1">% value, and the second one is the derivative. We'll go into ways to find this</span>
+<span class="c1">% automatically later, but for now, you can just manually twiddle with these :)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="p">[</span><span class="mi">30</span> <span class="mi">70</span><span class="p">]</span>
+
+<span class="c1">% This creates a model of our system, using our PID (or more accurately PD) gains</span>
+<span class="n">elevatorClosedLoop</span> <span class="o">=</span> <span class="n">ss</span><span class="p">(</span><span class="n">A</span><span class="o">-</span><span class="n">B</span><span class="o">*</span><span class="n">K</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">D</span><span class="p">);</span>
+
+<span class="c1">% This simulates the system and plots it on the screen</span>
+<span class="n">lsim</span><span class="p">(</span><span class="n">elevatorClosedLoop</span><span class="p">,</span> <span class="mi">0</span><span class="o">*</span><span class="nb">ones</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="nb">times</span><span class="p">)),</span> <span class="nb">times</span><span class="p">,</span> <span class="n">startingPosition</span><span class="p">);</span>
+</code></pre></div>
+<p>Now you can press F5 to run it, and a plot of position versus time should appear!</p>
+
+<p><img src="../img/control4/graph.png" path-detail="control4/graph.png" alt="Graph of elevator position versus time"></p>
+
+<p>This is just barely scratching the surface of what you can do with a state space model - but for now, just know that there are a ton of tools out there that let you do really cool things with state space models.</p>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>

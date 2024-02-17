@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Wesley Aptekar-Cassels | How to set up the APIC to get keyboard interrupts</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Regular-Italic-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/Harriet-v2-Text-Bold-latin1.woff2" as="font" type="font/woff2">
+  <link rel="preload" href="/fonts/LatoLatin-Regular.woff2" as="font" type="font/woff2">
+
+  <meta property="og:title" content="How to set up the APIC to get keyboard interrupts">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/posts/ioapic-interrupts">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Wesley Aptekar-Cassels">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="/posts/ioapic-interrupts">
+  <meta name="twitter:title" content="How to set up the APIC to get keyboard interrupts">
+  <meta name="twitter:description" content="">
+
+  <link href="/feed.xml" type="application/rss+xml" rel="alternate" title="Wesley Aptekar-Cassels Last 10 blog posts" />
+
+  <link type="text/css" rel="stylesheet" href="/light.css">
+  <link type="text/css" rel="stylesheet" href="/dark.css">
+</head>
+
+<body>
+  <main>
+    <nav class="header-nav">
+  <a href="/" class="header-logo" title="Wesley Aptekar-Cassels">Wesley Aptekar-Cassels</a>
+  <div class="header-links">
+    <a href="/feed.xml" target="_blank" title="RSS">
+      <div style="width:16px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M56 336c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56zM0 192c140 0 256 116 256 256h-80c0-48-14-94-48-128S48 272 0 272v-80zM0 64c212 0 384 172 384 384h-80c0-171-133-304-304-304V64z"/></svg></div>
+    </a>
+    <a href="mailto:me@wesleyac.com" target="_blank" title="Email">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M422 407c-24 25-52 43-85 55s-69 18-105 18c-35 0-66-6-95-17s-53-26-73-46-36-43-47-71-17-58-17-90 6-62 18-89 29-51 50-71 46-35 74-47c28-11 58-17 90-17 28 0 55 4 81 12s49 20 69 36 36 36 48 60 18 53 18 85c0 24-3 46-10 64s-16 34-27 46-24 22-38 28-29 10-45 10-29-4-39-12-15-17-15-29h-3c-6 10-15 19-28 28s-28 13-46 13c-28 0-49-9-64-27s-23-42-23-71c0-17 3-34 9-50s14-31 24-44 23-23 38-31 31-12 49-12c15 0 27 4 38 10 10 6 18 15 21 24h1l5-24h54l-24 113c-1 6-2 12-3 19s-2 13-2 19c0 7 1 13 4 18s7 7 15 7c16 0 29-9 39-26s16-40 16-68c0-24-4-45-12-64s-20-34-34-47-32-23-52-29-41-9-65-9c-26 0-49 4-70 13s-39 22-54 38-27 34-35 56c-8 21-13 44-13 69 0 26 4 51 13 72s21 39 37 54 35 27 57 35 46 12 72 12c33 0 61-6 85-16s45-25 65-43zM231 188c-10 0-18 2-25 8s-14 13-19 22-8 18-11 28-4 20-4 30c0 5 0 10 1 16 1 5 3 10 6 15s7 8 12 11 11 5 19 5c11 0 20-3 28-8s14-13 19-21 9-16 11-26 3-19 3-27c0-6 0-13-1-19s-4-12-7-17-7-9-12-12-12-5-20-5z"/></svg></div>
+    </a>
+    <a href="https://github.com/WesleyAC" target="_blank" title="GitHub">
+      <div style="width:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224 32c124 0 224 103 224 230 0 101-64 188-153 218h-4c-8 0-12-7-12-12 0-8 1-31 1-62 0-21-8-36-16-43 50-6 103-25 103-113 0-25-9-46-23-62 2-6 10-29-2-61h-5c-8 0-27 3-57 24-18-5-37-8-56-8s-38 3-56 8c-30-21-49-24-57-24h-5c-12 32-4 55-2 61-14 16-23 37-23 62 0 88 52 107 102 113-6 6-12 16-14 31-6 3-16 6-26 6-13 0-28-5-39-25 0 0-13-22-35-24-2 0-21 0-1 14 0 0 15 8 25 34 0 0 10 33 53 33 7 0 14 0 22-2v39c0 5-3 11-11 11h-4C64 450 0 364 0 262 0 135 100 32 224 32z"/></svg></div>
+    </a>
+  </div>
+</nav>
+
+    <article>
+      <header class="article-header">
+        <h1>How to set up the APIC to get keyboard interrupts</h1>
+        <div class="article-list-date">
+          Apr 18, 2020
+        </div>
+      </header>
+
+      <div class="article-content">
+        <p>So, you&#39;re writing a hobby operating system. It&#39;s 64-bit, because what even is the point of a computer if you can&#39;t count to 18,446,744,073,709,551,615? You&#39;re writing it on x86, because you like sadness and misery. How do you set up the <abbr title="Advanced Programmable Interrupt Controller"><a href="https://wiki.osdev.org/APIC">APIC</a></abbr> and <abbr title="Input/Output Advanced Programmable Interrupt Controller"><a href="https://wiki.osdev.org/IOAPIC">I/O APIC</a></abbr> to get keyboard interrupts?</p>
+
+<p>I struggled with this a bit, so here&#39;s a guide. It doesn&#39;t have code, because all of my code is written in a custom dialect of Forth, which won&#39;t help you much. It does have all of the steps, because figuring that out is the hard part.</p>
+
+<p>First, I&#39;ll assume that you&#39;re in protected mode, you have a valid <abbr title="Global Descriptor Table"><a href="https://wiki.osdev.org/GDT">GDT</a></abbr>, and a valid <abbr title="Interrupt Descriptor Table"><a href="https://wiki.osdev.org/IDT">IDT</a></abbr> with at least one working <abbr title="Interrupt Service Routine"><a href="https://wiki.osdev.org/ISR">ISR</a></abbr>. You should be able to trigger an <abbr title="Interrupt Request"><a href="https://wiki.osdev.org/IRQ">IRQ</a></abbr> with the <code>int</code> instruction and have something happen.</p>
+
+<p>Here&#39;s how setting up the <abbr title="Advanced Programmable Interrupt Controller">APIC</abbr> goes:</p>
+
+<ol>
+<li>Disable the <abbr title="Programmable Interrupt Controller"><a href="https://wiki.osdev.org/PIC">PIC</a></abbr>.
+
+<ul>
+<li>Remap the <abbr title="Programmable Interrupt Controller">PIC</abbr>, so that its interrupts start at <code>0x20</code>. We do this so that in the case that there are spurious interrupts, they don&#39;t get in our way.</li>
+<li>Mask off all <abbr title="Interrupt Request">IRQ</abbr>s.</li>
+<li><a href="https://web.archive.org/web/20140628205356/www.acm.uiuc.edu/sigops/roll_your_own/i386/irq.html">This page</a> has instructions for interacting with the PIC - disabling it looks the same, but the mask is <code>0xFF</code> instead of <code>0xF8</code>.</li>
+</ul></li>
+<li>Depending on the system, you may need to disable PIC mode by writing to the <abbr title="Interrupt Mode Control Register">IMCR</abbr> register. This is unusual on modern systems, but for a correct implementation, read bit 7 of MP feature information byte 2 to check if PIC mode is implemented. <a href="http://zygomatic.sourceforge.net/devref/group__arch__ia32__apic.html">This page</a> has some instructions for doing this.</li>
+<li>Configure the &quot;Spurious Interrupt Vector Register&quot; of the Local APIC, being sure to set bit 8 (&quot;APIC Software Enable/Disable&quot;). <code>0xFF</code> is a reasonable choice for the spurious vector.</li>
+<li>Parse the <abbr title="Advanced Configuration and Power Interface"><a href="https://wiki.osdev.org/ACPI">ACPI</a></abbr><sup id="fnref1"><a href="#fn1">1</a></sup> tables - specifically, get the <abbr title="Input/Output Advanced Programmable Interrupt Controller">I/O APIC</abbr> address and Local APIC ID out of the <abbr title="Multiple APIC Description Table"><a href="https://wiki.osdev.org/MADT">MADT</a></abbr> and read all of the Interrupt Source Override entries - if the IRQ source of any of them is 1, you will need to use the corresponding global system interrupt value when you set up <abbr title="I/O Redirection Table">IOREDTBL</abbr> entry.</li>
+<li>Configure the IOREDTBL entry in registers <code>0x12</code> and <code>0x13</code> (unless you need to use a different one, per the above step).
+
+<ul>
+<li>Set the vector to whatever your <abbr title="Interrupt Service Routine">ISR</abbr> vector is, deliver mode to fixed (000), destination mode to physical (0), pin polarity to active high (0), trigger mode to edge (0), mask to enabled (0), and set the destination to the Local APIC ID (which can get from reading from the local APICs register <code>0x20</code>, or from the CPUID feature information function).</li>
+<li>Beware - the low bits of the entry are in the first register, and the high bits in the second register - the reverse of what you might expect. You should write the vector to <code>0x12</code>, and the Local APIC ID to <code>0x13</code>.</li>
+<li>For a correct implementation, make sure to read the current value of the register, overwrite only the bits you care about (keeping the reserved bits as-is), then write that value back. In practice, setting the reserved bits to zero won&#39;t cause anything to break on systems I&#39;ve seen, but you might as well do things right.</li>
+</ul></li>
+<li>Enable the APIC by setting the 11th bit of the APIC base <abbr title="Model Specific Register"><a href="https://wiki.osdev.org/MSR">MSR</a></abbr> (<code>0x1B</code>). This is probably already done for you, but worth checking if things aren&#39;t working for you.</li>
+</ol>
+
+<p>Once you&#39;ve done all this, you should be able to press a key and have your ISR called. Hooray! If you want to be able to receive more than one keypress, write a zero dword to the address <code>0xfee000b0</code> at the end of your keyboard interrupt handler.</p>
+
+<h1>Debugging Tips</h1>
+
+<ul>
+<li>GDB can be pretty useful for poking around at memory - it&#39;s worth setting up GBD with QEMU so you can poke around - you can pass <code>-s -S</code> to qemu (to start the GDB server and to pause the kernel on start, respectively), then start gdb and type <code>target remote :1234</code> to connect. See the <a href="https://wiki.osdev.org/QEMU#GDB-Stub">OSDev wiki</a> for more info :)</li>
+<li>If you&#39;re not sure if you&#39;re writing to the correct register, try reading from it and seeing if the value you get back makes sense - oftentimes there are default values, and if you&#39;re writing to the wrong thing, reading what it is before you try to write can reveal that.</li>
+<li>Work incrementally - it can be good to enable the PIC to check that your ISR works with that before you disable the PIC.</li>
+<li>When in doubt, go to the authoritative documentation - while the OSDev wiki is nice, it is not nearly as complete as the Intel manual, and is often missing information. Reading the Intel manual is a good skill to practice. See the resources section below.</li>
+<li>Hardcoding values at first is fine - if you know that the local APIC ID of your bootstrap processor is always zero, and you know that the IOREDTBL has the destination zeroed by default, you don&#39;t need to write the local APIC id at first, you can just leave that register alone. Similarly, if you know you don&#39;t have any relevant Interrupt Source Override entries in your MADT, don&#39;t worry about handling the case where you do, until you get things working properly without complicating anything.</li>
+</ul>
+
+<h1>Resources</h1>
+
+<ul>
+<li><a href="https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf">Intel Software Developer&#39;s Manual</a> - Chapter 10 is the relevant part here.</li>
+<li><a href="https://pdos.csail.mit.edu/6.828/2014/readings/ia32/ioapic.pdf">I/O APIC datasheet</a></li>
+<li><a href="https://uefi.org/sites/default/files/resources/ACPI_5_1release.pdf">ACPI Specification</a></li>
+</ul>
+
+<p>The state of documentation for x86_64 hobbyist operating system development is quite poor compared to 32bit x86, but getting things working is very rewarding - I hope you stick with it!</p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>Who the hell decided that <abbr title="Advanced Programmable Interrupt Controller">APIC</abbr> and <abbr title="Advanced Configuration and Power Interface">ACPI</abbr>, two completely different but slightly overlapping things, should have names that are anagrams of each other? Why? What for?&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+
+      </div>
+
+      <br>
+      <!--
+ooops, coronavirus happened, guess we're not doing this anymore :(
+hopefully someday...
+<p>If you're in NYC and want to meet up over lunch/coffee to chat about the future of technology, <a href="mailto:me@wesleyac.com">get in touch with me</a>.</p>
+-->
+
+      <br>
+    </article>
+  </main>
+  <script async src="/mathjax/MathJax.js?config=TeX-MML-AM_CHTML"></script> 
+</body>
+</html>
